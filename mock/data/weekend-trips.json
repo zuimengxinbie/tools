@@ -1,17 +1,33 @@
 [
   {
+    "id": 1777267885439,
+    "title": "日落行程",
+    "destination": "金鸡湖-漫山岛",
+    "date": "2026-04-25",
+    "duration": "2天",
+    "status": "completed",
+    "preparation": ["大疆", "热水壶", "两手机", "车钥匙"],
+    "review": "金鸡湖夜景绝美\n漫山岛饭好吃",
+    "records": [
+      {
+        "time": "2026-04-25 14:00",
+        "content": "独墅湖，金鸡湖游玩"
+      },
+      {
+        "time": "2026-04-26 12:00",
+        "content": "漫山岛午饭，登岛"
+      }
+    ],
+    "rating": 4
+  },
+  {
     "id": 1,
     "title": "双湖出游",
     "destination": "阳澄湖-太湖",
-    "date": "2026-04-17",
+    "date": "2026-04-11",
     "duration": "2天",
     "status": "confirmed",
-    "preparation": [
-      "防晒霜",
-      "遮阳帽",
-      "充电宝",
-      "相机"
-    ],
+    "preparation": ["两手机", "大疆", "车钥匙", "热水壶"],
     "review": "阴天，大风车咖啡很不错",
     "records": [
       {
@@ -32,12 +48,7 @@
     "date": "2026-04-18",
     "duration": "2 天",
     "status": "planning",
-    "preparation": [
-      "雨伞",
-      "热水壶",
-      "车钥匙",
-      "面包"
-    ],
+    "preparation": ["两手机", "大疆", "热水壶", "车钥匙"],
     "review": "冲突学生春游，西西里咖啡很漂亮",
     "records": [
       {
