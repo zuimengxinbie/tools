@@ -253,7 +253,7 @@
                 }}
               </el-descriptions-item>
               <el-descriptions-item label="备注" :span="2">
-                <span v-if="currentPlan.remark">{{ currentPlan.remark }}</span>
+                <span v-if="hasRemarkText" v-html="currentPlan.remark"></span>
                 <span v-else class="text-placeholder">暂无</span>
               </el-descriptions-item>
             </el-descriptions>
@@ -527,12 +527,7 @@
               </el-col>
               <el-col :span="24">
                 <el-form-item label="备注">
-                  <el-input
-                    v-model="editForm.remark"
-                    type="textarea"
-                    :rows="3"
-                    placeholder="注意事项、特色安排..."
-                  />
+                  <WangEditor v-model="editForm.remark" height="400px" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -776,6 +771,7 @@
 
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
+import WangEditor from "@/components/WangEditor/index.vue";
 import type { FormInstance, FormRules } from "element-plus";
 import TravelAPI, {
   type HolidayPlan,
@@ -1105,6 +1101,12 @@ const editRules: FormRules = {
   status: [{ required: true, message: "请选择状态", trigger: "change" }],
 };
 
+// 判断 currentPlan.remark 中是否包含文字, 去除 HTML 标签后判断是否有非空字符
+const hasRemarkText = computed(() => {
+  const r = currentPlan.value?.remark || "";
+  const text = r.replace(/<[^>]+>/g, "").trim();
+  return text.length > 0;
+});
 const resetForm = (plan?: HolidayPlan) => {
   Object.assign(editForm, plan ? JSON.parse(JSON.stringify(plan)) : defaultForm());
   // 补齐可选字段默认值
