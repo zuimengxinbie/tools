@@ -72,7 +72,23 @@
       >
         <el-table-column label="#" type="index" width="60" align="center" />
         <el-table-column label="行程名称" prop="title" min-width="120" />
-        <el-table-column label="目的地" prop="destination" min-width="140" />
+        <el-table-column label="目的地" prop="destination" min-width="160">
+          <template #default="{ row }">
+            <template v-if="row.destination">
+              <el-tag
+                v-for="(d, i) in splitDestination(row.destination)"
+                :key="`${d}-${i}`"
+                size="small"
+                type="success"
+                effect="plain"
+                class="mr-1 mb-1"
+              >
+                {{ d }}
+              </el-tag>
+            </template>
+            <span v-else class="text-placeholder">—</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="出行日期"
           prop="date"
@@ -92,8 +108,8 @@
           <template #default="{ row }">
             <template v-if="row.preparation?.length">
               <el-tag
-                v-for="item in row.preparation"
-                :key="item"
+                v-for="(item, i) in row.preparation"
+                :key="`${item}-${i}`"
                 size="small"
                 type="info"
                 class="mr-1 mb-1"
@@ -104,9 +120,14 @@
             <span v-else class="text-placeholder">—</span>
           </template>
         </el-table-column>
-        <el-table-column label="行程记录" width="100" align="center">
+        <el-table-column label="行程记录" width="110" align="center">
           <template #default="{ row }">
-            <el-badge :value="row.records?.length || 0" :show-zero="false" type="primary">
+            <el-badge
+              :value="row.records?.length || 0"
+              :show-zero="false"
+              type="primary"
+              class="records-badge"
+            >
               <el-button link type="primary" @click="handleView(row)">
                 <el-icon :size="16">
                   <Document />
@@ -166,7 +187,21 @@
       <template v-if="currentTrip">
         <el-descriptions :column="2" border>
           <el-descriptions-item label="行程名称">{{ currentTrip.title }}</el-descriptions-item>
-          <el-descriptions-item label="目的地">{{ currentTrip.destination }}</el-descriptions-item>
+          <el-descriptions-item label="目的地">
+            <template v-if="currentTrip.destination">
+              <el-tag
+                v-for="(d, i) in splitDestination(currentTrip.destination)"
+                :key="`${d}-${i}`"
+                size="small"
+                type="success"
+                effect="plain"
+                class="mr-1 mb-1"
+              >
+                {{ d }}
+              </el-tag>
+            </template>
+            <span v-else class="text-placeholder">—</span>
+          </el-descriptions-item>
           <el-descriptions-item label="出行日期">{{ currentTrip.date }}</el-descriptions-item>
           <el-descriptions-item label="时长">{{ currentTrip.duration }}</el-descriptions-item>
           <el-descriptions-item label="状态">
@@ -177,8 +212,8 @@
           <el-descriptions-item label="出行准备" :span="2">
             <template v-if="currentTrip.preparation.length">
               <el-tag
-                v-for="item in currentTrip.preparation"
-                :key="item"
+                v-for="(item, i) in currentTrip.preparation"
+                :key="`${item}-${i}`"
                 size="small"
                 class="mr-1 mb-1"
               >
@@ -205,7 +240,7 @@
           <el-timeline v-if="!isMultiDay">
             <el-timeline-item
               v-for="(r, i) in sortedRecords"
-              :key="i"
+              :key="`${r.time}-${i}`"
               :timestamp="r.time"
               placement="top"
             >
@@ -226,7 +261,7 @@
               <el-timeline>
                 <el-timeline-item
                   v-for="(r, i) in group.items"
-                  :key="i"
+                  :key="`${r.time}-${i}`"
                   :timestamp="getRecordTime(r.time) || r.time"
                   placement="top"
                 >
@@ -260,7 +295,19 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="目的地" prop="destination">
-              <el-input v-model="editForm.destination" placeholder="如：杭州·西湖" />
+              <el-select
+                v-model="destinationTags"
+                multiple
+                filterable
+                allow-create
+                default-first-option
+                :reserve-keyword="false"
+                placeholder="输入后回车，可选历史目的地"
+                no-data-text="输入后回车即可添加"
+                style="width: 100%"
+              >
+                <el-option v-for="d in destinationSuggestions" :key="d" :label="d" :value="d" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -300,7 +347,7 @@
               <div v-if="editForm.preparation.length" class="tag-list">
                 <el-tag
                   v-for="(item, i) in editForm.preparation"
-                  :key="item"
+                  :key="`${item}-${i}`"
                   :closable="!isRequiredPreparation(item)"
                   :type="isRequiredPreparation(item) ? 'danger' : undefined"
                   :effect="isRequiredPreparation(item) ? 'plain' : 'light'"
@@ -380,6 +427,8 @@
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import TravelAPI, { type WeekendTrip, type TripRecord, type TripStatus } from "@/api/travel";
+import { useDirtyGuard } from "./composables/useDirtyGuard";
+import { genTripId, splitDestination } from "./composables/helpers";
 
 defineOptions({ name: "WeekendTrip" });
 
@@ -391,6 +440,7 @@ const loading = ref(false);
 
 /** 未保存的本地修改标记，离开前可提示 */
 const dirty = ref(false);
+useDirtyGuard(dirty);
 
 const loadList = async () => {
   loading.value = true;
@@ -553,11 +603,38 @@ const recordInput = reactive<TripRecord>({ time: "", content: "" });
 
 const editRules: FormRules = {
   title: [{ required: true, message: "请输入行程名称", trigger: "blur" }],
-  destination: [{ required: true, message: "请输入目的地", trigger: "blur" }],
+  destination: [{ required: true, message: "请输入目的地", trigger: "change" }],
   date: [{ required: true, message: "请选择出行日期", trigger: "change" }],
   duration: [{ required: true, message: "请输入时长", trigger: "blur" }],
   status: [{ required: true, message: "请选择状态", trigger: "change" }],
 };
+
+/** 目的地标签数组（与字符串字段双向同步，使用 · 作为持久化分隔符） */
+const destinationTags = computed<string[]>({
+  get: () => splitDestination(editForm.destination || ""),
+  set: (tags) => {
+    // 清洗：去重、去空、去前后空格
+    const cleaned: string[] = [];
+    for (const t of tags) {
+      const v = (t || "").trim();
+      if (v && !cleaned.includes(v)) cleaned.push(v);
+    }
+    editForm.destination = cleaned.join("·");
+  },
+});
+
+/** 目的地历史建议（来自所有现有行程，去重） */
+const destinationSuggestions = computed<string[]>(() => {
+  const set = new Set<string>();
+  for (const t of tripList.value) {
+    for (const d of splitDestination(t.destination || "")) {
+      set.add(d);
+    }
+  }
+  // 排除当前已选，避免下拉里看到重复项
+  for (const t of destinationTags.value) set.delete(t);
+  return [...set].sort();
+});
 
 const resetForm = (row?: TripItem) => {
   Object.assign(editForm, row ? JSON.parse(JSON.stringify(row)) : defaultForm());
@@ -573,7 +650,7 @@ const resetForm = (row?: TripItem) => {
 const handleAdd = () => {
   isEdit.value = false;
   resetForm();
-  editForm.id = Date.now();
+  editForm.id = genTripId(tripList.value);
   editVisible.value = true;
 };
 
@@ -651,35 +728,8 @@ const handleDelete = async (row: TripItem) => {
   ElMessage.success("已删除（点击「保存到 Mock 文件」生效）");
 };
 
-/* ---------------- 离开拦截 ---------------- */
-const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-  if (!dirty.value) return;
-  // 现代浏览器需要 preventDefault + 设置 returnValue 才会弹原生确认
-  e.preventDefault();
-  e.returnValue = "";
-};
-
-onMounted(() => {
-  window.addEventListener("beforeunload", handleBeforeUnload);
-});
-
 onBeforeUnmount(() => {
-  window.removeEventListener("beforeunload", handleBeforeUnload);
   if (highlightTimer) clearTimeout(highlightTimer);
-});
-
-onBeforeRouteLeave(async () => {
-  if (!dirty.value) return true;
-  try {
-    await ElMessageBox.confirm("有未保存的修改，确定离开吗？修改将会丢失。", "提示", {
-      type: "warning",
-      confirmButtonText: "离开",
-      cancelButtonText: "留下",
-    });
-    return true;
-  } catch {
-    return false;
-  }
 });
 
 /* ---------------- 保存/导出 Mock 数据 ---------------- */
@@ -808,6 +858,15 @@ const handleCopyMock = async () => {
 .record-day-count {
   font-size: 12px;
   color: var(--el-text-color-secondary);
+}
+
+/* 行程记录角标：避免数字被列右边界遮挡 */
+.records-badge {
+  margin-right: 12px;
+}
+
+.records-badge :deep(.el-badge__content) {
+  z-index: 2;
 }
 
 .record-day-index {

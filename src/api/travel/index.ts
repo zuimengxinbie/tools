@@ -21,6 +21,26 @@ export interface WeekendTrip {
   rating?: number;
 }
 
+export type HolidayStatus = "planning" | "confirmed" | "completed";
+
+export type CostCategory = "交通" | "住宿" | "餐饮" | "门票" | "购物" | "其他";
+
+export interface CostItem {
+  id: number;
+  category: CostCategory;
+  name: string;
+  amount: number;
+}
+
+export type PrepCategory = "证件" | "电子" | "衣物" | "药品" | "食物" | "其他";
+
+export interface PrepItem {
+  id: number;
+  name: string;
+  category: PrepCategory;
+  done: boolean;
+}
+
 export interface HolidayPlan {
   id: number;
   festival: string;
@@ -31,6 +51,18 @@ export interface HolidayPlan {
   members: number;
   transport: string;
   remark: string;
+  /** 状态：规划中 / 已确认 / 已完成，默认 planning */
+  status?: HolidayStatus;
+  /** 实际花费，默认 0（汇总自 costItems） */
+  actualCost?: number;
+  /** 计划评级：5=优 1=差 */
+  rating?: number;
+  /** 出行后回顾 */
+  review?: string;
+  /** 费用明细 */
+  costItems?: CostItem[];
+  /** 出行准备清单 */
+  preparation?: PrepItem[];
 }
 
 const BASE = "/api/v1/travel";

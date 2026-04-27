@@ -1,6 +1,6 @@
 <div align="center">
-  <img alt="vue3-element-admin" width="80" height="80" src="./src/assets/images/logo.png">
   <h1>个人工具集</h1>
+
 
 ![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
 
@@ -52,6 +52,30 @@ pnpm install
 pnpm run dev
 ```
 
+## 项目推送
+
+```bash
+git add .
+pnpm run commit 
+
+git push 
+```
+
+## Git 推送速查
+
+本仓库已通过 `git config --local` 配置代理与 TLS（仅对当前仓库生效，不影响其他仓库）。失败时按下表排查。
+
+| 场景                     | 命令 / 操作                                                  |
+| ------------------------ | ------------------------------------------------------------ |
+| 日常推送                 | 在仓库目录下执行 `git push`                                  |
+| 推送失败先诊断           | `.\check-push.ps1`（仅检查不修改配置）                       |
+| 端口检查失败             | 打开 / 重启 Clash 等代理软件                                 |
+| 代理出口失败（HTTP=000） | Clash 换节点 / 刷新订阅                                      |
+| 完全直连不通             | 改用 SSH：`git remote set-url origin git@github.com:zuimengxinbie/tools.git` |
+
+> 当前仓库 `.git/config` 已写入：`http(s).proxy=http://127.0.0.1:7897`、`http.sslBackend=openssl`、`http.postBuffer=524288000`、`http.version=HTTP/1.1`。
+> 全局 `--global` 已清空，对其他项目零影响。
+
 ## 项目部署
 
 执行 `pnpm run build` 命令后，项目将被打包并生成 `dist` 目录。接下来，将 `dist` 目录下的文件上传到服务器 `/usr/share/nginx/html` 目录下，并配置 Nginx 进行反向代理。
@@ -81,10 +105,6 @@ server {
 ```
 
 更多详细信息，请参考这篇文章：[Nginx 安装和配置](https://blog.csdn.net/u013737132/article/details/145667694)。
-
-## 本地Mock
-
-
 
 ## 注意事项
 
@@ -116,18 +136,5 @@ server {
 
 ![](https://foruda.gitee.com/images/1687755823165218215/c1705416_716974.png)
 
-## Git 推送速查
 
-本仓库已通过 `git config --local` 配置代理与 TLS（仅对当前仓库生效，不影响其他仓库）。失败时按下表排查。
-
-| 场景 | 命令 / 操作 |
-| --- | --- |
-| 日常推送 | 在仓库目录下执行 `git push` |
-| 推送失败先诊断 | `.\check-push.ps1`（仅检查不修改配置） |
-| 端口检查失败 | 打开 / 重启 Clash 等代理软件 |
-| 代理出口失败（HTTP=000） | Clash 换节点 / 刷新订阅 |
-| 完全直连不通 | 改用 SSH：`git remote set-url origin git@github.com:zuimengxinbie/tools.git` |
-
-> 当前仓库 `.git/config` 已写入：`http(s).proxy=http://127.0.0.1:7897`、`http.sslBackend=openssl`、`http.postBuffer=524288000`、`http.version=HTTP/1.1`。
-> 全局 `--global` 已清空，对其他项目零影响。
 

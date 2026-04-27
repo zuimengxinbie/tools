@@ -120,8 +120,10 @@ export default [
       "no-multi-spaces": "error",
       "no-multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
 
-      // 禁用与 TypeScript 冲突的规则
+      // 全局关闭未使用变量相关报错
       "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "vue/no-unused-vars": "off",
       "no-undef": "off",
       "no-redeclare": "off",
       "@typescript-eslint/ban-ts-comment": "off",
