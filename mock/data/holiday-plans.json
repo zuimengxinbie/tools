@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "festival": "五一劳动节",
+    "destination": "云南·大理 / 丽江",
+    "startDate": "2026-05-01",
+    "endDate": "2026-05-05",
+    "budget": 6800,
+    "members": 6,
+    "transport": "飞机",
+    "remark": "提前预订洱海边民宿，注意高原反应"
+  },
+  {
+    "id": 2,
+    "festival": "端午节",
+    "destination": "福建·厦门",
+    "startDate": "2026-06-19",
+    "endDate": "2026-06-21",
+    "budget": 3200,
+    "members": 2,
+    "transport": "高铁",
+    "remark": "鼓浪屿门票需提前预约"
+  },
+  {
+    "id": 3,
+    "festival": "国庆节",
+    "destination": "新疆·伊犁",
+    "startDate": "2026-10-01",
+    "endDate": "2026-10-08",
+    "budget": 12000,
+    "members": 3,
+    "transport": "飞机 + 自驾",
+    "remark": "包车从乌鲁木齐出发，行程紧凑"
+  }
+]
