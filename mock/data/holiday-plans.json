@@ -1,5 +1,308 @@
 [
   {
+    "id": 5,
+    "festival": "上海滩",
+    "destination": "上海",
+    "startDate": "2026-02-07",
+    "endDate": "2026-02-08",
+    "budget": 1200,
+    "members": 2,
+    "transport": "自驾",
+    "remark": "",
+    "status": "completed",
+    "actualCost": 850,
+    "rating": 0,
+    "review": "",
+    "costItems": [
+      {
+        "id": 1,
+        "category": "交通",
+        "name": "油费-高速费",
+        "amount": 300
+      },
+      {
+        "id": 2,
+        "category": "住宿",
+        "name": "酒店",
+        "amount": 250
+      },
+      {
+        "id": 3,
+        "category": "餐饮",
+        "name": "3餐",
+        "amount": 300
+      }
+    ],
+    "preparation": [
+      {
+        "id": 1,
+        "name": "身份证",
+        "category": "证件",
+        "done": true
+      },
+      {
+        "id": 2,
+        "name": "手机",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "id": 3,
+        "name": "充电宝",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "name": "相机",
+        "category": "电子",
+        "done": true,
+        "id": 4
+      },
+      {
+        "name": "大疆",
+        "category": "电子",
+        "done": true,
+        "id": 5
+      },
+      {
+        "name": "充电器",
+        "category": "电子",
+        "done": true,
+        "id": 6
+      },
+      {
+        "name": "厚外套",
+        "category": "衣物",
+        "done": true,
+        "id": 7
+      },
+      {
+        "name": "感冒药",
+        "category": "药品",
+        "done": true,
+        "id": 8
+      },
+      {
+        "name": "水果",
+        "category": "食物",
+        "done": true,
+        "id": 9
+      },
+      {
+        "name": "喂猫",
+        "category": "其他",
+        "done": true,
+        "id": 10
+      },
+      {
+        "name": "热水壶",
+        "category": "其他",
+        "done": true,
+        "id": 11
+      },
+      {
+        "name": "洗漱用品",
+        "category": "其他",
+        "done": true,
+        "id": 12
+      },
+      {
+        "name": "雨伞",
+        "category": "其他",
+        "done": true,
+        "id": 13
+      },
+      {
+        "name": "车钥匙",
+        "category": "其他",
+        "done": true,
+        "id": 14
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "festival": "25年年假结算",
+    "destination": "杭州·南浔",
+    "startDate": "2026-03-20",
+    "endDate": "2026-03-22",
+    "budget": 1250,
+    "members": 2,
+    "transport": "自驾",
+    "remark": "",
+    "status": "completed",
+    "actualCost": 1390,
+    "rating": 0,
+    "review": "",
+    "costItems": [
+      {
+        "id": 1,
+        "category": "交通",
+        "name": "油费-高速费",
+        "amount": 350
+      },
+      {
+        "id": 2,
+        "category": "住宿",
+        "name": "第一晚酒店南浔花筑",
+        "amount": 250
+      },
+      {
+        "id": 3,
+        "category": "住宿",
+        "name": "第一晚酒店杭州日畔微客",
+        "amount": 280
+      },
+      {
+        "id": 4,
+        "category": "餐饮",
+        "name": "4餐",
+        "amount": 350
+      },
+      {
+        "id": 5,
+        "category": "交通",
+        "name": "西湖游船",
+        "amount": 60
+      },
+      {
+        "id": 6,
+        "category": "其他",
+        "name": "其他",
+        "amount": 100
+      }
+    ],
+    "preparation": [
+      {
+        "id": 1,
+        "name": "身份证",
+        "category": "证件",
+        "done": true
+      },
+      {
+        "id": 2,
+        "name": "手机",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "id": 3,
+        "name": "充电宝",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "name": "相机",
+        "category": "电子",
+        "done": true,
+        "id": 4
+      },
+      {
+        "name": "大疆",
+        "category": "电子",
+        "done": true,
+        "id": 5
+      },
+      {
+        "name": "充电器",
+        "category": "电子",
+        "done": true,
+        "id": 6
+      },
+      {
+        "name": "厚外套",
+        "category": "衣物",
+        "done": true,
+        "id": 7
+      },
+      {
+        "name": "感冒药",
+        "category": "药品",
+        "done": false,
+        "id": 8
+      },
+      {
+        "name": "水果",
+        "category": "食物",
+        "done": true,
+        "id": 9
+      },
+      {
+        "name": "喂猫",
+        "category": "其他",
+        "done": true,
+        "id": 10
+      },
+      {
+        "name": "热水壶",
+        "category": "其他",
+        "done": true,
+        "id": 11
+      },
+      {
+        "name": "洗漱用品",
+        "category": "其他",
+        "done": true,
+        "id": 12
+      },
+      {
+        "name": "雨伞",
+        "category": "其他",
+        "done": true,
+        "id": 13
+      },
+      {
+        "name": "车钥匙",
+        "category": "其他",
+        "done": true,
+        "id": 14
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "festival": "清明节",
+    "destination": "无锡·东太湖",
+    "startDate": "2026-04-04",
+    "endDate": "2026-04-05",
+    "budget": 1,
+    "members": 2,
+    "transport": "自驾",
+    "remark": "",
+    "status": "completed",
+    "actualCost": 1,
+    "rating": 0,
+    "review": "",
+    "costItems": [
+      {
+        "id": 1,
+        "category": "交通",
+        "name": "自驾",
+        "amount": 1
+      }
+    ],
+    "preparation": [
+      {
+        "id": 1,
+        "name": "身份证",
+        "category": "证件",
+        "done": true
+      },
+      {
+        "id": 2,
+        "name": "手机",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "id": 3,
+        "name": "充电宝",
+        "category": "电子",
+        "done": true
+      }
+    ]
+  },
+  {
     "id": 2,
     "festival": "花鸟岛",
     "destination": "嵊泗花鸟岛",
@@ -129,18 +432,110 @@
   {
     "id": 1,
     "festival": "五一劳动节",
-    "destination": "云南·大理 / 丽江",
+    "destination": "阳澄湖",
     "startDate": "2026-05-01",
-    "endDate": "2026-05-05",
-    "budget": 6800,
-    "members": 6,
-    "transport": "飞机",
-    "remark": "提前预订洱海边民宿，注意高原反应",
-    "status": "confirmed",
-    "actualCost": 0,
+    "endDate": "2026-05-02",
+    "budget": 1,
+    "members": 2,
+    "transport": "自驾",
+    "remark": "关注天气",
+    "status": "planning",
+    "actualCost": 1,
     "rating": 0,
     "review": "",
-    "costItems": [],
-    "preparation": []
+    "costItems": [
+      {
+        "id": 1,
+        "category": "交通",
+        "name": "自驾",
+        "amount": 1
+      }
+    ],
+    "preparation": [
+      {
+        "name": "身份证",
+        "category": "证件",
+        "done": false,
+        "id": 1
+      },
+      {
+        "name": "手机",
+        "category": "电子",
+        "done": true,
+        "id": 2
+      },
+      {
+        "name": "充电宝",
+        "category": "电子",
+        "done": false,
+        "id": 3
+      },
+      {
+        "name": "相机",
+        "category": "电子",
+        "done": true,
+        "id": 4
+      },
+      {
+        "name": "大疆",
+        "category": "电子",
+        "done": true,
+        "id": 5
+      },
+      {
+        "name": "充电器",
+        "category": "电子",
+        "done": false,
+        "id": 6
+      },
+      {
+        "name": "厚外套",
+        "category": "衣物",
+        "done": false,
+        "id": 7
+      },
+      {
+        "name": "感冒药",
+        "category": "药品",
+        "done": false,
+        "id": 8
+      },
+      {
+        "name": "水果",
+        "category": "食物",
+        "done": false,
+        "id": 9
+      },
+      {
+        "name": "喂猫",
+        "category": "其他",
+        "done": true,
+        "id": 10
+      },
+      {
+        "name": "热水壶",
+        "category": "其他",
+        "done": true,
+        "id": 11
+      },
+      {
+        "name": "洗漱用品",
+        "category": "其他",
+        "done": false,
+        "id": 12
+      },
+      {
+        "name": "雨伞",
+        "category": "其他",
+        "done": false,
+        "id": 13
+      },
+      {
+        "name": "车钥匙",
+        "category": "其他",
+        "done": true,
+        "id": 14
+      }
+    ]
   }
 ]

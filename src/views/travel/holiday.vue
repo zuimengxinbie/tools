@@ -850,7 +850,8 @@ const statusMap: Record<HolidayStatus, { label: string; type: "primary" | "succe
 /* ---------------- 筛选 ---------------- */
 const searchKeyword = ref("");
 const statusFilter = ref<HolidayStatus | "">("");
-const yearFilter = ref<number | "">("");
+const currentYear = new Date().getFullYear();
+const yearFilter = ref<number | "">(currentYear);
 
 /** 解析出行年份（取 startDate 的年份） */
 const getPlanYear = (p: HolidayPlan): number | null => {
