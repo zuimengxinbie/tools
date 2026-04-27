@@ -116,3 +116,18 @@ server {
 
 ![](https://foruda.gitee.com/images/1687755823165218215/c1705416_716974.png)
 
+## Git 推送速查
+
+本仓库已通过 `git config --local` 配置代理与 TLS（仅对当前仓库生效，不影响其他仓库）。失败时按下表排查。
+
+| 场景 | 命令 / 操作 |
+| --- | --- |
+| 日常推送 | 在仓库目录下执行 `git push` |
+| 推送失败先诊断 | `.\check-push.ps1`（仅检查不修改配置） |
+| 端口检查失败 | 打开 / 重启 Clash 等代理软件 |
+| 代理出口失败（HTTP=000） | Clash 换节点 / 刷新订阅 |
+| 完全直连不通 | 改用 SSH：`git remote set-url origin git@github.com:zuimengxinbie/tools.git` |
+
+> 当前仓库 `.git/config` 已写入：`http(s).proxy=http://127.0.0.1:7897`、`http.sslBackend=openssl`、`http.postBuffer=524288000`、`http.version=HTTP/1.1`。
+> 全局 `--global` 已清空，对其他项目零影响。
+
