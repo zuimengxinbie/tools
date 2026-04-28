@@ -1,5 +1,162 @@
 [
   {
+    "id": 6,
+    "festival": "第一次上门",
+    "destination": "石盘村·安邑村·太原·忻州",
+    "startDate": "2026-08-06",
+    "endDate": "2026-08-09",
+    "budget": 6000,
+    "members": 1,
+    "transport": "高铁 + 自驾",
+    "remark": "<h1>行程</h1><blockquote style=\"text-align: start;\">男：<span style=\"color: rgb(66, 144, 247);\">♂</span> 女：<span style=\"color: rgb(225, 60, 57); background-color: rgb(248, 248, 248); font-size: 16px; font-family: &quot;Open Sans&quot;, &quot;Clear Sans&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, &quot;Segoe UI Emoji&quot;, sans-serif;\">♀</span></blockquote><table style=\"width: 606px; table-layout: fixed; text-align: left;\"><colgroup contenteditable=\"false\"><col width=\"151\"><col width=\"151\"><col width=\"151\"><col width=\"153\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">Day</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">行程</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">备注</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day before....</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">提前订票预定酒店预定礼品</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">高铁票时间安排合理</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day 1</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">苏州 → 太原 → 安邑村♀ → 忻州♂</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">太原南站租车，取礼品送女方回家男方忻州市过夜</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">预定酒店<br><br>取礼品</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day 2</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">忻州♂ → 安邑村 &nbsp;→ 石盘村♂</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">男方上午见女方父母下午男方返家</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">筹备家中接待<br><br>男方提前给女方购票，协调接人流程<br><br>女方礼品提前装进车</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day 3</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">安邑村♀ → 石盘村 → 太原</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">女方上午来男方，下午一同回太原</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">上午：高铁站接人后，一起拿礼品回家<br><br>下午：返程</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day 4</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">太原 &nbsp;→ 苏州</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">返程</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">—</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day after....</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">正常上班</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">—</td></tr></tbody></table><p style=\"text-align: start;\"><br></p><p><br></p>",
+    "status": "planning",
+    "actualCost": 8800,
+    "rating": 0,
+    "review": "",
+    "costItems": [
+      {
+        "id": 2,
+        "category": "购物",
+        "name": "汾酒巴拿马 20年 2瓶",
+        "amount": 800
+      },
+      {
+        "id": 3,
+        "category": "购物",
+        "name": "硬中华2条",
+        "amount": 1200
+      },
+      {
+        "id": 4,
+        "category": "购物",
+        "name": "护肤品",
+        "amount": 400
+      },
+      {
+        "id": 5,
+        "category": "购物",
+        "name": "奶粉",
+        "amount": 400
+      },
+      {
+        "id": 6,
+        "category": "购物",
+        "name": "书法套装",
+        "amount": 280
+      },
+      {
+        "id": 7,
+        "category": "购物",
+        "name": "水果",
+        "amount": 120
+      },
+      {
+        "id": 8,
+        "category": "交通",
+        "name": "高铁往返2人",
+        "amount": 2500
+      },
+      {
+        "id": 10,
+        "category": "交通",
+        "name": "高速费",
+        "amount": 300
+      },
+      {
+        "id": 11,
+        "category": "交通",
+        "name": "租车预估3天（包含油费）",
+        "amount": 1000
+      },
+      {
+        "id": 12,
+        "category": "住宿",
+        "name": "预估2晚",
+        "amount": 500
+      },
+      {
+        "id": 13,
+        "category": "餐饮",
+        "name": "两人4餐",
+        "amount": 300
+      },
+      {
+        "id": 14,
+        "category": "其他",
+        "name": "女方礼品",
+        "amount": 1000
+      }
+    ],
+    "preparation": [
+      {
+        "id": 1,
+        "name": "身份证",
+        "category": "证件",
+        "done": true
+      },
+      {
+        "id": 2,
+        "name": "手机",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "id": 3,
+        "name": "充电宝",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "name": "大疆",
+        "category": "电子",
+        "done": true,
+        "id": 5
+      },
+      {
+        "name": "充电器",
+        "category": "电子",
+        "done": true,
+        "id": 6
+      },
+      {
+        "name": "感冒药",
+        "category": "药品",
+        "done": true,
+        "id": 9
+      },
+      {
+        "name": "喂猫",
+        "category": "其他",
+        "done": true,
+        "id": 11
+      },
+      {
+        "name": "洗漱用品",
+        "category": "其他",
+        "done": true,
+        "id": 13
+      },
+      {
+        "id": 15,
+        "name": "保温杯",
+        "category": "其他",
+        "done": true
+      },
+      {
+        "id": 16,
+        "name": "方便食品（路上吃）",
+        "category": "食物",
+        "done": true
+      },
+      {
+        "id": 17,
+        "name": "理发",
+        "category": "其他",
+        "done": true
+      }
+    ]
+  },
+  {
     "id": 5,
     "festival": "上海滩",
     "destination": "上海",
@@ -483,30 +640,6 @@
         "id": 5
       },
       {
-        "name": "充电器",
-        "category": "电子",
-        "done": false,
-        "id": 6
-      },
-      {
-        "name": "厚外套",
-        "category": "衣物",
-        "done": false,
-        "id": 7
-      },
-      {
-        "name": "感冒药",
-        "category": "药品",
-        "done": false,
-        "id": 8
-      },
-      {
-        "name": "水果",
-        "category": "食物",
-        "done": false,
-        "id": 9
-      },
-      {
         "name": "喂猫",
         "category": "其他",
         "done": true,
@@ -517,18 +650,6 @@
         "category": "其他",
         "done": true,
         "id": 11
-      },
-      {
-        "name": "洗漱用品",
-        "category": "其他",
-        "done": false,
-        "id": 12
-      },
-      {
-        "name": "雨伞",
-        "category": "其他",
-        "done": false,
-        "id": 13
       },
       {
         "name": "车钥匙",

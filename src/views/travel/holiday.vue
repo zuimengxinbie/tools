@@ -841,7 +841,17 @@ const loadList = async () => {
 
 onMounted(loadList);
 
-const transportOptions = ["飞机", "高铁", "自驾", "飞机 + 自驾", "船 + 自驾", "火车", "巴士"];
+const transportOptions = [
+  "飞机",
+  "高铁",
+  "自驾",
+  "高铁 + 自驾",
+  "飞机 + 自驾",
+  "船 + 自驾",
+  "火车",
+  "巴士",
+  "其他",
+];
 
 const statusMap: Record<HolidayStatus, { label: string; type: "primary" | "success" | "info" }> = {
   planning: { label: "规划中", type: "primary" },
