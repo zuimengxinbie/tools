@@ -160,11 +160,12 @@ export const PREP_TEMPLATES: { label: string; items: Omit<PrepItem, "id">[] }[] 
     label: "花鸟岛游",
     items: [
       { name: "身份证", category: "证件", done: false },
-      { name: "手机", category: "电子", done: false },
+      { name: "手机", category: "电子", done: true },
       { name: "充电宝", category: "电子", done: false },
       { name: "相机", category: "电子", done: false },
       { name: "大疆", category: "电子", done: false },
       { name: "充电器", category: "电子", done: false },
+      { name: "车钥匙", category: "电子", done: false },
       { name: "厚外套", category: "衣物", done: false },
       { name: "感冒药", category: "药品", done: false },
       { name: "水果", category: "食物", done: false },
@@ -172,7 +173,6 @@ export const PREP_TEMPLATES: { label: string; items: Omit<PrepItem, "id">[] }[] 
       { name: "热水壶", category: "其他", done: false },
       { name: "洗漱用品", category: "其他", done: false },
       { name: "雨伞", category: "其他", done: false },
-      { name: "车钥匙", category: "其他", done: false },
     ],
   },
 ];
