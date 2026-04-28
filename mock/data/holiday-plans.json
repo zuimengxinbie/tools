@@ -1,5 +1,168 @@
 [
   {
+    "id": 8,
+    "festival": "长江游",
+    "destination": "南通",
+    "startDate": "2026-01-17",
+    "endDate": "2026-01-18",
+    "budget": 800,
+    "members": 2,
+    "transport": "自驾",
+    "remark": "<p><br></p>",
+    "status": "completed",
+    "actualCost": 0,
+    "rating": 0,
+    "review": "",
+    "costItems": [],
+    "preparation": [
+      {
+        "id": 1,
+        "name": "身份证",
+        "category": "证件",
+        "done": false
+      },
+      {
+        "id": 2,
+        "name": "手机",
+        "category": "电子",
+        "done": false
+      },
+      {
+        "id": 3,
+        "name": "充电宝",
+        "category": "电子",
+        "done": false
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "festival": "千岛湖",
+    "destination": "千岛湖",
+    "startDate": "2026-05-15",
+    "endDate": "2026-05-17",
+    "budget": 1500,
+    "members": 2,
+    "transport": "自驾",
+    "remark": "<h3 style=\"text-align: start;\">行程</h3><table style=\"width: 606px; table-layout: fixed; height: 0px; text-align: left;\"><colgroup contenteditable=\"false\"><col width=\"151\"><col width=\"151\"><col width=\"151\"><col width=\"153\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">Day</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">行程</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">备注</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day 1</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">家 → 西渚花苑 &nbsp;→ 千岛湖广场</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">8：00 出发<br>9：00 &nbsp;西渚花苑</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">9：00集合<br>早饭自行解决</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day 2</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">无</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">游玩</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"></td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day 3</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">千岛湖广场 → 西渚花苑 → 家</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">14：00 出发返程</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"></td></tr></tbody></table><h3 style=\"text-align: start;\">酒店</h3><p style=\"text-align: start;\">待定</p><p><br></p>",
+    "status": "planning",
+    "actualCost": 1800,
+    "rating": 0,
+    "review": "",
+    "costItems": [
+      {
+        "id": 1,
+        "category": "住宿",
+        "name": "两晚",
+        "amount": 700
+      },
+      {
+        "id": 2,
+        "category": "交通",
+        "name": "油费+高速费",
+        "amount": 700
+      },
+      {
+        "id": 3,
+        "category": "餐饮",
+        "name": "5餐",
+        "amount": 300
+      },
+      {
+        "id": 4,
+        "category": "门票",
+        "name": "门票",
+        "amount": 100
+      }
+    ],
+    "preparation": [
+      {
+        "id": 1,
+        "name": "身份证",
+        "category": "证件",
+        "done": true
+      },
+      {
+        "id": 2,
+        "name": "手机",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "id": 3,
+        "name": "充电宝",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "name": "相机",
+        "category": "电子",
+        "done": true,
+        "id": 4
+      },
+      {
+        "name": "大疆",
+        "category": "电子",
+        "done": true,
+        "id": 5
+      },
+      {
+        "name": "充电器",
+        "category": "电子",
+        "done": true,
+        "id": 6
+      },
+      {
+        "name": "车钥匙",
+        "category": "电子",
+        "done": true,
+        "id": 7
+      },
+      {
+        "name": "感冒药",
+        "category": "药品",
+        "done": true,
+        "id": 9
+      },
+      {
+        "name": "水果",
+        "category": "食物",
+        "done": true,
+        "id": 10
+      },
+      {
+        "name": "喂猫",
+        "category": "其他",
+        "done": true,
+        "id": 11
+      },
+      {
+        "name": "热水壶",
+        "category": "其他",
+        "done": true,
+        "id": 12
+      },
+      {
+        "name": "洗漱用品",
+        "category": "其他",
+        "done": true,
+        "id": 13
+      },
+      {
+        "name": "雨伞",
+        "category": "其他",
+        "done": true,
+        "id": 14
+      },
+      {
+        "id": 15,
+        "name": "薄外套",
+        "category": "衣物",
+        "done": true
+      }
+    ]
+  },
+  {
     "id": 6,
     "festival": "第一次上门",
     "destination": "石盘村·安邑村·太原·忻州",
