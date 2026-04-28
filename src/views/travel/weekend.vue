@@ -125,6 +125,7 @@
             <el-badge
               :value="row.records?.length || 0"
               :show-zero="false"
+              :offset="[5, 8]"
               type="primary"
               class="records-badge"
             >

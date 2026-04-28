@@ -9,10 +9,15 @@
 -->
 
 <template>
-  <div style="z-index: 999; border: 1px solid var(--el-border-color)">
+  <div
+    :style="{
+      zIndex: 999,
+      border: hasBar ? '1px solid var(--el-border-color)' : 'none',
+    }"
+  >
     <!-- 工具栏 -->
     <Toolbar
-      v-if="editorRef"
+      v-if="editorRef && hasBar"
       :key="editorKey"
       :editor="editorRef"
       mode="simple"
@@ -43,10 +48,18 @@ import FileAPI from "@/api/file";
 // 上传图片回调函数类型
 type InsertFnType = (_url: string, _alt: string, _href: string) => void;
 
-defineProps({
+const props = defineProps({
   height: {
     type: String,
     default: "500px",
+  },
+  readOnly: {
+    type: Boolean,
+    default: false,
+  },
+  hasBar: {
+    type: Boolean,
+    default: true,
   },
 });
 // 双向绑定 - 直接使用 v-model，无需手动 setHtml
@@ -76,6 +89,7 @@ const editorConfig: Partial<IEditorConfig> = {
       },
     } as any,
   },
+  readOnly: props.readOnly,
 };
 
 // 记录 editor 实例

@@ -253,7 +253,13 @@
                 }}
               </el-descriptions-item>
               <el-descriptions-item label="备注" :span="2">
-                <span v-if="hasRemarkText" v-html="currentPlan.remark"></span>
+                <WangEditor
+                  v-if="hasRemarkText"
+                  v-model="currentPlan.remark"
+                  :read-only="true"
+                  :has-bar="false"
+                  height="400px"
+                />
                 <span v-else class="text-placeholder">暂无</span>
               </el-descriptions-item>
             </el-descriptions>
