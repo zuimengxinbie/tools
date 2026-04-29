@@ -164,9 +164,8 @@
                       </el-icon>
                       <span class="label">预算：</span>
                       <span>
-                        ￥{{ getActualCost(plan).toLocaleString() }} / ￥{{
-                          plan.budget.toLocaleString()
-                        }}
+                        ￥{{ plan.budget.toLocaleString() }} /
+                        <b>￥{{ getActualCost(plan).toLocaleString() }}</b>
                       </span>
                     </p>
                     <el-progress
