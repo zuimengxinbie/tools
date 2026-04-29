@@ -248,8 +248,8 @@
                 {{ currentPlan.members }} 人
               </el-descriptions-item>
               <el-descriptions-item label="预算 / 实际">
-                ￥{{ currentTotalCost.toLocaleString() }} / ￥{{
-                  currentPlan.budget.toLocaleString()
+                ￥{{ currentPlan.budget.toLocaleString() }} / ￥{{
+                  currentTotalCost.toLocaleString()
                 }}
               </el-descriptions-item>
               <el-descriptions-item label="备注" :span="2">
@@ -282,7 +282,9 @@
             <div class="cost-summary">
               <div class="cost-stat">
                 <div class="cost-stat-label">总预算</div>
-                <div class="cost-stat-value">￥{{ currentPlan.budget.toLocaleString() }}</div>
+                <div class="cost-stat-value" style="font-weight: 500">
+                  ￥{{ currentPlan.budget.toLocaleString() }}
+                </div>
               </div>
               <div class="cost-stat">
                 <div class="cost-stat-label">已花费</div>
