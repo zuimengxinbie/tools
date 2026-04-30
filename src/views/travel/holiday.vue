@@ -198,123 +198,6 @@
     </el-card>
 
     <!-- 查看详情 -->
-    <!-- 分享计划弹窗 -->
-    <el-dialog v-model="shareDialogVisible" title="分享计划" width="820px" destroy-on-close>
-      <el-collapse v-if="sharePlan" accordion>
-        <el-collapse-item title="基础信息" name="basic">
-          <el-descriptions :column="2" border>
-            <el-descriptions-item label="节日">
-              <el-tag type="danger">
-                <span class="plan-emoji">
-                  {{ getFestivalEmoji(sharePlan.festival, customFestivals) }}
-                </span>
-                {{ sharePlan.festival }}
-              </el-tag>
-            </el-descriptions-item>
-            <el-descriptions-item label="状态">
-              <el-tag :type="statusMap[sharePlan.status ?? 'planning'].type">
-                {{ statusMap[sharePlan.status ?? "planning"].label }}
-              </el-tag>
-            </el-descriptions-item>
-            <el-descriptions-item label="目的地" :span="2">
-              <template v-if="sharePlan.destination">
-                <el-tag
-                  v-for="(d, i) in splitDestination(sharePlan.destination)"
-                  :key="`${d}-${i}`"
-                  size="small"
-                  type="success"
-                  effect="plain"
-                  class="mr-1"
-                >
-                  {{ d }}
-                </el-tag>
-              </template>
-              <span v-else class="text-placeholder">—</span>
-            </el-descriptions-item>
-            <el-descriptions-item label="开始日期">{{ sharePlan.startDate }}</el-descriptions-item>
-            <el-descriptions-item label="结束日期">{{ sharePlan.endDate }}</el-descriptions-item>
-            <el-descriptions-item label="天数">
-              {{ calcDays(sharePlan.startDate, sharePlan.endDate) }} 天
-            </el-descriptions-item>
-            <el-descriptions-item label="交通方式">
-              {{ sharePlan.transport || "—" }}
-            </el-descriptions-item>
-            <el-descriptions-item label="出行人数">{{ sharePlan.members }} 人</el-descriptions-item>
-            <el-descriptions-item label="预算 / 实际">
-              ￥{{ sharePlan.budget.toLocaleString() }} / ￥{{ getActualCost(sharePlan) }}
-            </el-descriptions-item>
-            <el-descriptions-item label="备注" :span="2">
-              <WangEditor
-                v-if="hasShareText"
-                v-model="sharePlan.remark"
-                :read-only="true"
-                :has-bar="false"
-                height="400px"
-              />
-              <span v-else class="text-placeholder">暂无</span>
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-collapse-item>
-        <el-collapse-item title="费用明细" name="cost">
-          <ECharts :options="shareCostChartOptions" height="240px" style="margin-bottom: 12px" />
-          <div class="share-cost-summary" style="margin-bottom: 12px">
-            <span>预估总额（预算）：￥{{ sharePlan.budget?.toLocaleString?.() ?? 0 }}</span>
-            <span style="margin-left: 24px">
-              实际总额：￥
-              <b>{{ getActualCost(sharePlan) }}</b>
-            </span>
-          </div>
-          <el-table :data="sharePlan.costItems ?? []" size="small" border empty-text="暂无费用明细">
-            <el-table-column label="类目" width="100">
-              <template #default="{ row }">
-                <el-tag
-                  size="small"
-                  :style="{
-                    color: getCostColor(row.category),
-                    borderColor: getCostColor(row.category),
-                  }"
-                  effect="plain"
-                >
-                  {{ row.category }}
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="名称" prop="name" />
-            <el-table-column label="金额" width="140" align="right">
-              <template #default="{ row }">￥{{ row.amount.toLocaleString() }}</template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-        <el-collapse-item title="出行准备" name="prep">
-          <el-table
-            :data="sharePlan.preparation ?? []"
-            size="small"
-            border
-            empty-text="暂无准备清单"
-          >
-            <el-table-column label="完成" width="60" align="center">
-              <template #default="{ row }">
-                <el-checkbox v-model="row.done" disabled />
-              </template>
-            </el-table-column>
-            <el-table-column label="类目" width="90">
-              <template #default="{ row }">
-                <el-tag size="small" type="info" effect="plain">{{ row.category }}</el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="物品" prop="name">
-              <template #default="{ row }">
-                <span v-if="isRequiredPrep(row.name)" class="required-mark">*</span>
-                {{ row.name }}
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-      </el-collapse>
-      <template #footer>
-        <el-button @click="shareDialogVisible = false">关闭</el-button>
-      </template>
-    </el-dialog>
     <el-dialog v-model="viewVisible" title="计划详情" width="820px" destroy-on-close>
       <template v-if="currentPlan">
         <el-tabs v-model="detailTab">
@@ -525,7 +408,132 @@
         <el-button @click="viewVisible = false">关闭</el-button>
       </template>
     </el-dialog>
-
+    <!-- 分享计划弹窗 -->
+    <el-dialog v-model="shareDialogVisible" title="分享计划" width="820px" destroy-on-close>
+      <el-collapse v-if="sharePlan">
+        <el-collapse-item name="basic">
+          <template #title>
+            <span class="share-collapse-title">基础信息</span>
+          </template>
+          <el-descriptions :column="2" border>
+            <el-descriptions-item label="节日">
+              <el-tag type="danger">
+                <span class="plan-emoji">
+                  {{ getFestivalEmoji(sharePlan.festival, customFestivals) }}
+                </span>
+                {{ sharePlan.festival }}
+              </el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="状态">
+              <el-tag :type="statusMap[sharePlan.status ?? 'planning'].type">
+                {{ statusMap[sharePlan.status ?? "planning"].label }}
+              </el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="目的地" :span="2">
+              <template v-if="sharePlan.destination">
+                <el-tag
+                  v-for="(d, i) in splitDestination(sharePlan.destination)"
+                  :key="`${d}-${i}`"
+                  size="small"
+                  type="success"
+                  effect="plain"
+                  class="mr-1"
+                >
+                  {{ d }}
+                </el-tag>
+              </template>
+              <span v-else class="text-placeholder">—</span>
+            </el-descriptions-item>
+            <el-descriptions-item label="开始日期">{{ sharePlan.startDate }}</el-descriptions-item>
+            <el-descriptions-item label="结束日期">{{ sharePlan.endDate }}</el-descriptions-item>
+            <el-descriptions-item label="天数">
+              {{ calcDays(sharePlan.startDate, sharePlan.endDate) }} 天
+            </el-descriptions-item>
+            <el-descriptions-item label="交通方式">
+              {{ sharePlan.transport || "—" }}
+            </el-descriptions-item>
+            <el-descriptions-item label="出行人数">{{ sharePlan.members }} 人</el-descriptions-item>
+            <el-descriptions-item label="预算 / 实际">
+              ￥{{ sharePlan.budget.toLocaleString() }} / ￥{{ getActualCost(sharePlan) }}
+            </el-descriptions-item>
+            <el-descriptions-item label="备注" :span="2">
+              <WangEditor
+                v-if="hasShareText"
+                v-model="sharePlan.remark"
+                :read-only="true"
+                :has-bar="false"
+                height="400px"
+              />
+              <span v-else class="text-placeholder">暂无</span>
+            </el-descriptions-item>
+          </el-descriptions>
+        </el-collapse-item>
+        <el-collapse-item name="cost">
+          <template #title>
+            <span class="share-collapse-title">费用明细</span>
+          </template>
+          <ECharts :options="shareCostChartOptions" height="240px" style="margin-bottom: 12px" />
+          <div class="share-cost-summary" style="margin-bottom: 12px">
+            <span>预估总额（预算）：￥{{ sharePlan.budget?.toLocaleString?.() ?? 0 }}</span>
+            <span style="margin-left: 24px">
+              实际总额：￥
+              <b>{{ getActualCost(sharePlan) }}</b>
+            </span>
+          </div>
+          <el-table :data="sharePlan.costItems ?? []" size="small" border empty-text="暂无费用明细">
+            <el-table-column label="类目" width="100">
+              <template #default="{ row }">
+                <el-tag
+                  size="small"
+                  :style="{
+                    color: getCostColor(row.category),
+                    borderColor: getCostColor(row.category),
+                  }"
+                  effect="plain"
+                >
+                  {{ row.category }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="名称" prop="name" />
+            <el-table-column label="金额" width="140" align="right">
+              <template #default="{ row }">￥{{ row.amount.toLocaleString() }}</template>
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
+        <el-collapse-item name="prep">
+          <template #title>
+            <span class="share-collapse-title">出行准备</span>
+          </template>
+          <el-table
+            :data="sharePlan.preparation ?? []"
+            size="small"
+            border
+            empty-text="暂无准备清单"
+          >
+            <el-table-column label="完成" width="60" align="center">
+              <template #default="{ row }">
+                <el-checkbox v-model="row.done" disabled />
+              </template>
+            </el-table-column>
+            <el-table-column label="类目" width="90">
+              <template #default="{ row }">
+                <el-tag size="small" type="info" effect="plain">{{ row.category }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="物品" prop="name">
+              <template #default="{ row }">
+                <span v-if="isRequiredPrep(row.name)" class="required-mark">*</span>
+                {{ row.name }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
+      </el-collapse>
+      <template #footer>
+        <el-button @click="shareDialogVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
     <!-- 新增 / 编辑 -->
     <el-dialog
       v-model="editVisible"
@@ -1844,6 +1852,14 @@ const shareCostChartOptions = computed(() => ({
   .el-checkbox.is-required :deep(.el-checkbox__label) {
     font-weight: 600;
   }
+}
+
+/* ---------------- 分享弹窗 collapse 标题样式 ---------------- */
+.share-collapse-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  letter-spacing: 1px;
 }
 
 /* ---------------- 编辑：费用 / 准备 ---------------- */
