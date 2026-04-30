@@ -187,6 +187,7 @@
                     <el-button type="primary" link @click="handleView(plan)">查看详情</el-button>
                     <el-button type="success" link @click="handleEdit(plan)">编辑</el-button>
                     <el-button type="danger" link @click="handleDelete(plan)">删除</el-button>
+                    <el-button type="warning" link @click="handleShare(plan)">分享</el-button>
                   </template>
                 </el-card>
               </el-col>
@@ -197,6 +198,123 @@
     </el-card>
 
     <!-- 查看详情 -->
+    <!-- 分享计划弹窗 -->
+    <el-dialog v-model="shareDialogVisible" title="分享计划" width="820px" destroy-on-close>
+      <el-collapse v-if="sharePlan" accordion>
+        <el-collapse-item title="基础信息" name="basic">
+          <el-descriptions :column="2" border>
+            <el-descriptions-item label="节日">
+              <el-tag type="danger">
+                <span class="plan-emoji">
+                  {{ getFestivalEmoji(sharePlan.festival, customFestivals) }}
+                </span>
+                {{ sharePlan.festival }}
+              </el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="状态">
+              <el-tag :type="statusMap[sharePlan.status ?? 'planning'].type">
+                {{ statusMap[sharePlan.status ?? "planning"].label }}
+              </el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="目的地" :span="2">
+              <template v-if="sharePlan.destination">
+                <el-tag
+                  v-for="(d, i) in splitDestination(sharePlan.destination)"
+                  :key="`${d}-${i}`"
+                  size="small"
+                  type="success"
+                  effect="plain"
+                  class="mr-1"
+                >
+                  {{ d }}
+                </el-tag>
+              </template>
+              <span v-else class="text-placeholder">—</span>
+            </el-descriptions-item>
+            <el-descriptions-item label="开始日期">{{ sharePlan.startDate }}</el-descriptions-item>
+            <el-descriptions-item label="结束日期">{{ sharePlan.endDate }}</el-descriptions-item>
+            <el-descriptions-item label="天数">
+              {{ calcDays(sharePlan.startDate, sharePlan.endDate) }} 天
+            </el-descriptions-item>
+            <el-descriptions-item label="交通方式">
+              {{ sharePlan.transport || "—" }}
+            </el-descriptions-item>
+            <el-descriptions-item label="出行人数">{{ sharePlan.members }} 人</el-descriptions-item>
+            <el-descriptions-item label="预算 / 实际">
+              ￥{{ sharePlan.budget.toLocaleString() }} / ￥{{ getActualCost(sharePlan) }}
+            </el-descriptions-item>
+            <el-descriptions-item label="备注" :span="2">
+              <WangEditor
+                v-if="hasShareText"
+                v-model="sharePlan.remark"
+                :read-only="true"
+                :has-bar="false"
+                height="400px"
+              />
+              <span v-else class="text-placeholder">暂无</span>
+            </el-descriptions-item>
+          </el-descriptions>
+        </el-collapse-item>
+        <el-collapse-item title="费用明细" name="cost">
+          <ECharts :options="shareCostChartOptions" height="240px" style="margin-bottom: 12px" />
+          <div class="share-cost-summary" style="margin-bottom: 12px">
+            <span>预估总额（预算）：￥{{ sharePlan.budget?.toLocaleString?.() ?? 0 }}</span>
+            <span style="margin-left: 24px">
+              实际总额：￥
+              <b>{{ getActualCost(sharePlan) }}</b>
+            </span>
+          </div>
+          <el-table :data="sharePlan.costItems ?? []" size="small" border empty-text="暂无费用明细">
+            <el-table-column label="类目" width="100">
+              <template #default="{ row }">
+                <el-tag
+                  size="small"
+                  :style="{
+                    color: getCostColor(row.category),
+                    borderColor: getCostColor(row.category),
+                  }"
+                  effect="plain"
+                >
+                  {{ row.category }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="名称" prop="name" />
+            <el-table-column label="金额" width="140" align="right">
+              <template #default="{ row }">￥{{ row.amount.toLocaleString() }}</template>
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
+        <el-collapse-item title="出行准备" name="prep">
+          <el-table
+            :data="sharePlan.preparation ?? []"
+            size="small"
+            border
+            empty-text="暂无准备清单"
+          >
+            <el-table-column label="完成" width="60" align="center">
+              <template #default="{ row }">
+                <el-checkbox v-model="row.done" disabled />
+              </template>
+            </el-table-column>
+            <el-table-column label="类目" width="90">
+              <template #default="{ row }">
+                <el-tag size="small" type="info" effect="plain">{{ row.category }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="物品" prop="name">
+              <template #default="{ row }">
+                <span v-if="isRequiredPrep(row.name)" class="required-mark">*</span>
+                {{ row.name }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
+      </el-collapse>
+      <template #footer>
+        <el-button @click="shareDialogVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
     <el-dialog v-model="viewVisible" title="计划详情" width="820px" destroy-on-close>
       <template v-if="currentPlan">
         <el-tabs v-model="detailTab">
@@ -1435,6 +1553,50 @@ const togglePrepInDetail = (item: PrepItem) => {
   target.done = !target.done;
   dirty.value = true;
 };
+
+/* ---------------- 分享对话框 ---------------- */
+const shareDialogVisible = ref(false);
+const sharePlan = ref<HolidayPlan | null>(null);
+const handleShare = (plan: HolidayPlan) => {
+  sharePlan.value = plan;
+  shareDialogVisible.value = true;
+};
+const hasShareText = computed(() => {
+  const r = sharePlan.value?.remark || "";
+  const text = r.replace(/<[^>]+>/g, "").trim();
+  return text.length > 0;
+});
+
+const shareCostByCategory = computed(() => {
+  const items = sharePlan.value?.costItems ?? [];
+  const map = new Map<string, number>();
+  for (const c of items) {
+    map.set(c.category, (map.get(c.category) ?? 0) + (Number(c.amount) || 0));
+  }
+  return COST_CATEGORIES.map(({ label, color }) => ({
+    name: label,
+    value: map.get(label) ?? 0,
+    itemStyle: { color },
+  })).filter((d) => d.value > 0);
+});
+const shareCostChartOptions = computed(() => ({
+  tooltip: {
+    trigger: "item",
+    formatter: (params: any) =>
+      `${params.name}<br/>￥${(params.value as number).toLocaleString()}（${params.percent}%）`,
+  },
+  legend: { bottom: 0, left: "center" },
+  series: [
+    {
+      type: "pie",
+      radius: ["40%", "65%"],
+      center: ["50%", "45%"],
+      avoidLabelOverlap: true,
+      label: { show: true, formatter: "{b}\n￥{c}" },
+      data: shareCostByCategory.value,
+    },
+  ],
+}));
 </script>
 
 <style lang="scss" scoped>

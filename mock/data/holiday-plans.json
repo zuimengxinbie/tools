@@ -10,10 +10,29 @@
     "transport": "自驾",
     "remark": "<p><br></p>",
     "status": "completed",
-    "actualCost": 0,
+    "actualCost": 770,
     "rating": 0,
     "review": "",
-    "costItems": [],
+    "costItems": [
+      {
+        "id": 1,
+        "category": "交通",
+        "name": "油费+高速费",
+        "amount": 300
+      },
+      {
+        "id": 2,
+        "category": "住宿",
+        "name": "酒店",
+        "amount": 270
+      },
+      {
+        "id": 3,
+        "category": "餐饮",
+        "name": "3餐",
+        "amount": 200
+      }
+    ],
     "preparation": [
       {
         "id": 1,
