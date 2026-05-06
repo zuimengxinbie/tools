@@ -184,7 +184,7 @@
     </el-card>
 
     <!-- 查看详情 -->
-    <el-dialog v-model="viewVisible" title="行程详情" width="640px" destroy-on-close>
+    <el-dialog v-model="viewVisible" title="行程详情" width="800px" destroy-on-close>
       <template v-if="currentTrip">
         <el-descriptions :column="2" border>
           <el-descriptions-item label="行程名称">{{ currentTrip.title }}</el-descriptions-item>
