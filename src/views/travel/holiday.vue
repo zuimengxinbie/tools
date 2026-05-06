@@ -232,6 +232,13 @@
                 </template>
                 <span v-else class="text-placeholder">—</span>
               </el-descriptions-item>
+              <el-descriptions-item label="行程评级" :span="2">
+                <div v-if="hasCurrentRating" class="rating-display">
+                  <el-rate :model-value="normalizedCurrentRating" disabled />
+                  <span class="rating-score">{{ normalizedCurrentRating }} 分</span>
+                </div>
+                <span v-else class="text-placeholder">未评分</span>
+              </el-descriptions-item>
               <el-descriptions-item label="开始日期">
                 {{ currentPlan.startDate }}
               </el-descriptions-item>
@@ -444,6 +451,13 @@
               </template>
               <span v-else class="text-placeholder">—</span>
             </el-descriptions-item>
+            <el-descriptions-item label="行程评级" :span="2">
+              <div v-if="hasShareRating" class="rating-display">
+                <el-rate :model-value="normalizedShareRating" disabled />
+                <span class="rating-score">{{ normalizedShareRating }} 分</span>
+              </div>
+              <span v-else class="text-placeholder">未评分</span>
+            </el-descriptions-item>
             <el-descriptions-item label="开始日期">{{ sharePlan.startDate }}</el-descriptions-item>
             <el-descriptions-item label="结束日期">{{ sharePlan.endDate }}</el-descriptions-item>
             <el-descriptions-item label="天数">
@@ -456,6 +470,7 @@
             <el-descriptions-item label="预算 / 实际">
               ￥{{ sharePlan.budget.toLocaleString() }} / ￥{{ getActualCost(sharePlan) }}
             </el-descriptions-item>
+
             <el-descriptions-item label="备注" :span="2">
               <WangEditor
                 v-if="hasShareText"
@@ -605,6 +620,17 @@
                   >
                     <el-option v-for="d in destinationSuggestions" :key="d" :label="d" :value="d" />
                   </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="行程评级">
+                  <div class="rating-field">
+                    <el-rate v-model="editForm.rating" :disabled="!canEditRating" />
+                    <span v-if="!canEditRating" class="text-placeholder rating-tip">
+                      仅已完成行程可评分
+                    </span>
+                    <span v-else-if="!normalizedEditRating" class="text-placeholder">未评分</span>
+                  </div>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -1111,6 +1137,12 @@ const getCostPercent = (p: HolidayPlan): number => {
   return Math.min(200, Math.round((getActualCost(p) / p.budget) * 100));
 };
 
+const normalizeRating = (rating?: number | null): number => {
+  const value = Number(rating) || 0;
+  if (value < 1 || value > 5) return 0;
+  return Math.round(value);
+};
+
 /** 倒计时 tag（未出行 / 进行中 / 已结束） */
 const getCountdownTag = (
   p: HolidayPlan
@@ -1250,6 +1282,8 @@ const hasRemarkText = computed(() => {
   const text = r.replace(/<[^>]+>/g, "").trim();
   return text.length > 0;
 });
+const normalizedCurrentRating = computed(() => normalizeRating(currentPlan.value?.rating));
+const hasCurrentRating = computed(() => normalizedCurrentRating.value > 0);
 const resetForm = (plan?: HolidayPlan) => {
   Object.assign(editForm, plan ? JSON.parse(JSON.stringify(plan)) : defaultForm());
   // 补齐可选字段默认值
@@ -1288,6 +1322,7 @@ const handleSubmit = async () => {
 
   // 汇总费用 → actualCost
   editForm.actualCost = (editForm.costItems ?? []).reduce((s, c) => s + (Number(c.amount) || 0), 0);
+  editForm.rating = normalizeRating(editForm.rating);
 
   editLoading.value = true;
   try {
@@ -1574,6 +1609,10 @@ const hasShareText = computed(() => {
   const text = r.replace(/<[^>]+>/g, "").trim();
   return text.length > 0;
 });
+const normalizedShareRating = computed(() => normalizeRating(sharePlan.value?.rating));
+const hasShareRating = computed(() => normalizedShareRating.value > 0);
+const canEditRating = computed(() => editForm.status === "completed");
+const normalizedEditRating = computed(() => normalizeRating(editForm.rating));
 
 const shareCostByCategory = computed(() => {
   const items = sharePlan.value?.costItems ?? [];
@@ -1771,6 +1810,17 @@ const shareCostChartOptions = computed(() => ({
   color: var(--el-color-danger);
 }
 
+.rating-display {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.rating-score {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+
 /* ---------------- 详情：费用 ---------------- */
 .cost-summary {
   display: grid;
@@ -1885,6 +1935,16 @@ const shareCostChartOptions = computed(() => ({
 .prep-input-row {
   display: flex;
   gap: 8px;
+}
+
+.rating-field {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.rating-tip {
+  white-space: nowrap;
 }
 
 /* ---------------- 自定义节日 ---------------- */
