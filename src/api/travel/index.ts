@@ -41,6 +41,15 @@ export interface PrepItem {
   done: boolean;
 }
 
+export type CoordinationStatus = "pending" | "resolved";
+
+export interface CoordinationItem {
+  id: number;
+  question: string;
+  answer: string;
+  status: CoordinationStatus;
+}
+
 export interface HolidayPlan {
   id: number;
   festival: string;
@@ -63,6 +72,8 @@ export interface HolidayPlan {
   costItems?: CostItem[];
   /** 出行准备清单 */
   preparation?: PrepItem[];
+  /** 行程协调问答 */
+  coordination?: CoordinationItem[];
 }
 
 const BASE = "/api/v1/travel";

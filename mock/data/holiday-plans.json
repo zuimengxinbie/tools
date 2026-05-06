@@ -52,7 +52,8 @@
         "category": "电子",
         "done": false
       }
-    ]
+    ],
+    "coordination": []
   },
   {
     "id": 7,
@@ -179,7 +180,8 @@
         "category": "衣物",
         "done": true
       }
-    ]
+    ],
+    "coordination": []
   },
   {
     "id": 6,
@@ -342,7 +344,8 @@
         "category": "其他",
         "done": true
       }
-    ]
+    ],
+    "coordination": []
   },
   {
     "id": 5,
@@ -463,7 +466,8 @@
         "done": true,
         "id": 14
       }
-    ]
+    ],
+    "coordination": []
   },
   {
     "id": 4,
@@ -602,7 +606,8 @@
         "done": true,
         "id": 14
       }
-    ]
+    ],
+    "coordination": []
   },
   {
     "id": 3,
@@ -645,7 +650,8 @@
         "category": "电子",
         "done": true
       }
-    ]
+    ],
+    "coordination": []
   },
   {
     "id": 2,
@@ -772,7 +778,8 @@
         "category": "其他",
         "done": true
       }
-    ]
+    ],
+    "coordination": []
   },
   {
     "id": 1,
@@ -844,6 +851,14 @@
         "category": "其他",
         "done": true,
         "id": 14
+      }
+    ],
+    "coordination": [
+      {
+        "id": 1,
+        "question": "第二天改去江南植物园",
+        "answer": "身体不适，天气阴天，路途长",
+        "status": "resolved"
       }
     ]
   }

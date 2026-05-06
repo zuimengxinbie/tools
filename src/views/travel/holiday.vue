@@ -408,6 +408,43 @@
             </template>
             <el-empty v-else description="暂无准备清单，可在「编辑」中添加" :image-size="80" />
           </el-tab-pane>
+
+          <!-- 行程协调 -->
+          <el-tab-pane name="coordination">
+            <template #label>
+              <span>
+                行程协调
+                <el-badge
+                  v-if="(currentPlan.coordination?.length ?? 0) > 0"
+                  :value="currentPlan.coordination!.length"
+                  type="primary"
+                  class="tab-badge"
+                />
+              </span>
+            </template>
+
+            <el-table
+              v-if="(currentPlan.coordination?.length ?? 0) > 0"
+              :data="currentPlan.coordination ?? []"
+              size="small"
+              border
+            >
+              <el-table-column label="问题" prop="question" min-width="220" />
+              <el-table-column label="答案" prop="answer" min-width="260" />
+              <el-table-column label="状态" width="110" align="center">
+                <template #default="{ row }">
+                  <el-tag
+                    :type="getCoordinationStatusMeta(row.status).type"
+                    effect="plain"
+                    size="small"
+                  >
+                    {{ getCoordinationStatusMeta(row.status).label }}
+                  </el-tag>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-empty v-else description="暂无行程协调问答，可在「编辑」中添加" :image-size="80" />
+          </el-tab-pane>
         </el-tabs>
       </template>
 
@@ -540,6 +577,31 @@
               <template #default="{ row }">
                 <span v-if="isRequiredPrep(row.name)" class="required-mark">*</span>
                 {{ row.name }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
+        <el-collapse-item name="coordination">
+          <template #title>
+            <span class="share-collapse-title">行程协调</span>
+          </template>
+          <el-table
+            :data="sharePlan.coordination ?? []"
+            size="small"
+            border
+            empty-text="暂无行程协调问答"
+          >
+            <el-table-column label="问题" prop="question" min-width="220" />
+            <el-table-column label="答案" prop="answer" min-width="260" />
+            <el-table-column label="状态" width="110" align="center">
+              <template #default="{ row }">
+                <el-tag
+                  :type="getCoordinationStatusMeta(row.status).type"
+                  effect="plain"
+                  size="small"
+                >
+                  {{ getCoordinationStatusMeta(row.status).label }}
+                </el-tag>
               </template>
             </el-table-column>
           </el-table>
@@ -858,6 +920,68 @@
             </el-table-column>
           </el-table>
         </el-tab-pane>
+
+        <!-- 行程协调 -->
+        <el-tab-pane name="coordination">
+          <template #label>
+            <span>
+              行程协调
+              <el-badge
+                v-if="(editForm.coordination?.length ?? 0) > 0"
+                :value="editForm.coordination!.length"
+                type="primary"
+                class="tab-badge"
+              />
+            </span>
+          </template>
+
+          <div class="coordination-input-row">
+            <el-input
+              v-model="coordinationInput.question"
+              placeholder="问题，如「第一天是否先去西湖」"
+              @keyup.enter="addCoordinationItem"
+            />
+            <el-input
+              v-model="coordinationInput.answer"
+              placeholder="答案，如「先去西湖，下午去灵隐寺」"
+              @keyup.enter="addCoordinationItem"
+            />
+            <el-select v-model="coordinationInput.status" style="width: 120px">
+              <el-option label="待确认" value="pending" />
+              <el-option label="已确认" value="resolved" />
+            </el-select>
+            <el-button type="primary" @click="addCoordinationItem">添加</el-button>
+          </div>
+
+          <el-table
+            :data="editForm.coordination ?? []"
+            size="small"
+            border
+            class="mt-2"
+            empty-text="暂无行程协调问答，先添加一条"
+          >
+            <el-table-column label="问题" prop="question" min-width="220" />
+            <el-table-column label="答案" prop="answer" min-width="260" />
+            <el-table-column label="状态" width="110" align="center">
+              <template #default="{ row }">
+                <el-tag
+                  :type="getCoordinationStatusMeta(row.status).type"
+                  effect="plain"
+                  size="small"
+                >
+                  {{ getCoordinationStatusMeta(row.status).label }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="80" align="center">
+              <template #default="{ row }">
+                <el-button type="danger" link @click="removeCoordinationItem(row.id)">
+                  删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
       </el-tabs>
 
       <template #footer>
@@ -939,6 +1063,7 @@ import TravelAPI, {
   type CostCategory,
   type PrepItem,
   type PrepCategory,
+  type CoordinationStatus,
 } from "@/api/travel";
 import { useDirtyGuard } from "./composables/useDirtyGuard";
 import {
@@ -985,6 +1110,7 @@ const loadList = async () => {
       ...p,
       costItems: p.costItems ?? [],
       preparation: p.preparation ?? [],
+      coordination: p.coordination ?? [],
     }));
     dirty.value = false;
   } finally {
@@ -1188,7 +1314,7 @@ const editVisible = ref(false);
 const editFormRef = ref<FormInstance>();
 const editLoading = ref(false);
 const isEdit = ref(false);
-const editTab = ref<"basic" | "cost" | "prep">("basic");
+const editTab = ref<"basic" | "cost" | "prep" | "coordination">("basic");
 watch(editVisible, (v) => {
   if (v) editTab.value = "basic";
 });
@@ -1262,6 +1388,7 @@ const defaultForm = (): HolidayPlan => ({
   review: "",
   costItems: [],
   preparation: buildDefaultPreparation(),
+  coordination: [],
 });
 
 const editForm = reactive<HolidayPlan>(defaultForm());
@@ -1293,6 +1420,7 @@ const resetForm = (plan?: HolidayPlan) => {
   if (editForm.review == null) editForm.review = "";
   if (editForm.costItems == null) editForm.costItems = [];
   if (editForm.preparation == null) editForm.preparation = [];
+  if (editForm.coordination == null) editForm.coordination = [];
   dateRange.value = plan ? [plan.startDate, plan.endDate] : null;
 };
 
@@ -1405,7 +1533,7 @@ const handleCopyMock = async () => {
 };
 
 /* ---------------- 详情对话框 tabs ---------------- */
-const detailTab = ref<"basic" | "cost" | "prep">("basic");
+const detailTab = ref<"basic" | "cost" | "prep" | "coordination">("basic");
 const detailPrepCollapse = ref<string[]>([...PREP_CATEGORIES]);
 watch(viewVisible, (v) => {
   if (v) {
@@ -1480,6 +1608,13 @@ const currentPrepDoneCount = computed(
 );
 const currentPrepTotalCount = computed(() => (currentPlan.value?.preparation ?? []).length);
 
+const getCoordinationStatusMeta = (
+  status: CoordinationStatus
+): { label: string; type: "warning" | "success" } => {
+  if (status === "resolved") return { label: "已确认", type: "success" };
+  return { label: "待确认", type: "warning" };
+};
+
 /* ---------------- 编辑：费用明细 ---------------- */
 const costInput = reactive<{ category: CostCategory; name: string; amount: number }>({
   category: "交通",
@@ -1534,6 +1669,16 @@ const editPrepPercent = computed(() => {
   return Math.round((editPrepDoneCount.value / editPrepTotalCount.value) * 100);
 });
 
+const coordinationInput = reactive<{
+  question: string;
+  answer: string;
+  status: CoordinationStatus;
+}>({
+  question: "",
+  answer: "",
+  status: "pending",
+});
+
 const addPrepItem = () => {
   if (!prepInput.name.trim()) {
     ElMessage.warning("请输入物品名称");
@@ -1567,6 +1712,34 @@ const applyPrepTemplate = (label: string) => {
   if (!tpl) return;
   editForm.preparation = mergePrepTemplate(editForm.preparation ?? [], tpl.items);
   ElMessage.success(`已应用「${label}」模板`);
+};
+
+const addCoordinationItem = () => {
+  const question = coordinationInput.question.trim();
+  const answer = coordinationInput.answer.trim();
+  if (!question) {
+    ElMessage.warning("请输入协调问题");
+    return;
+  }
+  if (!answer) {
+    ElMessage.warning("请输入协调答案");
+    return;
+  }
+  const list = editForm.coordination ?? (editForm.coordination = []);
+  const nextId = (list.reduce((m, item) => Math.max(m, item.id), 0) || 0) + 1;
+  list.push({
+    id: nextId,
+    question,
+    answer,
+    status: coordinationInput.status,
+  });
+  coordinationInput.question = "";
+  coordinationInput.answer = "";
+  coordinationInput.status = "pending";
+};
+
+const removeCoordinationItem = (id: number) => {
+  editForm.coordination = (editForm.coordination ?? []).filter((item) => item.id !== id);
 };
 
 /** 复制未勾选物品到剪贴板（适合发给同行人） */
@@ -1932,7 +2105,8 @@ const shareCostChartOptions = computed(() => ({
 }
 
 .cost-input-row,
-.prep-input-row {
+.prep-input-row,
+.coordination-input-row {
   display: flex;
   gap: 8px;
 }
