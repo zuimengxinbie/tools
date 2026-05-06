@@ -1,5 +1,22 @@
 [
   {
+    "id": 5,
+    "title": "生日聚餐",
+    "destination": "阳澄湖",
+    "date": "2026-05-10",
+    "duration": "1天",
+    "status": "planning",
+    "preparation": ["热水壶", "车钥匙", "大疆", "两手机", "蛋糕", "礼品"],
+    "review": "规划中...",
+    "records": [
+      {
+        "time": "2026-05-10 11:00",
+        "content": "到达西渚花苑北区"
+      }
+    ],
+    "rating": 0
+  },
+  {
     "id": 4,
     "title": "海棠花开",
     "destination": "陆泾路-秀岸",
