@@ -179,6 +179,12 @@
         "name": "薄外套",
         "category": "衣物",
         "done": true
+      },
+      {
+        "id": 16,
+        "name": "睡衣",
+        "category": "衣物",
+        "done": true
       }
     ],
     "coordination": [
