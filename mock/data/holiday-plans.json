@@ -64,18 +64,12 @@
     "budget": 1500,
     "members": 2,
     "transport": "自驾",
-    "remark": "<h3 style=\"text-align: start;\">行程</h3><table style=\"width: 606px; table-layout: fixed; height: 0px; text-align: left;\"><colgroup contenteditable=\"false\"><col width=\"151\"><col width=\"151\"><col width=\"151\"><col width=\"153\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">Day</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">行程</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">备注</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day 1</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">家 → 西渚花苑 &nbsp;→ 千岛湖广场</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">8：00 出发<br>9：00 &nbsp;西渚花苑</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">9：00集合<br>早饭自行解决</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day 2</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">无</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">游玩</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"></td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>day 3</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">千岛湖广场 → 西渚花苑 → 家</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">14：00 出发返程</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"></td></tr></tbody></table><h3 style=\"text-align: start;\">酒店</h3><p style=\"text-align: start;\">待定</p><p><br></p>",
+    "remark": "<h3 style=\"text-align: start;\">行程</h3><table style=\"width: 606px; table-layout: fixed; height: 0px; text-align: left;\"><colgroup contenteditable=\"false\"><col width=\"151\"><col width=\"151\"><col width=\"151\"><col width=\"153\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">Day</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">行程</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">备注</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 1</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">家 → 西渚花苑 &nbsp;→ 千岛湖广场</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">8：00 出发<br>9：00 &nbsp;西渚花苑</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">9：00集合<br>早饭自行解决</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 2</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">无</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">游玩</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 3</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">千岛湖广场 → 西渚花苑 → 家</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">14：00 出发返程</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td></tr></tbody></table><h3 style=\"text-align: start;\">酒店</h3><p style=\"text-align: start;\"><span style=\"color: rgb(96, 98, 102); background-color: rgb(255, 255, 255); font-size: 12px; font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, 微软雅黑, Arial, sans-serif;\">千岛湖奈斯湖景度假公寓</span></p><p style=\"text-align: start;\"><span style=\"color: rgb(96, 98, 102); background-color: rgb(255, 255, 255); font-size: 12px; font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, 微软雅黑, Arial, sans-serif;\">房型： 精选豪华湖景双床房</span></p><p><br></p>",
     "status": "planning",
-    "actualCost": 1800,
+    "actualCost": 1819,
     "rating": 0,
     "review": "",
     "costItems": [
-      {
-        "id": 1,
-        "category": "住宿",
-        "name": "两晚",
-        "amount": 700
-      },
       {
         "id": 2,
         "category": "交通",
@@ -93,6 +87,12 @@
         "category": "门票",
         "name": "门票",
         "amount": 100
+      },
+      {
+        "id": 5,
+        "category": "住宿",
+        "name": "千岛湖奈斯湖景度假公寓（两晚+包含早餐）",
+        "amount": 719
       }
     ],
     "preparation": [
