@@ -25,11 +25,15 @@ export type HolidayStatus = "planning" | "confirmed" | "completed";
 
 export type CostCategory = "交通" | "住宿" | "餐饮" | "门票" | "购物" | "其他";
 
+export type CostEstimateType = "estimated" | "confirmed";
+
 export interface CostItem {
   id: number;
   category: CostCategory;
   name: string;
   amount: number;
+  /** 费用类型：预估金额 or 确认金额 */
+  estimateType?: CostEstimateType;
 }
 
 export type PrepCategory = "证件" | "电子" | "衣物" | "药品" | "食物" | "其他";

@@ -18,37 +18,43 @@
         "id": 1,
         "category": "交通",
         "name": "高铁去程 车次（G3314-￥256）",
-        "amount": 512
+        "amount": 512,
+        "estimateType": "estimated"
       },
       {
         "id": 2,
         "category": "交通",
         "name": "高铁返程 车次（D2905- ￥247）",
-        "amount": 494
+        "amount": 494,
+        "estimateType": "estimated"
       },
       {
         "id": 3,
         "category": "交通",
         "name": "打车费+其他交通",
-        "amount": 200
+        "amount": 200,
+        "estimateType": "estimated"
       },
       {
         "id": 4,
         "category": "住宿",
         "name": "两晚",
-        "amount": 500
+        "amount": 500,
+        "estimateType": "estimated"
       },
       {
         "id": 5,
         "category": "门票",
         "name": "景区门票",
-        "amount": 200
+        "amount": 200,
+        "estimateType": "estimated"
       },
       {
         "id": 6,
         "category": "餐饮",
         "name": "5餐",
-        "amount": 300
+        "amount": 300,
+        "estimateType": "estimated"
       }
     ],
     "preparation": [
@@ -158,19 +164,22 @@
         "id": 1,
         "category": "交通",
         "name": "油费+高速费",
-        "amount": 300
+        "amount": 300,
+        "estimateType": "estimated"
       },
       {
         "id": 2,
         "category": "住宿",
         "name": "酒店",
-        "amount": 270
+        "amount": 270,
+        "estimateType": "estimated"
       },
       {
         "id": 3,
         "category": "餐饮",
         "name": "3餐",
-        "amount": 200
+        "amount": 200,
+        "estimateType": "estimated"
       }
     ],
     "preparation": [
@@ -214,25 +223,29 @@
         "id": 2,
         "category": "交通",
         "name": "油费+高速费",
-        "amount": 700
+        "amount": 700,
+        "estimateType": "estimated"
       },
       {
         "id": 3,
         "category": "餐饮",
         "name": "5餐",
-        "amount": 300
+        "amount": 300,
+        "estimateType": "estimated"
       },
       {
         "id": 5,
         "category": "住宿",
         "name": "千岛湖奈斯湖景度假公寓（两晚+包含早餐）",
-        "amount": 719
+        "amount": 719,
+        "estimateType": "confirmed"
       },
       {
         "id": 6,
         "category": "门票",
         "name": "植物园+天屿山",
-        "amount": 220
+        "amount": 220,
+        "estimateType": "confirmed"
       }
     ],
     "preparation": [
@@ -355,67 +368,78 @@
         "id": 2,
         "category": "购物",
         "name": "汾酒巴拿马 20年 2瓶",
-        "amount": 800
+        "amount": 800,
+        "estimateType": "estimated"
       },
       {
         "id": 3,
         "category": "购物",
         "name": "硬中华2条",
-        "amount": 1200
+        "amount": 1200,
+        "estimateType": "estimated"
       },
       {
         "id": 4,
         "category": "购物",
         "name": "护肤品",
-        "amount": 400
+        "amount": 400,
+        "estimateType": "estimated"
       },
       {
         "id": 6,
         "category": "购物",
         "name": "书法套装",
-        "amount": 280
+        "amount": 280,
+        "estimateType": "estimated"
       },
       {
         "id": 7,
         "category": "购物",
         "name": "水果",
-        "amount": 120
+        "amount": 120,
+        "estimateType": "estimated"
       },
       {
         "id": 8,
         "category": "交通",
         "name": "高铁往返2人",
-        "amount": 2500
+        "amount": 2500,
+        "estimateType": "confirmed"
       },
       {
         "id": 10,
         "category": "交通",
         "name": "高速费",
-        "amount": 300
+        "amount": 300,
+        "estimateType": "estimated"
       },
       {
         "id": 11,
         "category": "交通",
         "name": "租车预估3天（包含油费）",
-        "amount": 1000
+        "amount": 1000,
+        "estimateType": "estimated"
       },
       {
         "id": 12,
         "category": "住宿",
         "name": "预估2晚",
-        "amount": 500
+        "amount": 500,
+        "estimateType": "estimated"
       },
       {
         "id": 13,
         "category": "餐饮",
         "name": "两人4餐",
-        "amount": 300
+        "amount": 300,
+        "estimateType": "estimated"
       },
       {
         "id": 14,
         "category": "其他",
         "name": "女方礼品",
-        "amount": 1000
+        "amount": 1000,
+        "estimateType": "estimated"
       }
     ],
     "preparation": [
@@ -520,19 +544,22 @@
         "id": 1,
         "category": "交通",
         "name": "油费-高速费",
-        "amount": 300
+        "amount": 300,
+        "estimateType": "estimated"
       },
       {
         "id": 2,
         "category": "住宿",
         "name": "酒店",
-        "amount": 250
+        "amount": 250,
+        "estimateType": "estimated"
       },
       {
         "id": 3,
         "category": "餐饮",
         "name": "3餐",
-        "amount": 300
+        "amount": 300,
+        "estimateType": "estimated"
       }
     ],
     "preparation": [
@@ -642,37 +669,43 @@
         "id": 1,
         "category": "交通",
         "name": "油费-高速费",
-        "amount": 350
+        "amount": 350,
+        "estimateType": "estimated"
       },
       {
         "id": 2,
         "category": "住宿",
         "name": "第一晚酒店南浔花筑",
-        "amount": 250
+        "amount": 250,
+        "estimateType": "estimated"
       },
       {
         "id": 3,
         "category": "住宿",
         "name": "第一晚酒店杭州日畔微客",
-        "amount": 280
+        "amount": 280,
+        "estimateType": "estimated"
       },
       {
         "id": 4,
         "category": "餐饮",
         "name": "4餐",
-        "amount": 350
+        "amount": 350,
+        "estimateType": "estimated"
       },
       {
         "id": 5,
         "category": "交通",
         "name": "西湖游船",
-        "amount": 60
+        "amount": 60,
+        "estimateType": "estimated"
       },
       {
         "id": 6,
         "category": "其他",
         "name": "其他",
-        "amount": 100
+        "amount": 100,
+        "estimateType": "estimated"
       }
     ],
     "preparation": [
@@ -782,7 +815,8 @@
         "id": 1,
         "category": "交通",
         "name": "自驾",
-        "amount": 1
+        "amount": 1,
+        "estimateType": "estimated"
       }
     ],
     "preparation": [
@@ -826,25 +860,29 @@
         "id": 1,
         "category": "交通",
         "name": "停车费-油费-高速费",
-        "amount": 620
+        "amount": 620,
+        "estimateType": "estimated"
       },
       {
         "id": 2,
         "category": "交通",
         "name": "船票",
-        "amount": 360
+        "amount": 360,
+        "estimateType": "estimated"
       },
       {
         "id": 3,
         "category": "门票",
         "name": "门票-灯塔",
-        "amount": 220
+        "amount": 220,
+        "estimateType": "estimated"
       },
       {
         "id": 4,
         "category": "住宿",
         "name": "酒店2日",
-        "amount": 780
+        "amount": 780,
+        "estimateType": "estimated"
       }
     ],
     "preparation": [
@@ -954,7 +992,8 @@
         "id": 1,
         "category": "交通",
         "name": "自驾",
-        "amount": 1
+        "amount": 1,
+        "estimateType": "estimated"
       }
     ],
     "preparation": [

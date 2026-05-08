@@ -339,6 +339,15 @@
                     <el-table-column label="金额" prop="amount" width="140" align="right">
                       <template #default="{ row }">￥{{ row.amount.toLocaleString() }}</template>
                     </el-table-column>
+                    <el-table-column label="标签" width="180" align="center">
+                      <template #default="{ row }">
+                        <div class="cost-read-tags">
+                          <el-tag size="small" :type="getEstimateTypeMeta(row.estimateType).type">
+                            {{ getEstimateTypeMeta(row.estimateType).label }}
+                          </el-tag>
+                        </div>
+                      </template>
+                    </el-table-column>
                   </el-table>
                 </div>
               </div>
@@ -550,6 +559,15 @@
             <el-table-column label="名称" prop="name" />
             <el-table-column label="金额" width="140" align="right">
               <template #default="{ row }">￥{{ row.amount.toLocaleString() }}</template>
+            </el-table-column>
+            <el-table-column label="标签" width="180" align="center">
+              <template #default="{ row }">
+                <div class="cost-read-tags">
+                  <el-tag size="small" :type="getEstimateTypeMeta(row.estimateType).type">
+                    {{ getEstimateTypeMeta(row.estimateType).label }}
+                  </el-tag>
+                </div>
+              </template>
             </el-table-column>
           </el-table>
         </el-collapse-item>
@@ -827,6 +845,24 @@
             <el-table-column label="金额" width="140" align="right">
               <template #default="{ row }">￥{{ row.amount.toLocaleString() }}</template>
             </el-table-column>
+            <el-table-column label="标签" width="150" align="center">
+              <template #default="{ row }">
+                <div class="cost-switch-tags">
+                  <el-check-tag
+                    :checked="row.estimateType === 'estimated'"
+                    @change="() => setEstimateType(row, 'estimated')"
+                  >
+                    预估
+                  </el-check-tag>
+                  <el-check-tag
+                    :checked="row.estimateType === 'confirmed'"
+                    @change="() => setEstimateType(row, 'confirmed')"
+                  >
+                    确认
+                  </el-check-tag>
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column label="操作" width="80" align="center">
               <template #default="{ row }">
                 <el-button type="danger" link @click="removeCostItem(row.id)">删除</el-button>
@@ -1061,6 +1097,7 @@ import TravelAPI, {
   type HolidayStatus,
   type CostItem,
   type CostCategory,
+  type CostEstimateType,
   type PrepItem,
   type PrepCategory,
   type CoordinationStatus,
@@ -1099,6 +1136,18 @@ const planList = ref<HolidayPlan[]>([]);
 const loading = ref(false);
 const dirty = ref(false);
 
+const defaultCostItemTags = (): Pick<CostItem, "estimateType"> => ({
+  estimateType: "estimated",
+});
+
+const normalizeCostItem = (item: CostItem): CostItem => ({
+  ...item,
+  estimateType: item.estimateType ?? "estimated",
+});
+
+const normalizeCostItems = (items?: CostItem[]): CostItem[] =>
+  (items ?? []).map((item) => normalizeCostItem(item));
+
 useDirtyGuard(dirty);
 
 const loadList = async () => {
@@ -1108,7 +1157,7 @@ const loadList = async () => {
     // 向后兼容：给老数据补齐 costItems / preparation
     planList.value = list.map((p) => ({
       ...p,
-      costItems: p.costItems ?? [],
+      costItems: normalizeCostItems(p.costItems),
       preparation: p.preparation ?? [],
       coordination: p.coordination ?? [],
     }));
@@ -1136,6 +1185,13 @@ const statusMap: Record<HolidayStatus, { label: string; type: "primary" | "succe
   planning: { label: "规划中", type: "primary" },
   confirmed: { label: "已确认", type: "success" },
   completed: { label: "已完成", type: "info" },
+};
+
+const getEstimateTypeMeta = (
+  estimateType?: CostEstimateType
+): { label: string; type: "warning" | "success" } => {
+  if (estimateType === "confirmed") return { label: "确认", type: "success" };
+  return { label: "预估", type: "warning" };
 };
 
 /* ---------------- 筛选 ---------------- */
@@ -1419,6 +1475,7 @@ const resetForm = (plan?: HolidayPlan) => {
   if (editForm.rating == null) editForm.rating = 0;
   if (editForm.review == null) editForm.review = "";
   if (editForm.costItems == null) editForm.costItems = [];
+  editForm.costItems = normalizeCostItems(editForm.costItems);
   if (editForm.preparation == null) editForm.preparation = [];
   if (editForm.coordination == null) editForm.coordination = [];
   dateRange.value = plan ? [plan.startDate, plan.endDate] : null;
@@ -1647,9 +1704,14 @@ const addCostItem = () => {
     category: costInput.category,
     name: costInput.name.trim(),
     amount: Number(costInput.amount) || 0,
+    ...defaultCostItemTags(),
   });
   costInput.name = "";
   costInput.amount = 0;
+};
+
+const setEstimateType = (row: CostItem, estimateType: CostEstimateType) => {
+  row.estimateType = estimateType;
 };
 
 const removeCostItem = (id: number) => {
@@ -2041,6 +2103,12 @@ const shareCostChartOptions = computed(() => ({
   }
 }
 
+.cost-read-tags {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
 /* ---------------- 详情：准备 ---------------- */
 .prep-summary {
   display: flex;
@@ -2109,6 +2177,13 @@ const shareCostChartOptions = computed(() => ({
 .coordination-input-row {
   display: flex;
   gap: 8px;
+}
+
+.cost-switch-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
 }
 
 .rating-field {
