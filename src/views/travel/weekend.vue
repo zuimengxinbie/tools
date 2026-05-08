@@ -19,9 +19,7 @@
             >
               保存到 Mock 文件
             </el-button>
-            <el-dropdown
-              @command="(c: string) => (c === 'download' ? handleDownloadMock() : handleCopyMock())"
-            >
+            <el-dropdown @command="handleExportCommand">
               <el-button>
                 导出
                 <el-icon class="el-icon--right">
@@ -30,11 +28,16 @@
               </el-button>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="download">下载为 JSON 文件</el-dropdown-item>
-                  <el-dropdown-item command="copy">复制到剪贴板</el-dropdown-item>
+                  <el-dropdown-item command="download-excel">下载为 Excel 文件</el-dropdown-item>
+                  <el-dropdown-item command="download-template">下载导入模板</el-dropdown-item>
+                  <el-dropdown-item divided command="download-json">
+                    下载为 JSON 文件
+                  </el-dropdown-item>
+                  <el-dropdown-item command="copy-json">复制到剪贴板</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
+            <el-button @click="openImportDialog">导入 Excel</el-button>
             <el-button type="primary" @click="handleAdd">新增行程</el-button>
           </div>
         </div>
@@ -421,15 +424,71 @@
         <el-button type="primary" :loading="editLoading" @click="handleSubmit">确定</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="importVisible" title="导入周末出行（Excel）" width="620px" destroy-on-close>
+      <el-upload
+        v-model:file-list="importFiles"
+        class="w-full"
+        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        :drag="true"
+        :limit="1"
+        :auto-upload="false"
+        :on-exceed="handleImportFileExceed"
+      >
+        <div class="el-upload__text">将文件拖到此处，或点击上传</div>
+        <template #tip>
+          <div class="el-upload__tip">
+            仅支持 .xlsx / .xls；按「行程名称+出行日期」去重更新；任一错误将整批拒绝
+          </div>
+        </template>
+      </el-upload>
+
+      <el-alert
+        title="字段要求：title、destination、date、duration、status、preparation、review、rating、records"
+        type="info"
+        :closable="false"
+        style="margin-top: 12px"
+      />
+
+      <template #footer>
+        <el-button @click="importVisible = false">取消</el-button>
+        <el-button type="primary" :loading="importLoading" @click="handleImportExcel">
+          确定导入
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="importErrorVisible" title="导入失败" width="700px" destroy-on-close>
+      <el-alert
+        :title="`本次导入共 ${importErrorList.length} 条错误，已整批拒绝`"
+        type="error"
+        :closable="false"
+      />
+      <el-table :data="importErrorRows" style="width: 100%; margin-top: 12px" max-height="420">
+        <el-table-column type="index" label="#" width="60" align="center" />
+        <el-table-column prop="message" label="错误信息" min-width="560" />
+      </el-table>
+      <template #footer>
+        <el-button type="primary" @click="importErrorVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
-import type { FormInstance, FormRules } from "element-plus";
+import type { FormInstance, FormRules, UploadUserFile } from "element-plus";
 import TravelAPI, { type WeekendTrip, type TripRecord, type TripStatus } from "@/api/travel";
 import { useDirtyGuard } from "./composables/useDirtyGuard";
 import { genTripId, splitDestination } from "./composables/helpers";
+import {
+  WEEKEND_EXCEL_MIME,
+  buildWeekendExportBuffer,
+  buildWeekendTemplateBuffer,
+  downloadArrayBufferFile,
+  mergeWeekendTrips,
+  parseWeekendExcelFile,
+} from "./composables/weekendExcel";
 
 defineOptions({ name: "WeekendTrip" });
 
@@ -781,6 +840,82 @@ const handleCopyMock = async () => {
     ElMessageBox.alert(text, "复制失败，请手动复制以下内容", {
       dangerouslyUseHTMLString: false,
     });
+  }
+};
+
+const handleDownloadExcel = async () => {
+  const buffer = await buildWeekendExportBuffer(tripList.value);
+  downloadArrayBufferFile(buffer, `weekend-trips-${Date.now()}.xlsx`, WEEKEND_EXCEL_MIME);
+  ElMessage.success("已导出 Excel 文件");
+};
+
+const handleDownloadExcelTemplate = async () => {
+  const buffer = await buildWeekendTemplateBuffer();
+  downloadArrayBufferFile(buffer, "weekend-trips-template.xlsx", WEEKEND_EXCEL_MIME);
+  ElMessage.success("已下载导入模板");
+};
+
+const handleExportCommand = async (command: string) => {
+  if (command === "download-excel") {
+    await handleDownloadExcel();
+    return;
+  }
+  if (command === "download-template") {
+    await handleDownloadExcelTemplate();
+    return;
+  }
+  if (command === "download-json") {
+    handleDownloadMock();
+    return;
+  }
+  if (command === "copy-json") {
+    await handleCopyMock();
+  }
+};
+
+const importVisible = ref(false);
+const importLoading = ref(false);
+const importFiles = ref<UploadUserFile[]>([]);
+const importErrorVisible = ref(false);
+const importErrorList = ref<string[]>([]);
+
+const importErrorRows = computed(() => importErrorList.value.map((message) => ({ message })));
+
+const openImportDialog = () => {
+  importFiles.value = [];
+  importVisible.value = true;
+};
+
+const handleImportFileExceed = () => {
+  ElMessage.warning("只能上传一个文件");
+};
+
+const handleImportExcel = async () => {
+  const first = importFiles.value[0];
+  const file = first?.raw as File | undefined;
+  if (!file) {
+    ElMessage.warning("请先选择 Excel 文件");
+    return;
+  }
+
+  importLoading.value = true;
+  try {
+    const { rows, errors } = await parseWeekendExcelFile(file);
+    if (errors.length > 0) {
+      importErrorList.value = errors;
+      importErrorVisible.value = true;
+      ElMessage.error("导入失败，存在错误数据");
+      return;
+    }
+
+    const { merged, createdCount, updatedCount } = mergeWeekendTrips(tripList.value, rows);
+    tripList.value = merged;
+    dirty.value = true;
+    importVisible.value = false;
+    importFiles.value = [];
+    ElMessage.success(`导入成功：新增 ${createdCount} 条，更新 ${updatedCount} 条`);
+  } finally {
+    importLoading.value = false;
   }
 };
 </script>
