@@ -14,7 +14,7 @@
       {
         "id": 1,
         "title": "酒店攻略",
-        "done": false,
+        "done": true,
         "assignee": "陈琦",
         "dueDate": "2026-05-15"
       },
@@ -24,49 +24,6 @@
         "done": false,
         "assignee": "陈琦",
         "dueDate": "2026-05-09"
-      }
-    ],
-    "comments": []
-  },
-  {
-    "id": 4,
-    "title": "布置房间",
-    "type": "task",
-    "priority": "high",
-    "status": "pending",
-    "description": "",
-    "assignee": "陈琦",
-    "collaborators": ["小白", "小A", "小B", "陈琦"],
-    "dueDate": "2026-10-01",
-    "createdAt": "2026-05-08 16:04",
-    "subTasks": [
-      {
-        "id": 1,
-        "title": "买气球",
-        "done": false,
-        "assignee": "小白",
-        "dueDate": "2026-10-01"
-      },
-      {
-        "id": 2,
-        "title": "买喜字",
-        "done": false,
-        "assignee": "小A",
-        "dueDate": "2026-10-01"
-      },
-      {
-        "id": 3,
-        "title": "买喜糖",
-        "done": false,
-        "assignee": "小B",
-        "dueDate": "2026-10-01"
-      },
-      {
-        "id": 4,
-        "title": "接人",
-        "done": false,
-        "assignee": "陈琦",
-        "dueDate": "2026-09-30"
       }
     ],
     "comments": []
