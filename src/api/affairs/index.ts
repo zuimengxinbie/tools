@@ -35,6 +35,51 @@ export interface Requirement {
   comments: Comment[];
 }
 
+/* ---------------- 待办清单 Todolist ---------------- */
+export type TodoCategory =
+  | "work"
+  | "study"
+  | "life"
+  | "health"
+  | "family"
+  | "finance"
+  | "shopping"
+  | "hobby"
+  | "other";
+
+export type TodoPriority = "urgent" | "high" | "medium" | "low";
+export type TodoStatus = "todo" | "doing" | "done" | "cancelled";
+export type TodoRepeat = "none" | "daily" | "weekly" | "monthly";
+
+export interface ChecklistItem {
+  id: number;
+  title: string;
+  done: boolean;
+}
+
+export interface TodoItem {
+  id: number;
+  title: string;
+  category: TodoCategory;
+  priority: TodoPriority;
+  status: TodoStatus;
+  /** 截止日期 YYYY-MM-DD */
+  dueDate: string;
+  /** 提醒时间 YYYY-MM-DD HH:mm，可空 */
+  remindAt: string;
+  tags: string[];
+  /** 进度 0-100 */
+  progress: number;
+  repeat: TodoRepeat;
+  starred: boolean;
+  description: string;
+  checklist: ChecklistItem[];
+  createdAt: string;
+  updatedAt: string;
+  /** 完成时间，仅 status=done 时有值 */
+  finishedAt: string;
+}
+
 const BASE = "/api/v1/affairs";
 
 const AffairsAPI = {
@@ -43,6 +88,12 @@ const AffairsAPI = {
   },
   saveRequirements(list: Requirement[]) {
     return request<any, number>({ url: `${BASE}/requirements`, method: "put", data: list });
+  },
+  getTodos() {
+    return request<any, TodoItem[]>({ url: `${BASE}/todolist`, method: "get" });
+  },
+  saveTodos(list: TodoItem[]) {
+    return request<any, number>({ url: `${BASE}/todolist`, method: "put", data: list });
   },
 };
 

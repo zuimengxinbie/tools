@@ -140,7 +140,7 @@
           <el-input
             v-model="commentAuthor"
             placeholder="你的名字"
-            style=" flex-shrink: 0;width: 120px"
+            style="flex-shrink: 0; width: 120px"
           />
           <el-input
             v-model="commentContent"

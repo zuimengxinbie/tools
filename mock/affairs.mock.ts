@@ -12,6 +12,7 @@ import { defineMock } from "./base";
 
 const DATA_DIR = path.resolve(process.cwd(), "mock/data");
 const REQUIREMENTS_FILE = path.join(DATA_DIR, "requirements.json");
+const TODOLIST_FILE = path.join(DATA_DIR, "todolist.json");
 
 const readJson = (file: string) => {
   try {
@@ -48,6 +49,28 @@ export default defineMock([
         code: "00000",
         data: list.length,
         msg: `已保存 ${list.length} 条需求数据到 mock/data/requirements.json`,
+      };
+    },
+  },
+  {
+    url: "affairs/todolist",
+    method: ["GET"],
+    body: () => ({
+      code: "00000",
+      data: readJson(TODOLIST_FILE),
+      msg: "一切ok",
+    }),
+  },
+  {
+    url: "affairs/todolist",
+    method: ["PUT"],
+    body: ({ body }) => {
+      const list = Array.isArray(body) ? body : [];
+      writeJson(TODOLIST_FILE, list);
+      return {
+        code: "00000",
+        data: list.length,
+        msg: `已保存 ${list.length} 条待办数据到 mock/data/todolist.json`,
       };
     },
   },
