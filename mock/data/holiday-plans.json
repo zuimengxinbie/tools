@@ -213,10 +213,10 @@
     "budget": 1500,
     "members": 2,
     "transport": "自驾",
-    "remark": "<h3 style=\"text-align: start;\">行程</h3><table style=\"width: 606px; table-layout: fixed; text-align: left;\"><colgroup contenteditable=\"false\"><col width=\"151\"><col width=\"151\"><col width=\"151\"><col width=\"153\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">Day</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">行程</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">备注</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 1</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">家 → 西渚花苑 &nbsp;→ 千岛湖奈斯湖景度假公寓</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">8：00 出发<br>9：00 &nbsp;西渚花苑</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">9：00集合<br>早饭自行解决</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 2</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">无</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">游玩</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 3</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">千岛湖奈斯湖景度假公寓 → 西渚花苑 → 家</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">14：00 出发返程</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td></tr></tbody></table><h3 style=\"text-align: start;\">酒店</h3><p style=\"text-align: start;\"><span style=\"color: rgb(96, 98, 102); background-color: rgb(255, 255, 255); font-size: 12px; font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, 微软雅黑, Arial, sans-serif;\">千岛湖奈斯湖景度假公寓</span></p><p style=\"text-align: start;\"><span style=\"color: rgb(96, 98, 102); background-color: rgb(255, 255, 255); font-size: 12px; font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, 微软雅黑, Arial, sans-serif;\">房型： 精选豪华湖景双床房</span></p><h3 style=\"text-align: start;\">景点</h3><ul><li>千岛湖植物园 - 门票人均30</li><li>千岛湖天屿景区 - 门票人均80</li><li>黄山尖 - 门票人均200 （pass） </li><li>散落的咖啡馆</li><ul><li>灯塔咖啡</li><li>Le serein</li><li>沙滩咖啡</li></ul></ul><p><br></p>",
-    "status": "planning",
-    "actualCost": 1939,
-    "rating": 0,
+    "remark": "<h3 style=\"text-align: start;\">行程</h3><table style=\"width: 606px; table-layout: fixed; height: 0px; text-align: left;\"><colgroup contenteditable=\"false\"><col width=\"151\"><col width=\"151\"><col width=\"151\"><col width=\"153\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">Day</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">行程</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">备注</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 1</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">家 → 西渚花苑 &nbsp;→ 千岛湖奈斯湖景度假公寓</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">8：00 出发<br>9：00 &nbsp;西渚花苑</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">9：00集合<br>早饭自行解决</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 2</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">无</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">游玩</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 3</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">千岛湖奈斯湖景度假公寓 → 西渚花苑 → 家</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">14：00 出发返程</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td></tr></tbody></table><h3 style=\"text-align: start;\">酒店</h3><p style=\"text-align: start;\"><span style=\"color: rgb(96, 98, 102); background-color: rgb(255, 255, 255); font-size: 12px; font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, 微软雅黑, Arial, sans-serif;\">千岛湖奈斯湖景度假公寓</span></p><p style=\"text-align: start;\"><span style=\"color: rgb(96, 98, 102); background-color: rgb(255, 255, 255); font-size: 12px; font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, 微软雅黑, Arial, sans-serif;\">房型： 精选豪华湖景双床房</span></p><h3 style=\"text-align: start;\">景点</h3><ul><li>千岛湖植物园 - 门票人均30</li><li>散落的咖啡馆</li><ul><li>Le serein</li></ul><li>严州古城 （太热拉）</li></ul><p><br></p>",
+    "status": "completed",
+    "actualCost": 1969,
+    "rating": 5,
     "review": "",
     "costItems": [
       {
@@ -227,13 +227,6 @@
         "estimateType": "estimated"
       },
       {
-        "id": 3,
-        "category": "餐饮",
-        "name": "5餐",
-        "amount": 300,
-        "estimateType": "estimated"
-      },
-      {
         "id": 5,
         "category": "住宿",
         "name": "千岛湖奈斯湖景度假公寓（两晚+包含早餐）",
@@ -241,10 +234,17 @@
         "estimateType": "confirmed"
       },
       {
-        "id": 6,
+        "id": 7,
+        "category": "餐饮",
+        "name": "5餐",
+        "amount": 500,
+        "estimateType": "estimated"
+      },
+      {
+        "id": 8,
         "category": "门票",
-        "name": "植物园+天屿山",
-        "amount": 220,
+        "name": "植物园",
+        "amount": 50,
         "estimateType": "confirmed"
       }
     ],
@@ -342,10 +342,10 @@
     ],
     "coordination": [
       {
-        "id": 1,
+        "id": 2,
         "question": "酒店预定中",
-        "answer": "正在筹备中...",
-        "status": "pending"
+        "answer": "完美湖景房",
+        "status": "resolved"
       }
     ]
   },

@@ -4,11 +4,11 @@
     "title": "协调请假",
     "category": "family",
     "priority": "urgent",
-    "status": "todo",
+    "status": "done",
     "dueDate": "2026-05-13",
     "remindAt": "2026-05-17 00:00",
     "tags": ["日期协调"],
-    "progress": 0,
+    "progress": 100,
     "repeat": "daily",
     "starred": true,
     "description": "协调请假时间",
@@ -16,21 +16,21 @@
       {
         "id": 1,
         "title": "生小孩时间核对",
-        "done": false
+        "done": true
       },
       {
         "id": 2,
         "title": "哥哥时间协调",
-        "done": false
+        "done": true
       },
       {
         "id": 3,
         "title": "老妈时间协调",
-        "done": false
+        "done": true
       }
     ],
     "createdAt": "2026-05-13 16:20",
-    "updatedAt": "2026-05-13 16:20",
-    "finishedAt": ""
+    "updatedAt": "2026-05-14 13:32",
+    "finishedAt": "2026-05-14 13:31"
   }
 ]
