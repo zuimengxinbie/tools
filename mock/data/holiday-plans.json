@@ -522,6 +522,24 @@
         "question": "移除奶粉礼品",
         "answer": "小孩已长大，不需要",
         "status": "resolved"
+      },
+      {
+        "id": 2,
+        "question": "女方母亲周六日工作忙",
+        "answer": "周四周五先去女方家，周六日去男方",
+        "status": "pending"
+      },
+      {
+        "id": 3,
+        "question": "男方请不到那么多天假",
+        "answer": "女方提前回家住几天，提前购票",
+        "status": "pending"
+      },
+      {
+        "id": 4,
+        "question": "男方母亲是否可以从北京返回",
+        "answer": "临近期协调，尽力而为",
+        "status": "pending"
       }
     ]
   },
