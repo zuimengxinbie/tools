@@ -884,7 +884,7 @@
       {
         "id": 2,
         "category": "交通",
-        "name": "船票",
+        "name": "交通",
         "amount": 360,
         "estimateType": "estimated"
       },

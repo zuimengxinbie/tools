@@ -80,6 +80,56 @@ export interface TodoItem {
   finishedAt: string;
 }
 
+/* ---------------- 团建规划 GroupBuilding ---------------- */
+export type CommuteType = "self_drive" | "shuttle" | "other";
+export type TicketType = "unified" | "self" | "none";
+export type Gender = "male" | "female";
+export type RoomType = "standard" | "family" | "king";
+
+export interface GroupBuildingSignup {
+  id: number;
+  /** 填报人姓名 */
+  reporterName: string;
+  /** 手机号 */
+  phone: string;
+  /** 归属 */
+  department: string;
+  /** 出行人数 */
+  headcount: number;
+  /** 身份证号 */
+  idCard: string;
+  /** 通勤方式 */
+  commuteType: CommuteType;
+  /** 购票方式 */
+  ticketType: TicketType;
+  /** 去程时间，如 "11:30 - 13:20 左右到" */
+  outboundTime: string;
+  /** 去程班次&座次 */
+  outboundSeat: string;
+  /** 返程时间 */
+  returnTime: string;
+  /** 返程班次&座次 */
+  returnSeat: string;
+  /** 性别 */
+  gender: Gender;
+  /** 房型 */
+  roomType: RoomType;
+  /** 酒店 */
+  hotel: string;
+  /** 备注 */
+  remark: string;
+  /** 交通费用（元） */
+  ticketFee: number;
+  /** 住宿费用（元） */
+  accommodationFee: number;
+  /** 餐费（元） */
+  mealFee: number;
+  /** 其他费用（元） */
+  otherFee: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const BASE = "/api/v1/affairs";
 
 const AffairsAPI = {
@@ -94,6 +144,19 @@ const AffairsAPI = {
   },
   saveTodos(list: TodoItem[]) {
     return request<any, number>({ url: `${BASE}/todolist`, method: "put", data: list });
+  },
+  getGroupBuildings() {
+    return request<any, GroupBuildingSignup[]>({
+      url: `${BASE}/group-building`,
+      method: "get",
+    });
+  },
+  saveGroupBuildings(list: GroupBuildingSignup[]) {
+    return request<any, number>({
+      url: `${BASE}/group-building`,
+      method: "put",
+      data: list,
+    });
   },
 };
 

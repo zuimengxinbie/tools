@@ -13,6 +13,7 @@ import { defineMock } from "./base";
 const DATA_DIR = path.resolve(process.cwd(), "mock/data");
 const REQUIREMENTS_FILE = path.join(DATA_DIR, "requirements.json");
 const TODOLIST_FILE = path.join(DATA_DIR, "todolist.json");
+const GROUP_BUILDING_FILE = path.join(DATA_DIR, "group-building.json");
 
 const readJson = (file: string) => {
   try {
@@ -71,6 +72,28 @@ export default defineMock([
         code: "00000",
         data: list.length,
         msg: `已保存 ${list.length} 条待办数据到 mock/data/todolist.json`,
+      };
+    },
+  },
+  {
+    url: "affairs/group-building",
+    method: ["GET"],
+    body: () => ({
+      code: "00000",
+      data: readJson(GROUP_BUILDING_FILE),
+      msg: "一切ok",
+    }),
+  },
+  {
+    url: "affairs/group-building",
+    method: ["PUT"],
+    body: ({ body }) => {
+      const list = Array.isArray(body) ? body : [];
+      writeJson(GROUP_BUILDING_FILE, list);
+      return {
+        code: "00000",
+        data: list.length,
+        msg: `已保存 ${list.length} 条团建报名数据到 mock/data/group-building.json`,
       };
     },
   },
