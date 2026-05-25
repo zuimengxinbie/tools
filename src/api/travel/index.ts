@@ -52,6 +52,8 @@ export interface CoordinationItem {
   question: string;
   answer: string;
   status: CoordinationStatus;
+  /** 角色，默认"共同" */
+  role?: string;
 }
 
 export interface HolidayPlan {

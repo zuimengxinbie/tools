@@ -1,5 +1,34 @@
 [
   {
+    "id": 6,
+    "title": "石湖雨行",
+    "destination": "石湖·天鹅港",
+    "date": "2026-05-23",
+    "duration": "2天",
+    "status": "completed",
+    "preparation": ["热水壶", "车钥匙", "大疆", "两手机", "水果"],
+    "review": "天气炎热",
+    "records": [
+      {
+        "time": "2026-05-23 11:00",
+        "content": "西渚花苑"
+      },
+      {
+        "time": "2026-05-23 14:00",
+        "content": "天鹅港"
+      },
+      {
+        "time": "2026-05-24 11:00",
+        "content": "西渚花苑"
+      },
+      {
+        "time": "2026-05-24 14:00",
+        "content": "石湖"
+      }
+    ],
+    "rating": 3
+  },
+  {
     "id": 5,
     "title": "生日聚餐",
     "destination": "阳澄湖",

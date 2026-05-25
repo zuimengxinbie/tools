@@ -441,9 +441,14 @@
               size="small"
               border
             >
-              <el-table-column label="问题" prop="question" min-width="220" />
-              <el-table-column label="答案" prop="answer" min-width="260" />
-              <el-table-column label="状态" width="110" align="center">
+              <el-table-column label="角色" width="90" align="center">
+                <template #default="{ row }">
+                  {{ row.role || "共同" }}
+                </template>
+              </el-table-column>
+              <el-table-column label="问题" prop="question" min-width="150" />
+              <el-table-column label="答案" prop="answer" min-width="200" />
+              <el-table-column label="状态" width="100" align="center">
                 <template #default="{ row }">
                   <el-tag
                     :type="getCoordinationStatusMeta(row.status).type"
@@ -612,9 +617,14 @@
             border
             empty-text="暂无行程协调问答"
           >
-            <el-table-column label="问题" prop="question" min-width="220" />
-            <el-table-column label="答案" prop="answer" min-width="260" />
-            <el-table-column label="状态" width="110" align="center">
+            <el-table-column label="角色" width="90" align="center">
+              <template #default="{ row }">
+                {{ row.role || "共同" }}
+              </template>
+            </el-table-column>
+            <el-table-column label="问题" prop="question" min-width="150" />
+            <el-table-column label="答案" prop="answer" min-width="200" />
+            <el-table-column label="状态" width="100" align="center">
               <template #default="{ row }">
                 <el-tag
                   :type="getCoordinationStatusMeta(row.status).type"
@@ -976,6 +986,12 @@
 
           <div class="coordination-input-row">
             <el-input
+              v-model="coordinationInput.role"
+              placeholder="角色"
+              style="width: 140px"
+              @keyup.enter="addCoordinationItem"
+            />
+            <el-input
               v-model="coordinationInput.question"
               placeholder="问题，如「第一天是否先去西湖」"
               @keyup.enter="addCoordinationItem"
@@ -985,7 +1001,7 @@
               placeholder="答案，如「先去西湖，下午去灵隐寺」"
               @keyup.enter="addCoordinationItem"
             />
-            <el-select v-model="coordinationInput.status" style="width: 120px">
+            <el-select v-model="coordinationInput.status" style="width: 250px">
               <el-option label="待确认" value="pending" />
               <el-option label="已确认" value="resolved" />
             </el-select>
@@ -999,9 +1015,14 @@
             class="mt-2"
             empty-text="暂无行程协调问答，先添加一条"
           >
-            <el-table-column label="问题" prop="question" min-width="220" />
-            <el-table-column label="答案" prop="answer" min-width="260" />
-            <el-table-column label="状态" width="110" align="center">
+            <el-table-column label="角色" width="90" align="center">
+              <template #default="{ row }">
+                {{ row.role || "共同" }}
+              </template>
+            </el-table-column>
+            <el-table-column label="问题" prop="question" min-width="150" />
+            <el-table-column label="答案" prop="answer" min-width="200" />
+            <el-table-column label="状态" width="100" align="center">
               <template #default="{ row }">
                 <el-tag
                   :type="getCoordinationStatusMeta(row.status).type"
@@ -1870,10 +1891,12 @@ const coordinationInput = reactive<{
   question: string;
   answer: string;
   status: CoordinationStatus;
+  role: string;
 }>({
   question: "",
   answer: "",
   status: "pending",
+  role: "共同",
 });
 
 const addPrepItem = () => {
@@ -1929,10 +1952,12 @@ const addCoordinationItem = () => {
     question,
     answer,
     status: coordinationInput.status,
+    role: coordinationInput.role.trim() || "共同",
   });
   coordinationInput.question = "";
   coordinationInput.answer = "";
   coordinationInput.status = "pending";
+  coordinationInput.role = "共同";
 };
 
 const removeCoordinationItem = (id: number) => {
