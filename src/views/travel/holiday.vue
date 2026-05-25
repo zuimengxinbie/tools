@@ -443,7 +443,7 @@
             >
               <el-table-column label="角色" width="90" align="center">
                 <template #default="{ row }">
-                  {{ row.role || "共同" }}
+                  <b>{{ row.role || "共同" }}</b>
                 </template>
               </el-table-column>
               <el-table-column label="问题" prop="question" min-width="150" />
@@ -619,7 +619,7 @@
           >
             <el-table-column label="角色" width="90" align="center">
               <template #default="{ row }">
-                {{ row.role || "共同" }}
+                <b>{{ row.role || "共同" }}</b>
               </template>
             </el-table-column>
             <el-table-column label="问题" prop="question" min-width="150" />
@@ -1017,7 +1017,7 @@
           >
             <el-table-column label="角色" width="90" align="center">
               <template #default="{ row }">
-                {{ row.role || "共同" }}
+                <b>{{ row.role || "共同" }}</b>
               </template>
             </el-table-column>
             <el-table-column label="问题" prop="question" min-width="150" />

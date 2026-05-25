@@ -68,6 +68,9 @@
       <div v-for="item in todo.checklist" :key="item.id" class="checklist-item">
         <el-checkbox v-model="item.done" @change="emitUpdate" />
         <span :class="{ 'done-text': item.done }">{{ item.title }}</span>
+        <span v-if="item.finishedAt" class="checklist-finished-at">
+          （完成：{{ item.finishedAt }}）
+        </span>
       </div>
     </div>
     <div v-else class="text-placeholder">暂无子任务</div>
@@ -160,6 +163,12 @@ const emitUpdate = () => {
 .done-text {
   color: var(--el-text-color-placeholder);
   text-decoration: line-through;
+}
+
+.checklist-finished-at {
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
 }
 
 .desc-text {

@@ -518,28 +518,32 @@
     ],
     "coordination": [
       {
-        "id": 1,
+        "id": 5,
         "question": "移除奶粉礼品",
         "answer": "小孩已长大，不需要",
-        "status": "resolved"
+        "status": "resolved",
+        "role": "女方"
       },
       {
-        "id": 2,
+        "id": 6,
         "question": "女方母亲周六日工作忙",
         "answer": "周四周五先去女方家，周六日去男方",
-        "status": "pending"
+        "status": "pending",
+        "role": "女方"
       },
       {
-        "id": 3,
+        "id": 7,
         "question": "男方请不到那么多天假",
         "answer": "女方提前回家住几天，提前购票",
-        "status": "pending"
+        "status": "pending",
+        "role": "男方"
       },
       {
-        "id": 4,
+        "id": 8,
         "question": "男方母亲是否可以从北京返回",
         "answer": "临近期协调，尽力而为",
-        "status": "pending"
+        "status": "pending",
+        "role": "男方"
       }
     ]
   },

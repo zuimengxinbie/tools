@@ -55,6 +55,8 @@ export interface ChecklistItem {
   id: number;
   title: string;
   done: boolean;
+  /** 完成时间 YYYY-MM-DD，默认为截止日期 */
+  finishedAt?: string;
 }
 
 export interface TodoItem {

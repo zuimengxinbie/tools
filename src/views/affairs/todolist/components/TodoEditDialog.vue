@@ -107,6 +107,20 @@
                   placeholder="子任务内容"
                   :class="{ 'is-done': item.done }"
                 />
+                <el-date-picker
+                  v-model="item.finishedAt"
+                  type="date"
+                  size="small"
+                  placeholder="完成时间"
+                  value-format="YYYY-MM-DD"
+                  :disabled-date="
+                    (time: Date) =>
+                      form.dueDate
+                        ? time.getTime() > new Date(form.dueDate + ' 23:59:59').getTime()
+                        : false
+                  "
+                  style="width: 140px"
+                />
                 <el-button type="danger" link :icon="Delete" @click="removeChecklist(idx)" />
               </div>
               <el-button type="primary" link :icon="Plus" @click="addChecklist">
@@ -169,7 +183,12 @@ const rules: FormRules = {
 const nextChecklistId = () => (form.checklist.reduce((m, c) => Math.max(m, c.id), 0) || 0) + 1;
 
 const addChecklist = () => {
-  form.checklist.push({ id: nextChecklistId(), title: "", done: false });
+  form.checklist.push({
+    id: nextChecklistId(),
+    title: "",
+    done: false,
+    finishedAt: form.dueDate || "",
+  });
 };
 
 const removeChecklist = (idx: number) => {
