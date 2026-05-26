@@ -110,14 +110,14 @@
         </el-table-column>
         <el-table-column label="通勤方式" width="100" align="center">
           <template #default="{ row }: { row: GroupBuildingSignup }">
-            <el-tag :type="commuteTypeMap[row.commuteType]?.tagType || ''" size="small">
+            <el-tag :type="commuteTypeMap[row.commuteType]?.tagType || undefined" size="small">
               {{ commuteTypeMap[row.commuteType]?.label }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="购票方式" width="100" align="center">
           <template #default="{ row }: { row: GroupBuildingSignup }">
-            <el-tag :type="ticketTypeMap[row.ticketType]?.tagType || ''" size="small">
+            <el-tag :type="ticketTypeMap[row.ticketType]?.tagType || undefined" size="small">
               {{ ticketTypeMap[row.ticketType]?.label }}
             </el-tag>
           </template>
@@ -138,14 +138,14 @@
         />
         <el-table-column label="性别" width="70" align="center">
           <template #default="{ row }: { row: GroupBuildingSignup }">
-            <el-tag :type="genderMap[row.gender]?.tagType || ''" size="small" effect="plain">
+            <el-tag :type="genderMap[row.gender]?.tagType || undefined" size="small" effect="plain">
               {{ genderMap[row.gender]?.label }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="房型" width="80" align="center">
           <template #default="{ row }: { row: GroupBuildingSignup }">
-            <el-tag :type="roomTypeMap[row.roomType]?.tagType || ''" size="small">
+            <el-tag :type="roomTypeMap[row.roomType]?.tagType || undefined" size="small">
               {{ roomTypeMap[row.roomType]?.label }}
             </el-tag>
           </template>
@@ -202,78 +202,168 @@
     <el-drawer
       v-model="drawerVisible"
       :title="currentRow ? currentRow.reporterName : '详情'"
+      class="signup-detail-drawer"
       size="560px"
       destroy-on-close
     >
       <template v-if="currentRow">
-        <el-descriptions :column="2" border>
-          <el-descriptions-item label="填报人">
-            {{ currentRow.reporterName }}
-          </el-descriptions-item>
-          <el-descriptions-item label="手机号">
-            {{ currentRow.phone }}
-          </el-descriptions-item>
-          <el-descriptions-item label="归属">
-            {{ currentRow.department }}
-          </el-descriptions-item>
-          <el-descriptions-item label="出行人数">
-            {{ currentRow.headcount }}
-          </el-descriptions-item>
-          <el-descriptions-item label="身份证号" :span="2">
-            {{ currentRow.idCard || "—" }}
-          </el-descriptions-item>
-          <el-descriptions-item label="通勤方式">
-            {{ commuteTypeMap[currentRow.commuteType]?.label }}
-          </el-descriptions-item>
-          <el-descriptions-item label="购票方式">
-            {{ ticketTypeMap[currentRow.ticketType]?.label }}
-          </el-descriptions-item>
-          <el-descriptions-item label="性别">
-            {{ genderMap[currentRow.gender]?.label }}
-          </el-descriptions-item>
-          <el-descriptions-item label="房型">
-            {{ roomTypeMap[currentRow.roomType]?.label }}
-          </el-descriptions-item>
-          <el-descriptions-item label="酒店" :span="2">
-            {{ currentRow.hotel }}
-          </el-descriptions-item>
-          <el-descriptions-item label="交通费用">
-            ¥{{ (currentRow.ticketFee || 0).toFixed(2) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="住宿费用">
-            ¥{{ (currentRow.accommodationFee || 0).toFixed(2) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="餐费">
-            ¥{{ (currentRow.mealFee || 0).toFixed(2) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="其他费用">
-            ¥{{ (currentRow.otherFee || 0).toFixed(2) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="个人费用小计" :span="2">
-            <span class="fee-total">¥{{ calcPersonTotal(currentRow).toFixed(2) }}</span>
-          </el-descriptions-item>
-          <el-descriptions-item label="去程" :span="2">
-            {{ currentRow.outboundTime }}
-          </el-descriptions-item>
-          <el-descriptions-item label="去程班次&座次" :span="2">
-            {{ currentRow.outboundSeat }}
-          </el-descriptions-item>
-          <el-descriptions-item label="返程" :span="2">
-            {{ currentRow.returnTime }}
-          </el-descriptions-item>
-          <el-descriptions-item label="返程班次&座次" :span="2">
-            {{ currentRow.returnSeat }}
-          </el-descriptions-item>
-          <el-descriptions-item label="备注" :span="2">
-            {{ currentRow.remark || "—" }}
-          </el-descriptions-item>
-          <el-descriptions-item label="创建时间">
-            {{ currentRow.createdAt }}
-          </el-descriptions-item>
-          <el-descriptions-item label="更新时间">
-            {{ currentRow.updatedAt }}
-          </el-descriptions-item>
-        </el-descriptions>
+        <div class="detail-share-panel">
+          <section class="detail-section detail-hero">
+            <div class="detail-hero-main">
+              <div class="detail-avatar">
+                <el-icon>
+                  <User />
+                </el-icon>
+              </div>
+              <div>
+                <div class="detail-name">{{ currentRow.reporterName }}</div>
+                <div class="detail-subtitle">{{ currentRow.department }}</div>
+              </div>
+            </div>
+            <div class="detail-total-card">
+              <span>个人费用小计</span>
+              <strong>¥{{ calcPersonTotal(currentRow).toFixed(2) }}</strong>
+            </div>
+          </section>
+
+          <section class="detail-section">
+            <div class="detail-section-title">
+              <el-icon>
+                <User />
+              </el-icon>
+              <span>个人信息</span>
+            </div>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="detail-label">填报人</span>
+                <span class="detail-value">{{ currentRow.reporterName }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">手机号</span>
+                <span class="detail-value">{{ currentRow.phone }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">归属</span>
+                <span class="detail-value">{{ currentRow.department }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">出行人数</span>
+                <span class="detail-value">{{ currentRow.headcount }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">性别</span>
+                <span class="detail-value">{{ genderMap[currentRow.gender]?.label }}</span>
+              </div>
+              <div class="detail-item detail-item-wide">
+                <span class="detail-label">身份证号</span>
+                <span class="detail-value">{{ currentRow.idCard || "—" }}</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="detail-section">
+            <div class="detail-section-title">
+              <el-icon>
+                <Location />
+              </el-icon>
+              <span>行程信息</span>
+            </div>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="detail-label">通勤方式</span>
+                <span class="detail-value">
+                  {{ commuteTypeMap[currentRow.commuteType]?.label }}
+                </span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">购票方式</span>
+                <span class="detail-value">{{ ticketTypeMap[currentRow.ticketType]?.label }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">房型</span>
+                <span class="detail-value">{{ roomTypeMap[currentRow.roomType]?.label }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">酒店</span>
+                <span class="detail-value">{{ currentRow.hotel }}</span>
+              </div>
+              <div class="detail-item detail-item-wide">
+                <span class="detail-label">去程</span>
+                <span class="detail-value">{{ currentRow.outboundTime }}</span>
+              </div>
+              <div class="detail-item detail-item-wide">
+                <span class="detail-label">去程班次&座次</span>
+                <span class="detail-value">{{ currentRow.outboundSeat }}</span>
+              </div>
+              <div class="detail-item detail-item-wide">
+                <span class="detail-label">返程</span>
+                <span class="detail-value">{{ currentRow.returnTime }}</span>
+              </div>
+              <div class="detail-item detail-item-wide">
+                <span class="detail-label">返程班次&座次</span>
+                <span class="detail-value">{{ currentRow.returnSeat }}</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="detail-section">
+            <div class="detail-section-title">
+              <el-icon>
+                <Money />
+              </el-icon>
+              <span>费用信息</span>
+            </div>
+            <div class="detail-grid detail-fee-grid">
+              <div class="detail-item">
+                <span class="detail-label">交通费用</span>
+                <span class="detail-value">¥{{ (currentRow.ticketFee || 0).toFixed(2) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">住宿费用</span>
+                <span class="detail-value">
+                  ¥{{ (currentRow.accommodationFee || 0).toFixed(2) }}
+                </span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">餐费</span>
+                <span class="detail-value">¥{{ (currentRow.mealFee || 0).toFixed(2) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">其他费用</span>
+                <span class="detail-value">¥{{ (currentRow.otherFee || 0).toFixed(2) }}</span>
+              </div>
+              <div class="detail-item detail-fee-total detail-item-wide">
+                <span class="detail-label">个人费用小计</span>
+                <span class="detail-value fee-total">
+                  ¥{{ calcPersonTotal(currentRow).toFixed(2) }}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <section class="detail-section">
+            <div class="detail-section-title">
+              <el-icon>
+                <Memo />
+              </el-icon>
+              <span>其他信息</span>
+            </div>
+            <div class="detail-grid">
+              <div class="detail-item detail-item-wide">
+                <span class="detail-label">备注</span>
+                <span class="detail-value">{{ currentRow.remark || "—" }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">创建时间</span>
+                <span class="detail-value">{{ currentRow.createdAt }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">更新时间</span>
+                <span class="detail-value">{{ currentRow.updatedAt }}</span>
+              </div>
+            </div>
+          </section>
+        </div>
       </template>
     </el-drawer>
 
@@ -519,7 +609,7 @@
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance, FormRules, UploadUserFile } from "element-plus";
-import { Search, View } from "@element-plus/icons-vue";
+import { Location, Memo, Money, Search, User, View } from "@element-plus/icons-vue";
 import AffairsAPI, {
   type GroupBuildingSignup,
   type CommuteType,
@@ -948,6 +1038,200 @@ const handleImportExcel = async () => {
 .fee-total {
   font-weight: 600;
   color: var(--el-color-danger);
+}
+
+:deep(.signup-detail-drawer .el-drawer__header) {
+  padding-bottom: 14px;
+  margin-bottom: 0;
+  font-weight: 700;
+  color: #123c69;
+  border-bottom: 1px solid #dbe9f8;
+}
+
+:deep(.signup-detail-drawer .el-drawer__body) {
+  padding: 18px;
+  background: #f3f8ff;
+}
+
+.detail-share-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 2px 2px 14px;
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  color: #1f2f46;
+}
+
+.detail-section {
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #d9e7f7;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(45, 102, 171, 0.08);
+}
+
+.detail-hero {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  color: #123c69;
+  background: linear-gradient(135deg, #f7fbff 0%, #edf6ff 100%);
+  border-color: #cfe2f7;
+}
+
+.detail-hero-main {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.detail-avatar {
+  display: inline-flex;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+  color: #2f7ecb;
+  background: #e4f1ff;
+  border: 1px solid #c7def7;
+  border-radius: 50%;
+}
+
+.detail-name {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.detail-subtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #5f738c;
+}
+
+.detail-total-card {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-end;
+  padding-left: 18px;
+  border-left: 1px solid #cfe2f7;
+}
+
+.detail-total-card span {
+  font-size: 12px;
+  color: #5f738c;
+}
+
+.detail-total-card strong {
+  font-size: 22px;
+  line-height: 1.25;
+  color: #e34d59;
+}
+
+.detail-section-title {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #205d9b;
+  border-bottom: 1px solid #e6eef7;
+}
+
+.detail-section-title .el-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #2f7ecb;
+  background: #edf6ff;
+  border: 1px solid #d5e7f8;
+  border-radius: 6px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.detail-item {
+  min-width: 0;
+  padding: 10px 12px;
+  background: #f8fbff;
+  border: 1px solid #e4edf7;
+  border-radius: 6px;
+}
+
+.detail-item-wide {
+  grid-column: 1 / -1;
+}
+
+.detail-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  line-height: 1.3;
+  color: #6d7f93;
+}
+
+.detail-value {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #1f2f46;
+  overflow-wrap: anywhere;
+}
+
+.detail-fee-grid .detail-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.detail-fee-total {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff7f7;
+  border-color: #ffd6d9;
+}
+
+.detail-fee-total .detail-label {
+  margin-bottom: 0;
+}
+
+.detail-fee-total .detail-value {
+  font-size: 20px;
+}
+
+@media (max-width: 640px) {
+  .detail-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .detail-total-card {
+    align-items: flex-start;
+    padding-top: 12px;
+    padding-left: 0;
+    border-top: 1px solid #cfe2f7;
+    border-left: 0;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .fee-summary {
