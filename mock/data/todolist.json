@@ -12,28 +12,35 @@
     "repeat": "daily",
     "starred": true,
     "description": "协调请假时间",
+    "budget": 500,
     "checklist": [
       {
         "id": 1,
         "title": "生小孩时间核对",
         "done": true,
-        "finishedAt": "2026-05-13"
+        "finishedAt": "2026-05-13",
+        "cost": 100,
+        "costRemark": "红包"
       },
       {
         "id": 2,
         "title": "哥哥时间协调",
         "done": true,
-        "finishedAt": "2026-05-13"
+        "finishedAt": "2026-05-13",
+        "cost": 50,
+        "costRemark": "车费"
       },
       {
         "id": 3,
         "title": "老妈时间协调",
         "done": true,
-        "finishedAt": "2026-05-13"
+        "finishedAt": "2026-05-13",
+        "cost": 80,
+        "costRemark": "水果"
       }
     ],
     "createdAt": "2026-05-13 16:20",
-    "updatedAt": "2026-05-25 17:15",
-    "finishedAt": "2026-05-14 13:31"
+    "updatedAt": "2026-05-27 09:55",
+    "finishedAt": "2026-05-27 09:55"
   }
 ]

@@ -45,6 +45,28 @@
         </el-tab-pane>
       </el-tabs>
 
+      <!-- 消费统计卡片 -->
+      <div class="cost-summary-bar">
+        <div class="cost-stat">
+          <span class="cost-label">已筛选待办消费</span>
+          <span class="cost-value">¥{{ filteredCostStats.spent.toFixed(2) }}</span>
+          <span v-if="filteredCostStats.budget > 0" class="cost-budget-total">
+            / ¥{{ filteredCostStats.budget.toFixed(2) }}
+            <span :class="filteredCostStats.statusClass">
+              ({{ filteredCostStats.percent.toFixed(0) }}%)
+            </span>
+          </span>
+        </div>
+        <el-divider direction="vertical" />
+        <div class="cost-stat">
+          <span class="cost-label">全部待办消费</span>
+          <span class="cost-value">¥{{ totalCostStats.spent.toFixed(2) }}</span>
+          <span v-if="totalCostStats.budget > 0" class="cost-budget-total">
+            / ¥{{ totalCostStats.budget.toFixed(2) }}
+          </span>
+        </div>
+      </div>
+
       <!-- 筛选栏 -->
       <div class="filter-bar">
         <el-input
@@ -54,7 +76,9 @@
           style="width: 240px"
         >
           <template #prefix>
-            <el-icon><Search /></el-icon>
+            <el-icon>
+              <Search />
+            </el-icon>
           </template>
         </el-input>
         <el-select v-model="priorityFilter" placeholder="优先级" clearable style="width: 110px">
@@ -200,6 +224,15 @@
             <span v-else class="text-placeholder">—</span>
           </template>
         </el-table-column>
+        <el-table-column label="消费" width="120" align="right">
+          <template #default="{ row }: { row: TodoItem }">
+            <span v-if="getRowCost(row) > 0 || row.budget" class="cost-cell">
+              <span class="cost-spent">¥{{ getRowCost(row).toFixed(0) }}</span>
+              <span v-if="row.budget" class="cost-budget">/{{ row.budget }}</span>
+            </span>
+            <span v-else class="text-placeholder">—</span>
+          </template>
+        </el-table-column>
         <el-table-column label="重复" width="80" align="center">
           <template #default="{ row }: { row: TodoItem }">
             <span v-if="row.repeat !== 'none'">{{ repeatMap[row.repeat]?.label }}</span>
@@ -341,6 +374,32 @@ const categoryCount = computed(() => {
     map[t.category] = (map[t.category] || 0) + 1;
   }
   return map;
+});
+
+/* ---------------- 消费统计 ---------------- */
+const getRowCost = (row: TodoItem) =>
+  (row.checklist ?? []).reduce((sum, c) => sum + (c.cost ?? 0), 0);
+
+const totalCostStats = computed(() => {
+  let spent = 0;
+  let budget = 0;
+  for (const t of todoList.value) {
+    spent += getRowCost(t);
+    budget += t.budget ?? 0;
+  }
+  return { spent, budget };
+});
+
+const filteredCostStats = computed(() => {
+  let spent = 0;
+  let budget = 0;
+  for (const t of filteredList.value) {
+    spent += getRowCost(t);
+    budget += t.budget ?? 0;
+  }
+  const percent = budget > 0 ? (spent / budget) * 100 : 0;
+  const statusClass = percent > 100 ? "cost-over" : percent > 80 ? "cost-warning" : "cost-normal";
+  return { spent, budget, percent, statusClass };
 });
 
 const filteredList = computed(() => {
@@ -522,6 +581,7 @@ function defaultTodo(): TodoItem {
     createdAt: "",
     updatedAt: "",
     finishedAt: "",
+    budget: undefined,
   };
 }
 
@@ -731,5 +791,62 @@ const handleDelete = async (row: TodoItem) => {
 
 :deep(.row-overdue) {
   --el-table-tr-bg-color: var(--el-color-danger-light-9);
+}
+
+/* 消费统计卡片 */
+.cost-summary-bar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  background: var(--el-fill-color-lighter);
+  border-radius: 6px;
+}
+
+.cost-stat {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.cost-label {
+  color: var(--el-text-color-secondary);
+}
+
+.cost-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--el-color-warning);
+}
+
+.cost-budget-total {
+  color: var(--el-text-color-secondary);
+}
+
+.cost-cell {
+  font-size: 13px;
+}
+
+.cost-spent {
+  font-weight: 500;
+  color: var(--el-color-warning);
+}
+
+.cost-budget {
+  color: var(--el-text-color-secondary);
+}
+
+.cost-normal {
+  color: var(--el-color-success);
+}
+
+.cost-warning {
+  color: var(--el-color-warning);
+}
+
+.cost-over {
+  color: var(--el-color-danger);
 }
 </style>

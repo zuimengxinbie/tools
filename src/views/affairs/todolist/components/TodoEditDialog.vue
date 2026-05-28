@@ -69,12 +69,24 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="16">
+        <el-col :span="12">
           <el-form-item label="进度">
             <el-slider v-model="form.progress" :min="0" :max="100" :step="5" show-input />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
+          <el-form-item label="预算">
+            <el-input-number
+              v-model="form.budget"
+              :min="0"
+              :precision="2"
+              :controls="false"
+              placeholder="元"
+              style="width: 100%"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
           <el-form-item label="星标">
             <el-switch v-model="form.starred" />
           </el-form-item>
@@ -106,6 +118,22 @@
                   size="small"
                   placeholder="子任务内容"
                   :class="{ 'is-done': item.done }"
+                  style="flex: 1"
+                />
+                <el-input-number
+                  v-model="item.cost"
+                  size="small"
+                  :min="0"
+                  :precision="2"
+                  :controls="false"
+                  placeholder="金额"
+                  style="width: 90px"
+                />
+                <el-input
+                  v-model="item.costRemark"
+                  size="small"
+                  placeholder="消费备注"
+                  style="width: 100px"
                 />
                 <el-date-picker
                   v-model="item.finishedAt"

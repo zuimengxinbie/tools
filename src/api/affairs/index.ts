@@ -57,6 +57,10 @@ export interface ChecklistItem {
   done: boolean;
   /** 完成时间 YYYY-MM-DD，默认为截止日期 */
   finishedAt?: string;
+  /** 消费金额（元） */
+  cost?: number;
+  /** 消费备注 */
+  costRemark?: string;
 }
 
 export interface TodoItem {
@@ -80,6 +84,8 @@ export interface TodoItem {
   updatedAt: string;
   /** 完成时间，仅 status=done 时有值 */
   finishedAt: string;
+  /** 预算（元） */
+  budget?: number;
 }
 
 /* ---------------- 团建规划 GroupBuilding ---------------- */

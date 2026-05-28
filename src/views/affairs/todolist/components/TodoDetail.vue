@@ -37,6 +37,14 @@
           :status="todo.status === 'done' ? 'success' : undefined"
         />
       </el-descriptions-item>
+      <el-descriptions-item label="预算">
+        <span v-if="todo.budget != null" class="budget-text">¥{{ todo.budget.toFixed(2) }}</span>
+        <span v-else class="text-placeholder">—</span>
+      </el-descriptions-item>
+      <el-descriptions-item label="已消费">
+        <span class="cost-text">¥{{ totalCost.toFixed(2) }}</span>
+        <span v-if="todo.budget" :class="costStatusClass">（{{ costPercent.toFixed(0) }}%）</span>
+      </el-descriptions-item>
       <el-descriptions-item label="标签" :span="2">
         <template v-if="todo.tags?.length">
           <el-tag
@@ -67,7 +75,9 @@
     <div v-if="todo.checklist?.length" class="checklist">
       <div v-for="item in todo.checklist" :key="item.id" class="checklist-item">
         <el-checkbox v-model="item.done" @change="emitUpdate" />
-        <span :class="{ 'done-text': item.done }">{{ item.title }}</span>
+        <span :class="{ 'done-text': item.done }" style="flex: 1">{{ item.title }}</span>
+        <span v-if="item.cost" class="checklist-cost">¥{{ item.cost.toFixed(2) }}</span>
+        <span v-if="item.costRemark" class="checklist-cost-remark">{{ item.costRemark }}</span>
         <span v-if="item.finishedAt" class="checklist-finished-at">
           （完成：{{ item.finishedAt }}）
         </span>
@@ -112,6 +122,20 @@ const emit = defineEmits<{
 }>();
 
 const doneCount = computed(() => props.todo.checklist?.filter((c) => c.done).length ?? 0);
+
+const totalCost = computed(() =>
+  (props.todo.checklist ?? []).reduce((sum, c) => sum + (c.cost ?? 0), 0)
+);
+
+const costPercent = computed(() =>
+  props.todo.budget ? (totalCost.value / props.todo.budget) * 100 : 0
+);
+
+const costStatusClass = computed(() => {
+  if (costPercent.value > 100) return "cost-over";
+  if (costPercent.value > 80) return "cost-warning";
+  return "cost-normal";
+});
 
 const dueClass = computed(() => {
   if (isOverdue(props.todo.dueDate, props.todo.status)) return "due-overdue";
@@ -169,6 +193,40 @@ const emitUpdate = () => {
   margin-left: 4px;
   font-size: 12px;
   color: var(--el-text-color-secondary);
+}
+
+.checklist-cost {
+  margin-left: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--el-color-warning);
+}
+
+.checklist-cost-remark {
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+
+.budget-text {
+  font-weight: 500;
+}
+
+.cost-text {
+  font-weight: 500;
+  color: var(--el-color-warning);
+}
+
+.cost-normal {
+  color: var(--el-color-success);
+}
+
+.cost-warning {
+  color: var(--el-color-warning);
+}
+
+.cost-over {
+  color: var(--el-color-danger);
 }
 
 .desc-text {
