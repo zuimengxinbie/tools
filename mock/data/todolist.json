@@ -1,5 +1,71 @@
 [
   {
+    "id": 18,
+    "title": "电信套餐更换",
+    "category": "finance",
+    "priority": "urgent",
+    "status": "todo",
+    "dueDate": "2026-06-30",
+    "remindAt": "",
+    "tags": [],
+    "progress": 0,
+    "repeat": "none",
+    "starred": true,
+    "description": "",
+    "checklist": [
+      {
+        "id": 1,
+        "title": "更换电信套餐",
+        "done": false,
+        "finishedAt": "2026-06-30"
+      }
+    ],
+    "expenses": [],
+    "createdAt": "2026-06-01 10:55",
+    "updatedAt": "2026-06-01 10:55",
+    "finishedAt": "",
+    "budget": 0
+  },
+  {
+    "id": 17,
+    "title": "下次出行准备",
+    "category": "life",
+    "priority": "medium",
+    "status": "todo",
+    "dueDate": "2026-06-05",
+    "remindAt": "",
+    "tags": ["旅行"],
+    "progress": 0,
+    "repeat": "none",
+    "starred": true,
+    "description": "装备清洗",
+    "checklist": [
+      {
+        "id": 1,
+        "title": "清洗毯子",
+        "done": false,
+        "finishedAt": "2026-06-05"
+      },
+      {
+        "id": 2,
+        "title": "清洗露营垫",
+        "done": false,
+        "finishedAt": "2026-06-05"
+      },
+      {
+        "id": 3,
+        "title": "准备露营袋子",
+        "done": false,
+        "finishedAt": "2026-06-05"
+      }
+    ],
+    "expenses": [],
+    "createdAt": "2026-06-01 10:34",
+    "updatedAt": "2026-06-01 10:34",
+    "finishedAt": "",
+    "budget": 0
+  },
+  {
     "id": 16,
     "title": "协调请假",
     "category": "family",

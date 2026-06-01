@@ -190,12 +190,6 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="提醒时间" width="150" align="center">
-          <template #default="{ row }: { row: TodoItem }">
-            <span v-if="row.remindAt">{{ row.remindAt }}</span>
-            <span v-else class="text-placeholder">—</span>
-          </template>
-        </el-table-column>
         <el-table-column label="标签" min-width="140">
           <template #default="{ row }: { row: TodoItem }">
             <template v-if="row.tags?.length">
