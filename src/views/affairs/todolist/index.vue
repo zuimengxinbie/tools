@@ -659,9 +659,14 @@ const handleMarkDone = (row: TodoItem) => {
 const handleReopen = (row: TodoItem) => {
   const idx = todoList.value.findIndex((r) => r.id === row.id);
   if (idx > -1) {
+    const item = todoList.value[idx];
+    const total = item.checklist?.length ?? 0;
+    const done = item.checklist?.filter((c) => c.done).length ?? 0;
+    const progress = total > 0 ? Math.round((done / total) * 100) : 0;
     todoList.value[idx] = {
-      ...todoList.value[idx],
+      ...item,
       status: "doing",
+      progress,
       finishedAt: "",
       updatedAt: nowStr(),
     };

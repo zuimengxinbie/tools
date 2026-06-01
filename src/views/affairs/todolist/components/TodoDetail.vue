@@ -61,7 +61,13 @@
         <span v-else class="text-placeholder">—</span>
       </el-descriptions-item>
       <el-descriptions-item label="描述" :span="2">
-        <span v-if="todo.description" class="desc-text">{{ todo.description }}</span>
+        <WangEditor
+          v-if="todo.description"
+          v-model="todo.description"
+          :read-only="true"
+          :has-bar="false"
+          height="auto"
+        />
         <span v-else class="text-placeholder">—</span>
       </el-descriptions-item>
     </el-descriptions>
@@ -125,6 +131,7 @@
 
 <script setup lang="ts">
 import { StarFilled } from "@element-plus/icons-vue";
+import WangEditor from "@/components/WangEditor/index.vue";
 import type { TodoItem } from "@/api/affairs";
 import { categoryMap, priorityMap, statusMap, repeatMap, isOverdue, isSoon } from "../constants";
 

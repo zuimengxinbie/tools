@@ -92,14 +92,7 @@
         </el-col>
         <el-col :span="24">
           <el-form-item label="描述">
-            <el-input
-              v-model="form.description"
-              type="textarea"
-              :rows="3"
-              placeholder="补充详细描述..."
-              maxlength="500"
-              show-word-limit
-            />
+            <WangEditor v-model="form.description" height="auto" placeholder="补充详细描述..." />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -186,6 +179,7 @@
 
 <script setup lang="ts">
 import { Delete, Plus } from "@element-plus/icons-vue";
+import WangEditor from "@/components/WangEditor/index.vue";
 import type { FormInstance, FormRules } from "element-plus";
 import type { TodoItem } from "@/api/affairs";
 import { categoryMap, priorityMap, statusMap, repeatMap, nowStr } from "../constants";
