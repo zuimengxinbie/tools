@@ -233,7 +233,13 @@
             <span v-else class="text-placeholder">暂未评级</span>
           </el-descriptions-item>
           <el-descriptions-item label="行程回顾" :span="2">
-            <span v-if="currentTrip.review">{{ currentTrip.review }}</span>
+            <WangEditor
+              v-if="currentTrip.review"
+              v-model="currentTrip.review"
+              :read-only="true"
+              :has-bar="false"
+              height="auto"
+            />
             <span v-else class="text-placeholder">暂未填写</span>
           </el-descriptions-item>
         </el-descriptions>
@@ -477,6 +483,7 @@
 
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
+import WangEditor from "@/components/WangEditor/index.vue";
 import type { FormInstance, FormRules, UploadUserFile } from "element-plus";
 import TravelAPI, { type WeekendTrip, type TripRecord, type TripStatus } from "@/api/travel";
 import { useDirtyGuard } from "./composables/useDirtyGuard";

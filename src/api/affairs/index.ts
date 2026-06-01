@@ -57,10 +57,21 @@ export interface ChecklistItem {
   done: boolean;
   /** 完成时间 YYYY-MM-DD，默认为截止日期 */
   finishedAt?: string;
-  /** 消费金额（元） */
+  /** @deprecated 消费金额（元），已迁移至 TodoItem.expenses */
   cost?: number;
-  /** 消费备注 */
+  /** @deprecated 消费备注，已迁移至 TodoItem.expenses */
   costRemark?: string;
+}
+
+/** 消费记录（与子任务解耦） */
+export interface ExpenseItem {
+  id: number;
+  /** 金额（元） */
+  amount: number;
+  /** 备注 */
+  remark: string;
+  /** 日期 YYYY-MM-DD */
+  date: string;
 }
 
 export interface TodoItem {
@@ -80,6 +91,8 @@ export interface TodoItem {
   starred: boolean;
   description: string;
   checklist: ChecklistItem[];
+  /** 消费记录列表 */
+  expenses?: ExpenseItem[];
   createdAt: string;
   updatedAt: string;
   /** 完成时间，仅 status=done 时有值 */

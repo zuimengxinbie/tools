@@ -233,12 +233,6 @@
             <span v-else class="text-placeholder">—</span>
           </template>
         </el-table-column>
-        <el-table-column label="重复" width="80" align="center">
-          <template #default="{ row }: { row: TodoItem }">
-            <span v-if="row.repeat !== 'none'">{{ repeatMap[row.repeat]?.label }}</span>
-            <span v-else class="text-placeholder">—</span>
-          </template>
-        </el-table-column>
         <el-table-column label="创建时间" prop="createdAt" width="160" />
         <el-table-column label="操作" width="200" align="center" fixed="right">
           <template #default="{ row }: { row: TodoItem }">
@@ -377,8 +371,12 @@ const categoryCount = computed(() => {
 });
 
 /* ---------------- 消费统计 ---------------- */
-const getRowCost = (row: TodoItem) =>
-  (row.checklist ?? []).reduce((sum, c) => sum + (c.cost ?? 0), 0);
+// 兼容读取：新 expenses[] + 旧 checklist[].cost
+const getRowCost = (row: TodoItem) => {
+  const expensesCost = (row.expenses ?? []).reduce((sum, e) => sum + (e.amount ?? 0), 0);
+  const legacyCost = (row.checklist ?? []).reduce((sum, c) => sum + (c.cost ?? 0), 0);
+  return expensesCost + legacyCost;
+};
 
 const totalCostStats = computed(() => {
   let spent = 0;
@@ -578,6 +576,7 @@ function defaultTodo(): TodoItem {
     starred: false,
     description: "",
     checklist: [],
+    expenses: [],
     createdAt: "",
     updatedAt: "",
     finishedAt: "",

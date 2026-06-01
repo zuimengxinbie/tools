@@ -12,7 +12,6 @@
     "repeat": "daily",
     "starred": true,
     "description": "协调请假时间",
-    "budget": 500,
     "checklist": [
       {
         "id": 1,
@@ -39,8 +38,29 @@
         "costRemark": "水果"
       }
     ],
+    "expenses": [
+      {
+        "id": 1,
+        "amount": 20,
+        "remark": "买谢",
+        "date": "2026-05-29"
+      },
+      {
+        "id": 2,
+        "amount": 32,
+        "remark": "水果",
+        "date": "2026-05-29"
+      },
+      {
+        "id": 3,
+        "amount": 112,
+        "remark": "衣服",
+        "date": "2026-05-29"
+      }
+    ],
     "createdAt": "2026-05-13 16:20",
-    "updatedAt": "2026-05-27 09:55",
-    "finishedAt": "2026-05-27 09:55"
+    "updatedAt": "2026-05-29 16:19",
+    "finishedAt": "2026-05-27 09:55",
+    "budget": 500
   }
 ]

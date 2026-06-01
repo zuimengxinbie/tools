@@ -268,7 +268,7 @@
                   v-model="currentPlan.remark"
                   :read-only="true"
                   :has-bar="false"
-                  height="400px"
+                  height="auto"
                 />
                 <span v-else class="text-placeholder">暂无</span>
               </el-descriptions-item>
@@ -531,7 +531,7 @@
                 v-model="sharePlan.remark"
                 :read-only="true"
                 :has-bar="false"
-                height="400px"
+                height="auto"
               />
               <span v-else class="text-placeholder">暂无</span>
             </el-descriptions-item>
@@ -779,7 +779,7 @@
               </el-col>
               <el-col :span="24">
                 <el-form-item label="备注">
-                  <WangEditor v-model="editForm.remark" height="400px" />
+                  <WangEditor v-model="editForm.remark" height="auto" />
                 </el-form-item>
               </el-col>
             </el-row>

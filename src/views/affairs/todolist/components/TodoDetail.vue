@@ -76,14 +76,30 @@
       <div v-for="item in todo.checklist" :key="item.id" class="checklist-item">
         <el-checkbox v-model="item.done" @change="emitUpdate" />
         <span :class="{ 'done-text': item.done }" style="flex: 1">{{ item.title }}</span>
-        <span v-if="item.cost" class="checklist-cost">¥{{ item.cost.toFixed(2) }}</span>
-        <span v-if="item.costRemark" class="checklist-cost-remark">{{ item.costRemark }}</span>
         <span v-if="item.finishedAt" class="checklist-finished-at">
           （完成：{{ item.finishedAt }}）
         </span>
       </div>
     </div>
     <div v-else class="text-placeholder">暂无子任务</div>
+
+    <div class="section-title">消费记录</div>
+    <div v-if="hasExpenses" class="expenses-list">
+      <div v-for="item in todo.expenses" :key="item.id" class="expense-item">
+        <span class="expense-amount">¥{{ item.amount.toFixed(2) }}</span>
+        <span class="expense-remark">{{ item.remark || "无备注" }}</span>
+        <span class="expense-date">{{ item.date }}</span>
+      </div>
+      <!-- 兼容旧数据：显示 checklist 中的 cost -->
+      <template v-for="item in legacyChecklistCosts" :key="'legacy-' + item.id">
+        <div class="expense-item expense-legacy">
+          <span class="expense-amount">¥{{ item.cost!.toFixed(2) }}</span>
+          <span class="expense-remark">{{ item.costRemark || item.title }}</span>
+          <span class="expense-date">{{ item.finishedAt || "—" }}</span>
+        </div>
+      </template>
+    </div>
+    <div v-else class="text-placeholder">暂无消费记录</div>
 
     <div class="section-title">时间线</div>
     <el-timeline>
@@ -123,8 +139,19 @@ const emit = defineEmits<{
 
 const doneCount = computed(() => props.todo.checklist?.filter((c) => c.done).length ?? 0);
 
-const totalCost = computed(() =>
-  (props.todo.checklist ?? []).reduce((sum, c) => sum + (c.cost ?? 0), 0)
+// 新 expenses 数组 + 旧 checklist[].cost 兼容
+const expensesCost = computed(() =>
+  (props.todo.expenses ?? []).reduce((sum, e) => sum + (e.amount ?? 0), 0)
+);
+const legacyChecklistCosts = computed(() =>
+  (props.todo.checklist ?? []).filter((c) => c.cost && c.cost > 0)
+);
+const legacyCost = computed(() =>
+  legacyChecklistCosts.value.reduce((sum, c) => sum + (c.cost ?? 0), 0)
+);
+const totalCost = computed(() => expensesCost.value + legacyCost.value);
+const hasExpenses = computed(
+  () => (props.todo.expenses?.length ?? 0) > 0 || legacyChecklistCosts.value.length > 0
 );
 
 const costPercent = computed(() =>
@@ -204,6 +231,41 @@ const emitUpdate = () => {
 
 .checklist-cost-remark {
   margin-left: 4px;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+
+.expenses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--el-fill-color-light);
+  border-radius: 4px;
+}
+
+.expense-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.expense-legacy {
+  opacity: 0.7;
+}
+
+.expense-amount {
+  min-width: 70px;
+  font-weight: 500;
+  color: var(--el-color-warning);
+}
+
+.expense-remark {
+  flex: 1;
+  color: var(--el-text-color-regular);
+}
+
+.expense-date {
   font-size: 12px;
   color: var(--el-text-color-secondary);
 }
