@@ -2,58 +2,44 @@
   {
     "id": 9,
     "festival": "端午节",
-    "destination": "日照",
-    "startDate": "2026-06-19",
+    "destination": "飞马水城旅游度假区·无锡",
+    "startDate": "2026-06-20",
     "endDate": "2026-06-21",
-    "budget": 2200,
+    "budget": 1000,
     "members": 2,
-    "transport": "高铁",
-    "remark": "<p>规划中</p>",
+    "transport": "自驾",
+    "remark": "<p>6.19 苏州游玩（全天有雨）</p><table style=\"width: 606px; table-layout: fixed; height: 0px; text-align: left;\"><colgroup contenteditable=\"false\"><col width=\"151\"><col width=\"151\"><col width=\"151\"><col width=\"153\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">Day</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">行程</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">备注</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">6.19</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">下雨</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">下雨</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">揉肚子</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td></tr></tbody></table><h4 style=\"text-align: start;\"></h4><h4 style=\"text-align: start;\">6.20，6.21 外出</h4><p style=\"text-align: start;\"><strong>主线： 两家沿湖咖啡，飞马水城旅游度假区、惠山古镇景区</strong></p><table style=\"width: 625px; table-layout: fixed; height: 0px; text-align: left;\"><colgroup contenteditable=\"false\"><col width=\"156\"><col width=\"156\"><col width=\"156\"><col width=\"157\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">Day</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">行程</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">备注</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">6.20</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">两家沿湖咖啡</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">车Coffee(湖景店)、Magic Moly(外水店)</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">晚上抵达飞马水城</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">6.21</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">飞马水城旅游度假区</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">附件住宿一晚</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">早上逛马文化博物馆<br></td></tr></tbody></table><h2 style=\"text-align: start;\">出行具体时间再详细讨论</h2>",
     "status": "planning",
-    "actualCost": 2206,
+    "actualCost": 1050,
     "rating": 0,
     "review": "",
     "costItems": [
       {
         "id": 1,
         "category": "交通",
-        "name": "高铁去程 车次（G3314-￥256）",
-        "amount": 512,
+        "name": "油费+高速费+停车费 （300公里 + 80高速费）",
+        "amount": 300,
         "estimateType": "estimated"
       },
       {
         "id": 2,
-        "category": "交通",
-        "name": "高铁返程 车次（D2905- ￥247）",
-        "amount": 494,
+        "category": "门票",
+        "name": "马文化博物馆 一人一百",
+        "amount": 200,
         "estimateType": "estimated"
       },
       {
         "id": 3,
-        "category": "交通",
-        "name": "打车费+其他交通",
-        "amount": 200,
+        "category": "餐饮",
+        "name": "3餐",
+        "amount": 300,
         "estimateType": "estimated"
       },
       {
         "id": 4,
         "category": "住宿",
-        "name": "两晚",
-        "amount": 500,
-        "estimateType": "estimated"
-      },
-      {
-        "id": 5,
-        "category": "门票",
-        "name": "景区门票",
-        "amount": 200,
-        "estimateType": "estimated"
-      },
-      {
-        "id": 6,
-        "category": "餐饮",
-        "name": "5餐",
-        "amount": 300,
+        "name": "一晚",
+        "amount": 250,
         "estimateType": "estimated"
       }
     ],
@@ -143,7 +129,15 @@
         "id": 14
       }
     ],
-    "coordination": []
+    "coordination": [
+      {
+        "id": 1,
+        "question": "最近高考生中考生外出游玩较多",
+        "answer": "不选择景区游玩",
+        "status": "pending",
+        "role": "共同"
+      }
+    ]
   },
   {
     "id": 8,

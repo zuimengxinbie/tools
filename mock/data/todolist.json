@@ -1,5 +1,38 @@
 [
   {
+    "id": 19,
+    "title": "降低生活开销",
+    "category": "life",
+    "priority": "low",
+    "status": "todo",
+    "dueDate": "2026-12-31",
+    "remindAt": "",
+    "tags": ["停车费", "房租"],
+    "progress": 0,
+    "repeat": "none",
+    "starred": false,
+    "description": "<ul><li>降低房租</li><li>降低停车费</li></ul><p><br></p>",
+    "checklist": [
+      {
+        "id": 1,
+        "title": "寻找停车方便位置",
+        "done": false,
+        "finishedAt": "2026-12-31"
+      },
+      {
+        "id": 2,
+        "title": "换房",
+        "done": false,
+        "finishedAt": "2026-12-31"
+      }
+    ],
+    "expenses": [],
+    "createdAt": "2026-06-01 15:35",
+    "updatedAt": "2026-06-01 15:35",
+    "finishedAt": "",
+    "budget": 0
+  },
+  {
     "id": 18,
     "title": "电信套餐更换",
     "category": "finance",
@@ -34,7 +67,7 @@
     ],
     "expenses": [],
     "createdAt": "2026-06-01 10:55",
-    "updatedAt": "2026-06-01 15:31",
+    "updatedAt": "2026-06-01 15:32",
     "finishedAt": "",
     "budget": 0
   },
@@ -50,7 +83,7 @@
     "progress": 0,
     "repeat": "none",
     "starred": true,
-    "description": "装备清洗",
+    "description": "<ul><li>事故处理</li></ul>",
     "checklist": [
       {
         "id": 1,
@@ -75,76 +108,24 @@
         "title": "事故处理打印A4纸",
         "done": false,
         "finishedAt": "2026-06-05"
+      },
+      {
+        "id": 5,
+        "title": "使用不到的拿回家",
+        "done": false,
+        "finishedAt": "2026-06-05"
+      },
+      {
+        "id": 6,
+        "title": "拿上垃圾袋",
+        "done": false,
+        "finishedAt": "2026-06-05"
       }
     ],
     "expenses": [],
     "createdAt": "2026-06-01 10:34",
-    "updatedAt": "2026-06-01 14:34",
+    "updatedAt": "2026-06-01 15:57",
     "finishedAt": "",
     "budget": 0
-  },
-  {
-    "id": 16,
-    "title": "协调请假",
-    "category": "family",
-    "priority": "urgent",
-    "status": "done",
-    "dueDate": "2026-05-13",
-    "remindAt": "2026-05-17 00:00",
-    "tags": ["日期协调"],
-    "progress": 100,
-    "repeat": "daily",
-    "starred": true,
-    "description": "<p>协调请假时间</p>",
-    "checklist": [
-      {
-        "id": 1,
-        "title": "生小孩时间核对",
-        "done": true,
-        "finishedAt": "2026-05-13",
-        "cost": 100,
-        "costRemark": "红包"
-      },
-      {
-        "id": 2,
-        "title": "哥哥时间协调",
-        "done": true,
-        "finishedAt": "2026-05-13",
-        "cost": 50,
-        "costRemark": "车费"
-      },
-      {
-        "id": 3,
-        "title": "老妈时间协调",
-        "done": true,
-        "finishedAt": "2026-05-13",
-        "cost": 80,
-        "costRemark": "水果"
-      }
-    ],
-    "expenses": [
-      {
-        "id": 1,
-        "amount": 20,
-        "remark": "买谢",
-        "date": "2026-05-29"
-      },
-      {
-        "id": 2,
-        "amount": 32,
-        "remark": "水果",
-        "date": "2026-05-29"
-      },
-      {
-        "id": 3,
-        "amount": 112,
-        "remark": "衣服",
-        "date": "2026-05-29"
-      }
-    ],
-    "createdAt": "2026-05-13 16:20",
-    "updatedAt": "2026-06-01 15:19",
-    "finishedAt": "2026-05-27 09:55",
-    "budget": 500
   }
 ]
