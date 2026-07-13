@@ -1,0 +1,92 @@
+[
+  {
+    "id": "product-americano-iced",
+    "name": "冰美式",
+    "category": "咖啡",
+    "price": 12,
+    "stock": 38,
+    "status": 1,
+    "warningStock": 5,
+    "imageUrl": ""
+  },
+  {
+    "id": "product-americano-hot",
+    "name": "热美式",
+    "category": "咖啡",
+    "price": 12,
+    "stock": 24,
+    "status": 1,
+    "warningStock": 5,
+    "imageUrl": ""
+  },
+  {
+    "id": "product-latte-iced",
+    "name": "冰拿铁",
+    "category": "咖啡",
+    "price": 16,
+    "stock": 20,
+    "status": 1,
+    "warningStock": 5,
+    "imageUrl": ""
+  },
+  {
+    "id": "product-latte-hot",
+    "name": "热拿铁",
+    "category": "咖啡",
+    "price": 16,
+    "stock": 18,
+    "status": 1,
+    "warningStock": 5,
+    "imageUrl": ""
+  },
+  {
+    "id": "product-coconut-latte",
+    "name": "生椰拿铁",
+    "category": "特调",
+    "price": 18,
+    "stock": 16,
+    "status": 1,
+    "warningStock": 5,
+    "imageUrl": ""
+  },
+  {
+    "id": "product-orange-americano",
+    "name": "橙香美式",
+    "category": "特调",
+    "price": 18,
+    "stock": 12,
+    "status": 1,
+    "warningStock": 5,
+    "imageUrl": ""
+  },
+  {
+    "id": "product-jasmine-milk-tea",
+    "name": "茉莉奶绿",
+    "category": "奶茶",
+    "price": 14,
+    "stock": 15,
+    "status": 1,
+    "warningStock": 5,
+    "imageUrl": ""
+  },
+  {
+    "id": "product-lemon-tea",
+    "name": "手打柠檬茶",
+    "category": "茶饮",
+    "price": 13,
+    "stock": 22,
+    "status": 1,
+    "warningStock": 5,
+    "imageUrl": ""
+  },
+  {
+    "id": "product-croissant",
+    "name": "黄油可颂",
+    "category": "小食",
+    "price": 9,
+    "stock": 10,
+    "status": 1,
+    "warningStock": 3,
+    "imageUrl": ""
+  }
+]

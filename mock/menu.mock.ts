@@ -8,6 +8,49 @@ export default defineMock([
       code: "00000",
       data: [
         {
+          path: "/business",
+          component: "Layout",
+          name: "/business",
+          redirect: "/business/cashier",
+          meta: {
+            title: "咖啡摊经营",
+            icon: "el-icon-CoffeeCup",
+            hidden: false,
+            alwaysShow: true,
+            params: null,
+          },
+          children: [
+            {
+              path: "cashier",
+              component: "business/cashier",
+              name: "BusinessCashier",
+              meta: {
+                title: "收银台",
+                icon: "el-icon-ShoppingCart",
+                hidden: false,
+                keepAlive: true,
+              },
+            },
+            {
+              path: "inventory",
+              component: "business/inventory",
+              name: "BusinessInventory",
+              meta: { title: "商品与库存", icon: "el-icon-Box", hidden: false, keepAlive: true },
+            },
+            {
+              path: "statistics",
+              component: "business/statistics",
+              name: "BusinessStatistics",
+              meta: {
+                title: "经营数据",
+                icon: "el-icon-DataAnalysis",
+                hidden: false,
+                keepAlive: true,
+              },
+            },
+          ],
+        },
+        {
           path: "/component",
           component: "Layout",
           name: "/component",
