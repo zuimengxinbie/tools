@@ -34,7 +34,7 @@
     "name": "热拿铁",
     "category": "咖啡",
     "price": 16,
-    "stock": 17,
+    "stock": 16,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
@@ -54,7 +54,7 @@
     "name": "橙香美式",
     "category": "特调",
     "price": 18,
-    "stock": 12,
+    "stock": 11,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""

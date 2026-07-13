@@ -1,5 +1,27 @@
 [
   {
+    "id": "order-ac365e8b-c2c8-421a-a61a-0af421a89b91",
+    "orderNo": "A004",
+    "totalAmount": 34,
+    "status": "completed",
+    "remark": "",
+    "createTime": "2026-07-13T07:14:23.027Z",
+    "items": [
+      {
+        "productId": "product-latte-hot",
+        "productName": "热拿铁",
+        "productPrice": 16,
+        "quantity": 1
+      },
+      {
+        "productId": "product-orange-americano",
+        "productName": "橙香美式",
+        "productPrice": 18,
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "order-811342a5-88ad-446d-93c8-77acfef859c2",
     "orderNo": "A003",
     "totalAmount": 53,
