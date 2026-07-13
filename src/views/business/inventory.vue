@@ -35,7 +35,7 @@
           <el-icon><Warning /></el-icon>
         </span>
         <div>
-          <small>库存预警</small>
+          <small>可售库存预警</small>
           <strong>{{ lowStockCount }}</strong>
         </div>
       </article>
@@ -44,7 +44,7 @@
           <el-icon><Box /></el-icon>
         </span>
         <div>
-          <small>当前总库存</small>
+          <small>实物总库存</small>
           <strong>{{ totalStock }}</strong>
         </div>
       </article>
@@ -65,7 +65,7 @@
               <el-option label="全部分类" value="全部" />
               <el-option v-for="item in store.categories" :key="item" :label="item" :value="item" />
             </el-select>
-            <span>低于预警值的库存会醒目标红</span>
+            <span>可售库存低于预警值时会醒目标红</span>
           </div>
 
           <el-table :data="filteredProducts" :row-class-name="getRowClassName" table-layout="fixed">
@@ -88,13 +88,29 @@
                 <strong>¥{{ formatMoney(row.price) }}</strong>
               </template>
             </el-table-column>
-            <el-table-column label="当前库存" min-width="150">
+            <el-table-column label="实物库存" min-width="105">
               <template #default="{ row }">
                 <div class="stock-cell">
                   <strong>{{ row.stock }}</strong>
                   <span>份</span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="预留库存" min-width="105">
+              <template #default="{ row }">
+                <div class="stock-cell is-reserved">
+                  <strong>{{ row.reservedStock }}</strong>
+                  <span>份</span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="可售库存" min-width="145">
+              <template #default="{ row }">
+                <div class="stock-cell">
+                  <strong>{{ row.availableStock }}</strong>
+                  <span>份</span>
                   <el-tag
-                    v-if="row.stock <= row.warningStock"
+                    v-if="row.availableStock <= row.warningStock"
                     type="danger"
                     size="small"
                     effect="light"
@@ -111,11 +127,12 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="操作" min-width="275" fixed="right">
+            <el-table-column label="操作" min-width="350" fixed="right">
               <template #default="{ row }">
                 <el-button type="primary" plain :icon="Box" @click="openRestockDialog(row)">
                   入库
                 </el-button>
+                <el-button text :icon="SetUp" @click="openAdjustmentDialog(row)">调整</el-button>
                 <el-button text :icon="Edit" @click="openProductDialog(row)">编辑</el-button>
                 <el-button
                   text
@@ -127,6 +144,14 @@
               </template>
             </el-table-column>
           </el-table>
+        </el-tab-pane>
+
+        <el-tab-pane label="预定管理" name="reservations">
+          <ReservationManager />
+        </el-tab-pane>
+
+        <el-tab-pane label="库存流水" name="movements" lazy>
+          <StockMovementTable />
         </el-tab-pane>
 
         <el-tab-pane label="分类管理" name="categories">
@@ -188,6 +213,21 @@
             <el-input-number v-model="productForm.warningStock" :min="0" :max="999" />
           </el-form-item>
         </div>
+        <div v-if="editingProduct" class="edit-stock-summary">
+          <div>
+            <small>实物库存</small>
+            <strong>{{ editingProduct.stock }}</strong>
+          </div>
+          <div>
+            <small>预留库存</small>
+            <strong>{{ editingProduct.reservedStock }}</strong>
+          </div>
+          <div>
+            <small>可售库存</small>
+            <strong>{{ editingProduct.availableStock }}</strong>
+          </div>
+          <el-button plain :icon="SetUp" @click="openAdjustmentFromEditor">调整库存</el-button>
+        </div>
       </el-form>
       <template #footer>
         <el-button @click="productDialogVisible = false">取消</el-button>
@@ -224,6 +264,8 @@
         </el-button>
       </template>
     </el-dialog>
+
+    <StockAdjustmentDialog v-model="adjustmentDialogVisible" :product="adjustingProduct" />
   </div>
 </template>
 
@@ -239,9 +281,13 @@ import {
   Goods,
   Plus,
   Search,
+  SetUp,
   Warning,
 } from "@element-plus/icons-vue";
 import { useBusinessStore } from "@/stores/business";
+import ReservationManager from "./components/ReservationManager.vue";
+import StockAdjustmentDialog from "./components/StockAdjustmentDialog.vue";
+import StockMovementTable from "./components/StockMovementTable.vue";
 import type { Product, ProductInput } from "./types";
 
 const store = useBusinessStore();
@@ -255,6 +301,8 @@ const restockDialogVisible = ref(false);
 const restockingProductId = ref("");
 const restockQuantity = ref(10);
 const operationLoading = ref(false);
+const adjustmentDialogVisible = ref(false);
+const adjustingProductId = ref("");
 
 const createEmptyProduct = (): ProductInput => ({
   name: "",
@@ -267,7 +315,7 @@ const createEmptyProduct = (): ProductInput => ({
 const productForm = reactive<ProductInput>(createEmptyProduct());
 
 const lowStockCount = computed(
-  () => store.products.filter((item) => item.stock <= item.warningStock).length
+  () => store.products.filter((item) => item.availableStock <= item.warningStock).length
 );
 const totalStock = computed(() => store.products.reduce((sum, item) => sum + item.stock, 0));
 const filteredProducts = computed(() => {
@@ -281,6 +329,12 @@ const filteredProducts = computed(() => {
 const restockingProduct = computed(() =>
   store.products.find((item) => item.id === restockingProductId.value)
 );
+const editingProduct = computed(() =>
+  store.products.find((item) => item.id === editingProductId.value)
+);
+const adjustingProduct = computed(() =>
+  store.products.find((item) => item.id === adjustingProductId.value)
+);
 
 function formatMoney(value: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(2);
@@ -291,7 +345,7 @@ function shortId(id: string): string {
 }
 
 function getRowClassName({ row }: { row: Product }): string {
-  return row.stock <= row.warningStock ? "low-stock-row" : "";
+  return row.availableStock <= row.warningStock ? "low-stock-row" : "";
 }
 
 function productCountByCategory(category: string): number {
@@ -341,6 +395,17 @@ function openRestockDialog(product: Product): void {
   restockingProductId.value = product.id;
   restockQuantity.value = 10;
   restockDialogVisible.value = true;
+}
+
+function openAdjustmentDialog(product: Product): void {
+  adjustingProductId.value = product.id;
+  adjustmentDialogVisible.value = true;
+}
+
+function openAdjustmentFromEditor(): void {
+  if (!editingProduct.value) return;
+  productDialogVisible.value = false;
+  openAdjustmentDialog(editingProduct.value);
 }
 
 async function saveRestock(): Promise<void> {
@@ -575,6 +640,10 @@ onMounted(() => {
   > span {
     color: #90867f;
   }
+
+  &.is-reserved strong {
+    color: #c27b3e;
+  }
 }
 
 :deep(.low-stock-row) {
@@ -654,6 +723,29 @@ onMounted(() => {
   :deep(.el-select),
   :deep(.el-input-number) {
     width: 100%;
+  }
+}
+
+.edit-stock-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 14px;
+  background: #f5f3ef;
+  border-radius: 12px;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  small {
+    color: #8d847d;
+  }
+  strong {
+    font-size: 20px;
   }
 }
 

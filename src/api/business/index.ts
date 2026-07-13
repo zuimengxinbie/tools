@@ -5,6 +5,11 @@ import type {
   OrderStatus,
   Product,
   ProductInput,
+  Reservation,
+  ReservationStatus,
+  StockAdjustmentInput,
+  StockMovement,
+  StockMovementType,
 } from "@/views/business/types";
 
 const BASE = "/api/v1/business";
@@ -14,6 +19,7 @@ export interface BusinessBootstrap {
   products: Product[];
   categories: string[];
   orders: BusinessOrder[];
+  reservations: Reservation[];
 }
 
 export interface OrderRangeQuery {
@@ -35,6 +41,22 @@ export interface OrderMutationResult {
 export interface CatalogMutationResult {
   products: Product[];
   categories: string[];
+}
+
+export interface ReservationInput {
+  customer: string;
+  pickupTime: string;
+  remark: string;
+  items: CartItem[];
+}
+
+export interface InventoryMutationResult extends CatalogMutationResult {
+  reservations: Reservation[];
+}
+
+export interface StockMovementQuery extends OrderRangeQuery {
+  productId?: string;
+  type?: StockMovementType;
 }
 
 const BusinessAPI = {
@@ -71,10 +93,48 @@ const BusinessAPI = {
     });
   },
   restockProduct(id: string, quantity: number) {
-    return request<any, CatalogMutationResult>({
+    return request<any, InventoryMutationResult>({
       url: `${BASE}/products/${id}/restock`,
       method: "post",
       data: { quantity },
+    });
+  },
+  adjustStock(id: string, data: StockAdjustmentInput) {
+    return request<any, InventoryMutationResult>({
+      url: `${BASE}/products/${id}/stock-adjustment`,
+      method: "post",
+      data,
+    });
+  },
+  getReservations() {
+    return request<any, Reservation[]>({ url: `${BASE}/reservations`, method: "get" });
+  },
+  addReservation(data: ReservationInput) {
+    return request<any, InventoryMutationResult>({
+      url: `${BASE}/reservations`,
+      method: "post",
+      data,
+    });
+  },
+  updateReservation(id: string, data: ReservationInput) {
+    return request<any, InventoryMutationResult>({
+      url: `${BASE}/reservations/${id}`,
+      method: "put",
+      data,
+    });
+  },
+  updateReservationStatus(id: string, status: ReservationStatus) {
+    return request<any, InventoryMutationResult>({
+      url: `${BASE}/reservations/${id}/status`,
+      method: "patch",
+      data: { status },
+    });
+  },
+  getStockMovements(params: StockMovementQuery) {
+    return request<any, StockMovement[]>({
+      url: `${BASE}/stock-movements`,
+      method: "get",
+      params,
     });
   },
   addCategory(name: string) {

@@ -42,8 +42,8 @@
             v-for="product in filteredProducts"
             :key="product.id"
             type="button"
-            :class="['product-card', { 'is-sold-out': product.stock === 0 }]"
-            :disabled="product.stock === 0"
+            :class="['product-card', { 'is-sold-out': product.availableStock === 0 }]"
+            :disabled="product.availableStock === 0"
             @click="addToCart(product)"
           >
             <span class="product-card__icon">
@@ -51,8 +51,9 @@
             </span>
             <span class="product-card__content">
               <strong>{{ product.name }}</strong>
-              <small :class="{ 'is-low': product.stock <= product.warningStock }">
-                {{ product.stock === 0 ? "已售罄" : `余 ${product.stock} 份` }}
+              <small :class="{ 'is-low': product.availableStock <= product.warningStock }">
+                {{ product.availableStock === 0 ? "已售罄" : `可售 ${product.availableStock} 份` }}
+                <template v-if="product.reservedStock">· 预留 {{ product.reservedStock }}</template>
               </small>
             </span>
             <span class="product-card__price">¥{{ formatMoney(product.price) }}</span>
@@ -82,7 +83,7 @@
               <el-button
                 circle
                 :icon="Plus"
-                :disabled="item.quantity >= item.product.stock"
+                :disabled="item.quantity >= item.product.availableStock"
                 @click="increaseQuantity(item.productId)"
               />
             </div>
@@ -320,8 +321,8 @@ function formatTime(value: string): string {
 function addToCart(product: Product): void {
   const item = cart.value.find((cartItem) => cartItem.productId === product.id);
   if (item) {
-    if (item.quantity >= product.stock) {
-      ElMessage.warning(`${product.name} 当前仅剩 ${product.stock} 份`);
+    if (item.quantity >= product.availableStock) {
+      ElMessage.warning(`${product.name} 当前仅可售 ${product.availableStock} 份`);
       return;
     }
     item.quantity += 1;
@@ -333,7 +334,7 @@ function addToCart(product: Product): void {
 function increaseQuantity(productId: string): void {
   const product = store.products.find((item) => item.id === productId);
   const item = cart.value.find((cartItem) => cartItem.productId === productId);
-  if (product && item && item.quantity < product.stock) item.quantity += 1;
+  if (product && item && item.quantity < product.availableStock) item.quantity += 1;
 }
 
 function decreaseQuantity(productId: string): void {

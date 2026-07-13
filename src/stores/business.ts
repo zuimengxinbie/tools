@@ -1,11 +1,16 @@
 import { defineStore } from "pinia";
 import BusinessAPI from "@/api/business";
+import type { ReservationInput, StockMovementQuery } from "@/api/business";
 import type {
   BusinessOrder,
   CartItem,
   OrderStatus,
   Product,
   ProductInput,
+  Reservation,
+  ReservationStatus,
+  StockAdjustmentInput,
+  StockMovement,
 } from "@/views/business/types";
 
 export function toLocalDateKey(value: string | Date = new Date()): string {
@@ -21,9 +26,12 @@ export const useBusinessStore = defineStore("business", () => {
   const orders = ref<BusinessOrder[]>([]);
   const historyOrders = ref<BusinessOrder[]>([]);
   const categories = ref<string[]>([]);
+  const reservations = ref<Reservation[]>([]);
+  const stockMovements = ref<StockMovement[]>([]);
   const businessDate = ref(toLocalDateKey());
   const loading = ref(false);
   const historyLoading = ref(false);
+  const movementLoading = ref(false);
   const initialized = ref(false);
   const historyRange = ref<[string, string]>();
   let initializePromise: Promise<void> | null = null;
@@ -36,6 +44,15 @@ export const useBusinessStore = defineStore("business", () => {
   function applyCatalog(result: { products: Product[]; categories: string[] }): void {
     products.value = result.products;
     categories.value = result.categories;
+  }
+
+  function applyInventory(result: {
+    products: Product[];
+    categories: string[];
+    reservations: Reservation[];
+  }): void {
+    applyCatalog(result);
+    reservations.value = result.reservations;
   }
 
   function updateHistoryOrder(order: BusinessOrder): void {
@@ -61,6 +78,7 @@ export const useBusinessStore = defineStore("business", () => {
         products.value = data.products;
         categories.value = data.categories;
         orders.value = data.orders;
+        reservations.value = data.reservations;
         businessDate.value = data.date;
         initialized.value = true;
       } finally {
@@ -116,7 +134,40 @@ export const useBusinessStore = defineStore("business", () => {
 
   async function restockProduct(id: string, quantity: number): Promise<void> {
     const result = await BusinessAPI.restockProduct(id, quantity);
-    applyCatalog(result);
+    applyInventory(result);
+  }
+
+  async function adjustStock(id: string, input: StockAdjustmentInput): Promise<void> {
+    const result = await BusinessAPI.adjustStock(id, input);
+    applyInventory(result);
+  }
+
+  async function loadReservations(): Promise<void> {
+    reservations.value = await BusinessAPI.getReservations();
+  }
+
+  async function addReservation(input: ReservationInput): Promise<void> {
+    const result = await BusinessAPI.addReservation(input);
+    applyInventory(result);
+  }
+
+  async function updateReservation(id: string, input: ReservationInput): Promise<void> {
+    const result = await BusinessAPI.updateReservation(id, input);
+    applyInventory(result);
+  }
+
+  async function changeReservationStatus(id: string, status: ReservationStatus): Promise<void> {
+    const result = await BusinessAPI.updateReservationStatus(id, status);
+    applyInventory(result);
+  }
+
+  async function loadStockMovements(query: StockMovementQuery): Promise<void> {
+    movementLoading.value = true;
+    try {
+      stockMovements.value = await BusinessAPI.getStockMovements(query);
+    } finally {
+      movementLoading.value = false;
+    }
   }
 
   async function addProduct(input: ProductInput): Promise<void> {
@@ -154,9 +205,12 @@ export const useBusinessStore = defineStore("business", () => {
     orders,
     historyOrders,
     categories,
+    reservations,
+    stockMovements,
     businessDate,
     loading,
     historyLoading,
+    movementLoading,
     initialized,
     activeProducts,
     activeOrders,
@@ -167,6 +221,12 @@ export const useBusinessStore = defineStore("business", () => {
     changeOrderStatus,
     voidOrder,
     restockProduct,
+    adjustStock,
+    loadReservations,
+    addReservation,
+    updateReservation,
+    changeReservationStatus,
+    loadStockMovements,
     addProduct,
     updateProduct,
     toggleProduct,

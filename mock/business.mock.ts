@@ -5,6 +5,17 @@ import { defineMock } from "./base";
 
 type ProductStatus = 0 | 1;
 type OrderStatus = "pending" | "making" | "completed" | "voided";
+type ReservationStatus = "active" | "completed" | "cancelled";
+type StockMovementType =
+  | "opening"
+  | "restock"
+  | "sale"
+  | "void_return"
+  | "reservation_lock"
+  | "reservation_release"
+  | "reservation_complete"
+  | "loss"
+  | "stocktake";
 
 interface Product {
   id: string;
@@ -34,10 +45,49 @@ interface BusinessOrder {
   items: OrderItem[];
 }
 
+interface ReservationItem {
+  productId: string;
+  productName: string;
+  quantity: number;
+}
+
+interface Reservation {
+  id: string;
+  reservationNo: string;
+  customer: string;
+  pickupTime: string;
+  remark: string;
+  status: ReservationStatus;
+  createTime: string;
+  updateTime: string;
+  items: ReservationItem[];
+}
+
+interface StockMovement {
+  id: string;
+  productId: string;
+  productName: string;
+  type: StockMovementType;
+  stockDelta: number;
+  reservedDelta: number;
+  beforeStock: number;
+  afterStock: number;
+  beforeReserved: number;
+  afterReserved: number;
+  referenceId?: string;
+  referenceNo?: string;
+  reason: string;
+  remark: string;
+  createTime: string;
+}
+
 const DATA_DIR = path.resolve(process.cwd(), "mock/business");
 const ORDERS_DIR = path.join(DATA_DIR, "orders");
+const MOVEMENTS_DIR = path.join(DATA_DIR, "stock-movements");
 const PRODUCTS_FILE = path.join(DATA_DIR, "products.json");
 const CATEGORIES_FILE = path.join(DATA_DIR, "categories.json");
+const RESERVATIONS_FILE = path.join(DATA_DIR, "reservations.json");
+const LEDGER_META_FILE = path.join(DATA_DIR, "stock-ledger.json");
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const ORDER_STATUSES = new Set<OrderStatus>(["pending", "making", "completed", "voided"]);
 
@@ -56,6 +106,7 @@ function failure(error: unknown) {
 function ensureDataDirectories(): void {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
   if (!fs.existsSync(ORDERS_DIR)) fs.mkdirSync(ORDERS_DIR, { recursive: true });
+  if (!fs.existsSync(MOVEMENTS_DIR)) fs.mkdirSync(MOVEMENTS_DIR, { recursive: true });
 }
 
 function readJson<T>(file: string, fallback?: T): T {
@@ -123,23 +174,171 @@ function readOrders(date: string): BusinessOrder[] {
   return orders as BusinessOrder[];
 }
 
-function persistOrderTransaction(
-  date: string,
-  nextOrders: BusinessOrder[],
-  nextProducts: Product[],
-  previousOrders: BusinessOrder[],
-  previousProducts: Product[]
-): void {
-  const orderFile = getOrderFile(date);
-  const orderFileExisted = fs.existsSync(orderFile);
-  writeJson(orderFile, nextOrders);
+function getMovementFile(date: string): string {
+  assertDateKey(date);
+  return path.join(MOVEMENTS_DIR, `${date}.json`);
+}
+
+function readReservations(): Reservation[] {
+  const reservations = readJson<unknown>(RESERVATIONS_FILE, []);
+  if (!Array.isArray(reservations)) throw new Error("reservations.json 必须是数组");
+  return reservations as Reservation[];
+}
+
+function readMovements(date: string): StockMovement[] {
+  const movements = readJson<unknown>(getMovementFile(date), []);
+  if (!Array.isArray(movements)) throw new Error(`${date}.json 库存流水必须是数组`);
+  return movements as StockMovement[];
+}
+
+function reservedMap(reservations = readReservations()): Map<string, number> {
+  const result = new Map<string, number>();
+  reservations
+    .filter((item) => item.status === "active")
+    .forEach((reservation) => {
+      reservation.items.forEach((item) => {
+        result.set(item.productId, (result.get(item.productId) ?? 0) + item.quantity);
+      });
+    });
+  return result;
+}
+
+function enrichProducts(products = readProducts(), reservations = readReservations()) {
+  const reserved = reservedMap(reservations);
+  return products.map((product) => {
+    const reservedStock = reserved.get(product.id) ?? 0;
+    return {
+      ...product,
+      reservedStock,
+      availableStock: Math.max(0, product.stock - reservedStock),
+    };
+  });
+}
+
+function inventoryResult(
+  products = readProducts(),
+  reservations = readReservations(),
+  categories = readCategories()
+) {
+  return { products: enrichProducts(products, reservations), reservations, categories };
+}
+
+function persistJsonTransaction(changes: Array<{ file: string; data: unknown }>): void {
+  const snapshots = changes.map(({ file }) => ({
+    file,
+    existed: fs.existsSync(file),
+    content: fs.existsSync(file) ? fs.readFileSync(file, "utf-8") : "",
+  }));
   try {
-    writeJson(PRODUCTS_FILE, nextProducts);
+    changes.forEach(({ file, data }) => writeJson(file, data));
   } catch (error) {
-    if (orderFileExisted) writeJson(orderFile, previousOrders);
-    else if (fs.existsSync(orderFile)) fs.rmSync(orderFile);
-    writeJson(PRODUCTS_FILE, previousProducts);
+    snapshots.reverse().forEach(({ file, existed, content }) => {
+      if (existed) fs.writeFileSync(file, content, "utf-8");
+      else if (fs.existsSync(file)) fs.rmSync(file);
+    });
     throw error;
+  }
+}
+
+function movement(
+  product: Product,
+  type: StockMovementType,
+  values: {
+    beforeStock: number;
+    afterStock: number;
+    beforeReserved: number;
+    afterReserved: number;
+    referenceId?: string;
+    referenceNo?: string;
+    reason: string;
+    remark?: string;
+    createTime?: string;
+  }
+): StockMovement {
+  return {
+    id: `movement-${randomUUID()}`,
+    productId: product.id,
+    productName: product.name,
+    type,
+    stockDelta: values.afterStock - values.beforeStock,
+    reservedDelta: values.afterReserved - values.beforeReserved,
+    beforeStock: values.beforeStock,
+    afterStock: values.afterStock,
+    beforeReserved: values.beforeReserved,
+    afterReserved: values.afterReserved,
+    referenceId: values.referenceId,
+    referenceNo: values.referenceNo,
+    reason: values.reason,
+    remark: values.remark?.trim().slice(0, 100) ?? "",
+    createTime: values.createTime ?? new Date().toISOString(),
+  };
+}
+
+function movementChange(date: string, additions: StockMovement[]) {
+  return { file: getMovementFile(date), data: [...additions, ...readMovements(date)] };
+}
+
+function ensureOpeningMovements(): void {
+  ensureDataDirectories();
+  if (fs.existsSync(LEDGER_META_FILE)) return;
+  const products = readProducts();
+  const date = toLocalDateKey();
+  const createTime = new Date().toISOString();
+  const openings = products.map((product) =>
+    movement(product, "opening", {
+      beforeStock: 0,
+      afterStock: product.stock,
+      beforeReserved: 0,
+      afterReserved: 0,
+      reason: "库存流水启用时的期初库存",
+      createTime,
+    })
+  );
+  persistJsonTransaction([
+    movementChange(date, openings),
+    { file: LEDGER_META_FILE, data: { initializedAt: createTime } },
+  ]);
+}
+
+function normalizeReservationItems(
+  rawItems: unknown,
+  products: Product[],
+  reservations: Reservation[],
+  current?: Reservation
+): ReservationItem[] {
+  if (!Array.isArray(rawItems) || !rawItems.length) throw new Error("请至少选择一个预定商品");
+  const quantities = new Map<string, number>();
+  rawItems.forEach((item: any) => {
+    if (
+      typeof item?.productId !== "string" ||
+      !Number.isInteger(item.quantity) ||
+      item.quantity <= 0
+    ) {
+      throw new Error("预定商品数量无效");
+    }
+    quantities.set(item.productId, (quantities.get(item.productId) ?? 0) + item.quantity);
+  });
+  const reserved = reservedMap(reservations);
+  current?.items.forEach((item) => {
+    reserved.set(item.productId, Math.max(0, (reserved.get(item.productId) ?? 0) - item.quantity));
+  });
+  return [...quantities].map(([productId, quantity]) => {
+    const product = products.find((item) => item.id === productId);
+    if (!product || product.status !== 1) throw new Error("预定中包含不存在或已下架的商品");
+    const available = product.stock - (reserved.get(product.id) ?? 0);
+    if (quantity > available) {
+      throw new Error(`${product.name} 可售库存不足，当前仅剩 ${available} 份`);
+    }
+    return { productId, productName: product.name, quantity };
+  });
+}
+
+function validateReservationBody(body: any): void {
+  if (!body || typeof body.customer !== "string" || !body.customer.trim()) {
+    throw new Error("请输入预定人或来源");
+  }
+  if (typeof body.pickupTime !== "string" || Number.isNaN(Date.parse(body.pickupTime))) {
+    throw new Error("请选择有效的预计取货时间");
   }
 }
 
@@ -160,7 +359,7 @@ function persistCatalogTransaction(
 }
 
 function catalogResult(products = readProducts(), categories = readCategories()) {
-  return { products, categories };
+  return { products: enrichProducts(products), categories };
 }
 
 function validateProductInput(body: any, includeStock: boolean): void {
@@ -177,18 +376,23 @@ function validateProductInput(body: any, includeStock: boolean): void {
   }
 }
 
+ensureOpeningMovements();
+
 export default defineMock([
   {
     url: "business/bootstrap",
     method: ["GET"],
     body: () => {
       try {
+        ensureOpeningMovements();
         const date = toLocalDateKey();
+        const reservations = readReservations();
         return success({
           date,
-          products: readProducts(),
+          products: enrichProducts(readProducts(), reservations),
           categories: readCategories(),
           orders: readOrders(date),
+          reservations,
         });
       } catch (error) {
         return failure(error);
@@ -241,15 +445,20 @@ export default defineMock([
         const date = toLocalDateKey();
         const previousProducts = readProducts();
         const previousOrders = readOrders(date);
+        const reservations = readReservations();
+        const reserved = reservedMap(reservations);
         const nextProducts = structuredClone(previousProducts);
         const orderItems: OrderItem[] = [];
+        const movements: StockMovement[] = [];
 
         quantities.forEach((quantity, productId) => {
           const product = nextProducts.find((item) => item.id === productId);
           if (!product || product.status !== 1) throw new Error("订单中包含不存在或已下架的商品");
-          if (product.stock < quantity) {
-            throw new Error(`${product.name} 库存不足，当前仅剩 ${product.stock} 份`);
+          const available = product.stock - (reserved.get(product.id) ?? 0);
+          if (available < quantity) {
+            throw new Error(`${product.name} 可售库存不足，当前仅剩 ${available} 份`);
           }
+          const beforeStock = product.stock;
           product.stock -= quantity;
           orderItems.push({
             productId: product.id,
@@ -257,6 +466,15 @@ export default defineMock([
             productPrice: product.price,
             quantity,
           });
+          movements.push(
+            movement(product, "sale", {
+              beforeStock,
+              afterStock: product.stock,
+              beforeReserved: reserved.get(product.id) ?? 0,
+              afterReserved: reserved.get(product.id) ?? 0,
+              reason: "普通订单销售出库",
+            })
+          );
         });
 
         const maxNumber = previousOrders.reduce((max, order) => {
@@ -273,8 +491,20 @@ export default defineMock([
           items: orderItems,
         };
         const nextOrders = [order, ...previousOrders];
-        persistOrderTransaction(date, nextOrders, nextProducts, previousOrders, previousProducts);
-        return success({ order, products: nextProducts, orders: nextOrders }, "下单成功");
+        movements.forEach((item) => {
+          item.referenceId = order.id;
+          item.referenceNo = order.orderNo;
+          item.createTime = order.createTime;
+        });
+        persistJsonTransaction([
+          { file: getOrderFile(date), data: nextOrders },
+          { file: PRODUCTS_FILE, data: nextProducts },
+          movementChange(date, movements),
+        ]);
+        return success(
+          { order, products: enrichProducts(nextProducts, reservations), orders: nextOrders },
+          "下单成功"
+        );
       } catch (error) {
         return failure(error);
       }
@@ -292,12 +522,18 @@ export default defineMock([
 
         const previousProducts = readProducts();
         const previousOrders = readOrders(date);
+        const reservations = readReservations();
+        const reserved = reservedMap(reservations);
         const nextProducts = structuredClone(previousProducts);
         const nextOrders = structuredClone(previousOrders);
         const order = nextOrders.find((item) => item.id === id);
         if (!order) throw new Error("订单不存在");
         if (order.status === status) {
-          return success({ order, products: previousProducts, orders: previousOrders });
+          return success({
+            order,
+            products: enrichProducts(previousProducts, reservations),
+            orders: previousOrders,
+          });
         }
         if (order.status === "voided" || order.status === "completed") {
           throw new Error("当前订单状态不能再变更");
@@ -307,14 +543,42 @@ export default defineMock([
         }
 
         if (status === "voided") {
+          const movements: StockMovement[] = [];
           order.items.forEach((orderItem) => {
             const product = nextProducts.find((item) => item.id === orderItem.productId);
-            if (product) product.stock += orderItem.quantity;
+            if (product) {
+              const beforeStock = product.stock;
+              product.stock += orderItem.quantity;
+              movements.push(
+                movement(product, "void_return", {
+                  beforeStock,
+                  afterStock: product.stock,
+                  beforeReserved: reserved.get(product.id) ?? 0,
+                  afterReserved: reserved.get(product.id) ?? 0,
+                  referenceId: order.id,
+                  referenceNo: order.orderNo,
+                  reason: "订单作废退回库存",
+                })
+              );
+            }
           });
+          order.status = status;
+          persistJsonTransaction([
+            { file: getOrderFile(date), data: nextOrders },
+            { file: PRODUCTS_FILE, data: nextProducts },
+            movementChange(toLocalDateKey(), movements),
+          ]);
+          return success(
+            { order, products: enrichProducts(nextProducts, reservations), orders: nextOrders },
+            "订单状态已更新"
+          );
         }
         order.status = status;
-        persistOrderTransaction(date, nextOrders, nextProducts, previousOrders, previousProducts);
-        return success({ order, products: nextProducts, orders: nextOrders }, "订单状态已更新");
+        writeJson(getOrderFile(date), nextOrders);
+        return success(
+          { order, products: enrichProducts(nextProducts, reservations), orders: nextOrders },
+          "订单状态已更新"
+        );
       } catch (error) {
         return failure(error);
       }
@@ -331,7 +595,7 @@ export default defineMock([
         const name = body.name.trim();
         if (products.some((item) => item.name === name)) throw new Error("商品名称已存在");
         if (!categories.includes(body.category)) throw new Error("商品分类不存在");
-        products.unshift({
+        const product: Product = {
           id: `product-${randomUUID()}`,
           name,
           category: body.category,
@@ -340,8 +604,21 @@ export default defineMock([
           warningStock: Number(body.warningStock),
           status: body.status === 0 ? 0 : 1,
           imageUrl: "",
-        });
-        writeJson(PRODUCTS_FILE, products);
+        };
+        products.unshift(product);
+        const date = toLocalDateKey();
+        persistJsonTransaction([
+          { file: PRODUCTS_FILE, data: products },
+          movementChange(date, [
+            movement(product, "opening", {
+              beforeStock: 0,
+              afterStock: product.stock,
+              beforeReserved: 0,
+              afterReserved: 0,
+              reason: "新增商品初始库存",
+            }),
+          ]),
+        ]);
         return success(catalogResult(products, categories), "商品已新增");
       } catch (error) {
         return failure(error);
@@ -402,11 +679,294 @@ export default defineMock([
           throw new Error("入库数量必须是正整数");
         }
         const products = readProducts();
+        const reservations = readReservations();
+        const reserved = reservedMap(reservations);
         const product = products.find((item) => item.id === params.id);
         if (!product) throw new Error("商品不存在");
+        const beforeStock = product.stock;
         product.stock += quantity;
-        writeJson(PRODUCTS_FILE, products);
-        return success(catalogResult(products), "入库成功");
+        const date = toLocalDateKey();
+        persistJsonTransaction([
+          { file: PRODUCTS_FILE, data: products },
+          movementChange(date, [
+            movement(product, "restock", {
+              beforeStock,
+              afterStock: product.stock,
+              beforeReserved: reserved.get(product.id) ?? 0,
+              afterReserved: reserved.get(product.id) ?? 0,
+              reason: "商品入库",
+            }),
+          ]),
+        ]);
+        return success(inventoryResult(products, reservations), "入库成功");
+      } catch (error) {
+        return failure(error);
+      }
+    },
+  },
+  {
+    url: "business/products/:id/stock-adjustment",
+    method: ["POST"],
+    body: ({ params, body }) => {
+      try {
+        const mode = body?.mode as "loss" | "stocktake";
+        if (mode !== "loss" && mode !== "stocktake") throw new Error("库存调整方式无效");
+        const quantity = Number(body?.quantity);
+        if (!Number.isInteger(quantity) || quantity < 0 || (mode === "loss" && quantity === 0)) {
+          throw new Error(mode === "loss" ? "损耗数量必须是正整数" : "盘点库存必须是非负整数");
+        }
+        const reason = typeof body?.reason === "string" ? body.reason.trim() : "";
+        if (!reason) throw new Error("请输入调整原因");
+        const remark = typeof body?.remark === "string" ? body.remark.trim() : "";
+        const products = readProducts();
+        const reservations = readReservations();
+        const reserved = reservedMap(reservations);
+        const product = products.find((item) => item.id === params.id);
+        if (!product) throw new Error("商品不存在");
+        const beforeStock = product.stock;
+        const afterStock = mode === "loss" ? beforeStock - quantity : quantity;
+        const productReserved = reserved.get(product.id) ?? 0;
+        if (afterStock < 0) throw new Error("损耗数量不能超过当前实物库存");
+        if (afterStock < productReserved) {
+          throw new Error(`调整后库存不能低于已预留的 ${productReserved} 份，请先处理相关预定`);
+        }
+        if (afterStock === beforeStock) throw new Error("调整后库存与当前库存相同");
+        product.stock = afterStock;
+        const date = toLocalDateKey();
+        persistJsonTransaction([
+          { file: PRODUCTS_FILE, data: products },
+          movementChange(date, [
+            movement(product, mode, {
+              beforeStock,
+              afterStock,
+              beforeReserved: productReserved,
+              afterReserved: productReserved,
+              reason: reason.slice(0, 40),
+              remark,
+            }),
+          ]),
+        ]);
+        return success(inventoryResult(products, reservations), "库存调整成功");
+      } catch (error) {
+        return failure(error);
+      }
+    },
+  },
+  {
+    url: "business/reservations",
+    method: ["GET"],
+    body: () => {
+      try {
+        return success(
+          readReservations().sort(
+            (first, second) => Date.parse(second.createTime) - Date.parse(first.createTime)
+          )
+        );
+      } catch (error) {
+        return failure(error);
+      }
+    },
+  },
+  {
+    url: "business/reservations",
+    method: ["POST"],
+    body: ({ body }) => {
+      try {
+        validateReservationBody(body);
+        const products = readProducts();
+        const reservations = readReservations();
+        const items = normalizeReservationItems(body.items, products, reservations);
+        const beforeReserved = reservedMap(reservations);
+        const now = new Date();
+        const date = toLocalDateKey(now);
+        const maxNumber = reservations
+          .filter((item) => toLocalDateKey(new Date(item.createTime)) === date)
+          .reduce((max, item) => {
+            const value = Number(item.reservationNo.match(/(\d+)$/)?.[1] ?? 0);
+            return Math.max(max, value);
+          }, 0);
+        const reservation: Reservation = {
+          id: `reservation-${randomUUID()}`,
+          reservationNo: `R${date.replaceAll("-", "")}-${String(maxNumber + 1).padStart(3, "0")}`,
+          customer: body.customer.trim().slice(0, 30),
+          pickupTime: new Date(body.pickupTime).toISOString(),
+          remark: typeof body.remark === "string" ? body.remark.trim().slice(0, 100) : "",
+          status: "active",
+          createTime: now.toISOString(),
+          updateTime: now.toISOString(),
+          items,
+        };
+        const nextReservations = [reservation, ...reservations];
+        const afterReserved = reservedMap(nextReservations);
+        const movements = items.map((item) => {
+          const product = products.find((candidate) => candidate.id === item.productId)!;
+          return movement(product, "reservation_lock", {
+            beforeStock: product.stock,
+            afterStock: product.stock,
+            beforeReserved: beforeReserved.get(product.id) ?? 0,
+            afterReserved: afterReserved.get(product.id) ?? 0,
+            referenceId: reservation.id,
+            referenceNo: reservation.reservationNo,
+            reason: "新增预定锁定库存",
+            remark: reservation.remark,
+            createTime: reservation.createTime,
+          });
+        });
+        persistJsonTransaction([
+          { file: RESERVATIONS_FILE, data: nextReservations },
+          movementChange(date, movements),
+        ]);
+        return success(inventoryResult(products, nextReservations), "预定已创建");
+      } catch (error) {
+        return failure(error);
+      }
+    },
+  },
+  {
+    url: "business/reservations/:id",
+    method: ["PUT"],
+    body: ({ params, body }) => {
+      try {
+        validateReservationBody(body);
+        const products = readProducts();
+        const reservations = readReservations();
+        const current = reservations.find((item) => item.id === params.id);
+        if (!current) throw new Error("预定不存在");
+        if (current.status !== "active") throw new Error("只有预定中的记录可以编辑");
+        const items = normalizeReservationItems(body.items, products, reservations, current);
+        const beforeReserved = reservedMap(reservations);
+        const nextReservations = structuredClone(reservations);
+        const next = nextReservations.find((item) => item.id === params.id)!;
+        Object.assign(next, {
+          customer: body.customer.trim().slice(0, 30),
+          pickupTime: new Date(body.pickupTime).toISOString(),
+          remark: typeof body.remark === "string" ? body.remark.trim().slice(0, 100) : "",
+          updateTime: new Date().toISOString(),
+          items,
+        });
+        const afterReserved = reservedMap(nextReservations);
+        const productIds = new Set([
+          ...current.items.map((item) => item.productId),
+          ...items.map((item) => item.productId),
+        ]);
+        const movements: StockMovement[] = [];
+        productIds.forEach((productId) => {
+          const product = products.find((item) => item.id === productId);
+          if (!product) return;
+          const before = beforeReserved.get(productId) ?? 0;
+          const after = afterReserved.get(productId) ?? 0;
+          if (before === after) return;
+          movements.push(
+            movement(product, after > before ? "reservation_lock" : "reservation_release", {
+              beforeStock: product.stock,
+              afterStock: product.stock,
+              beforeReserved: before,
+              afterReserved: after,
+              referenceId: next.id,
+              referenceNo: next.reservationNo,
+              reason: "编辑预定调整预留库存",
+              remark: next.remark,
+              createTime: next.updateTime,
+            })
+          );
+        });
+        const date = toLocalDateKey();
+        const changes: Array<{ file: string; data: unknown }> = [
+          { file: RESERVATIONS_FILE, data: nextReservations },
+        ];
+        if (movements.length) changes.push(movementChange(date, movements));
+        persistJsonTransaction(changes);
+        return success(inventoryResult(products, nextReservations), "预定已更新");
+      } catch (error) {
+        return failure(error);
+      }
+    },
+  },
+  {
+    url: "business/reservations/:id/status",
+    method: ["PATCH"],
+    body: ({ params, body }) => {
+      try {
+        const status = body?.status as ReservationStatus;
+        if (status !== "completed" && status !== "cancelled") {
+          throw new Error("预定状态无效");
+        }
+        const products = readProducts();
+        const reservations = readReservations();
+        const current = reservations.find((item) => item.id === params.id);
+        if (!current) throw new Error("预定不存在");
+        if (current.status === status) return success(inventoryResult(products, reservations));
+        if (current.status !== "active") throw new Error("当前预定状态不能再变更");
+        const beforeReserved = reservedMap(reservations);
+        const nextProducts = structuredClone(products);
+        const nextReservations = structuredClone(reservations);
+        const next = nextReservations.find((item) => item.id === params.id)!;
+        next.status = status;
+        next.updateTime = new Date().toISOString();
+        const afterReserved = reservedMap(nextReservations);
+        const movements: StockMovement[] = [];
+        current.items.forEach((item) => {
+          const product = nextProducts.find((candidate) => candidate.id === item.productId);
+          if (!product) throw new Error(`${item.productName} 已不存在，无法处理预定`);
+          const beforeStock = product.stock;
+          if (status === "completed") {
+            if (product.stock < item.quantity) throw new Error(`${product.name} 实物库存不足`);
+            product.stock -= item.quantity;
+          }
+          movements.push(
+            movement(
+              product,
+              status === "completed" ? "reservation_complete" : "reservation_release",
+              {
+                beforeStock,
+                afterStock: product.stock,
+                beforeReserved: beforeReserved.get(product.id) ?? 0,
+                afterReserved: afterReserved.get(product.id) ?? 0,
+                referenceId: next.id,
+                referenceNo: next.reservationNo,
+                reason: status === "completed" ? "预定完成出库" : "取消预定释放库存",
+                remark: next.remark,
+                createTime: next.updateTime,
+              }
+            )
+          );
+        });
+        const date = toLocalDateKey();
+        persistJsonTransaction([
+          { file: RESERVATIONS_FILE, data: nextReservations },
+          { file: PRODUCTS_FILE, data: nextProducts },
+          movementChange(date, movements),
+        ]);
+        return success(
+          inventoryResult(nextProducts, nextReservations),
+          status === "completed" ? "预定已完成并扣减库存" : "预定已取消"
+        );
+      } catch (error) {
+        return failure(error);
+      }
+    },
+  },
+  {
+    url: "business/stock-movements",
+    method: ["GET"],
+    body: ({ query }) => {
+      try {
+        ensureOpeningMovements();
+        const { startDate, endDate, productId, type } = query;
+        assertDateKey(startDate);
+        assertDateKey(endDate);
+        if (startDate > endDate) throw new Error("开始日期不能晚于结束日期");
+        ensureDataDirectories();
+        const movements = fs
+          .readdirSync(MOVEMENTS_DIR)
+          .filter((file) => file.endsWith(".json"))
+          .map((file) => file.slice(0, -5))
+          .filter((date) => DATE_PATTERN.test(date) && date >= startDate && date <= endDate)
+          .flatMap((date) => readMovements(date))
+          .filter((item) => !productId || item.productId === productId)
+          .filter((item) => !type || item.type === type)
+          .sort((first, second) => Date.parse(second.createTime) - Date.parse(first.createTime));
+        return success(movements);
       } catch (error) {
         return failure(error);
       }

@@ -105,8 +105,8 @@
               <small>预警值 {{ product.warningStock }}</small>
             </div>
             <p>
-              <strong>{{ product.stock }}</strong>
-              份
+              <strong>{{ product.availableStock }}</strong>
+              份可售
             </p>
           </div>
         </div>
@@ -295,8 +295,8 @@ const topProducts = computed(() => {
 const maxSales = computed(() => topProducts.value[0]?.quantity ?? 1);
 const lowStockProducts = computed(() =>
   store.products
-    .filter((item) => item.status === 1 && item.stock <= item.warningStock)
-    .sort((a, b) => a.stock - b.stock)
+    .filter((item) => item.status === 1 && item.availableStock <= item.warningStock)
+    .sort((a, b) => a.availableStock - b.availableStock)
 );
 
 function formatMoney(value: number): string {
