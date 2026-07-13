@@ -1,0 +1,26 @@
+mock/business/orders/2026-07-13.json
+  s_ccb28d56700688::t_4f7f1fc2d039e0 6
+  s_ccb28d56700688::t_4d3b3a4dc4ff74 2-5,7-17
+src/views/travel/weekend.vue
+  s_ccb28d56700688::t_3be1a716965196 427
+  s_ccb28d56700688::t_4f7f1fc2d039e0 695-701,703,707-709,712-718,720,722,729-730,737-768
+  s_ccb28d56700688::t_5bbcc2c2361eb1 6,8,416-417
+mock/business/products.json
+  s_ccb28d56700688::t_b9462c5ac34099 87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "97e39ad8c0a7a96a46a6dfcece1ffe9be7ea076c",
+  "prompts": {},
+  "sessions": {
+    "s_ccb28d56700688": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f5a62-6116-7761-86cc-f8404b85870f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
