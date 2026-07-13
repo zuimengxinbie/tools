@@ -1,0 +1,45 @@
+src/views/travel/holiday.vue
+  s_ccb28d56700688::t_43f60fe7f827b8 7,1277-1304
+  s_ccb28d56700688::t_9b196ed6cea066 9,766-767
+  s_ccb28d56700688::t_545bf2fb5c230f 1220-1225,1227-1228,1232-1248,1251-1257,1259,1261,1265-1266,1273-1275
+  s_ccb28d56700688::t_0d29f73407d4c9 837,865
+mock/business/orders/2026-07-13.json
+  s_ccb28d56700688::t_9b196ed6cea066 2-5,7-24,29,31-32,36-51
+  s_ccb28d56700688::t_aa810fa46bc78c 6
+  s_ccb28d56700688::t_ab134d2b29cfa6 25-28
+  s_ccb28d56700688::t_cd22d2a6414604 30
+  s_ccb28d56700688::t_81e099e6292cb2 33-35
+src/views/travel/composables/holidayExcel.ts
+  s_ccb28d56700688::t_14e1e3ab9d16e4 2
+mock/business/products.json
+  s_76e24c0b31fced::t_c8b3187cb9afa1 17,37,57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "dce4742d02014a854122f0c83055d742de997428",
+  "prompts": {},
+  "humans": {
+    "h_29e61e46c3a48d": {
+      "author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  },
+  "sessions": {
+    "s_76e24c0b31fced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f59e1-8deb-7a91-82fb-b2c68ae31d06",
+        "model": "unknown"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    },
+    "s_ccb28d56700688": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f5a62-6116-7761-86cc-f8404b85870f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
