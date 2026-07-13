@@ -1,5 +1,90 @@
 [
   {
+    "id": 10,
+    "festival": "探亲友",
+    "destination": "崇明岛",
+    "startDate": "2026-07-18",
+    "endDate": "2026-07-19",
+    "budget": 500,
+    "members": 2,
+    "transport": "自驾",
+    "remark": "<p><br></p>",
+    "status": "planning",
+    "actualCost": 650,
+    "rating": 0,
+    "review": "",
+    "costItems": [
+      {
+        "id": 1,
+        "category": "交通",
+        "name": "油费+过路费",
+        "amount": 350,
+        "estimateType": "estimated"
+      },
+      {
+        "id": 2,
+        "category": "住宿",
+        "name": "酒店",
+        "amount": 300,
+        "estimateType": "estimated"
+      }
+    ],
+    "preparation": [
+      {
+        "id": 1,
+        "name": "身份证",
+        "category": "证件",
+        "done": true
+      },
+      {
+        "id": 2,
+        "name": "手机",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "id": 3,
+        "name": "充电宝",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "id": 4,
+        "name": "睡衣",
+        "category": "衣物",
+        "done": true
+      },
+      {
+        "id": 5,
+        "name": "车钥匙",
+        "category": "电子",
+        "done": true
+      },
+      {
+        "id": 6,
+        "name": "衣服",
+        "category": "衣物",
+        "done": true
+      }
+    ],
+    "coordination": [
+      {
+        "id": 1,
+        "question": "先看牙，下午再出发去上海",
+        "answer": "待确认时间",
+        "status": "pending",
+        "role": "共同"
+      },
+      {
+        "id": 2,
+        "question": "晚上住宿位置",
+        "answer": "待确定",
+        "status": "pending",
+        "role": "共同"
+      }
+    ]
+  },
+  {
     "id": 9,
     "festival": "端午节",
     "destination": "飞马水城旅游度假区·无锡",

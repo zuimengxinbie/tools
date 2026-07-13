@@ -187,7 +187,6 @@
                     />
                   </div>
                   <template #footer>
-                    <el-button type="primary" link @click="handleView(plan)">查看详情</el-button>
                     <el-button type="success" link @click="handleEdit(plan)">编辑</el-button>
                     <el-button type="danger" link @click="handleDelete(plan)">删除</el-button>
                     <el-button type="warning" link @click="handleShare(plan)">分享</el-button>
@@ -200,275 +199,6 @@
       </div>
     </el-card>
 
-    <!-- 查看详情 -->
-    <el-dialog v-model="viewVisible" title="计划详情" width="820px" destroy-on-close>
-      <template v-if="currentPlan">
-        <el-tabs v-model="detailTab">
-          <!-- 基础信息 -->
-          <el-tab-pane label="基础信息" name="basic">
-            <el-descriptions :column="2" border>
-              <el-descriptions-item label="节日">
-                <el-tag type="danger">
-                  <span class="plan-emoji">
-                    {{ getFestivalEmoji(currentPlan.festival, customFestivals) }}
-                  </span>
-                  {{ currentPlan.festival }}
-                </el-tag>
-              </el-descriptions-item>
-              <el-descriptions-item label="状态">
-                <el-tag :type="statusMap[currentPlan.status ?? 'planning'].type">
-                  {{ statusMap[currentPlan.status ?? "planning"].label }}
-                </el-tag>
-              </el-descriptions-item>
-              <el-descriptions-item label="目的地" :span="2">
-                <template v-if="currentPlan.destination">
-                  <el-tag
-                    v-for="(d, i) in splitDestination(currentPlan.destination)"
-                    :key="`${d}-${i}`"
-                    size="small"
-                    type="success"
-                    effect="plain"
-                    class="mr-1"
-                  >
-                    {{ d }}
-                  </el-tag>
-                </template>
-                <span v-else class="text-placeholder">—</span>
-              </el-descriptions-item>
-              <el-descriptions-item label="行程评级" :span="2">
-                <div v-if="hasCurrentRating" class="rating-display">
-                  <el-rate :model-value="normalizedCurrentRating" disabled />
-                  <span class="rating-score">{{ normalizedCurrentRating }} 分</span>
-                </div>
-                <span v-else class="text-placeholder">未评分</span>
-              </el-descriptions-item>
-              <el-descriptions-item label="开始日期">
-                {{ currentPlan.startDate }}
-              </el-descriptions-item>
-              <el-descriptions-item label="结束日期">
-                {{ currentPlan.endDate }}
-              </el-descriptions-item>
-              <el-descriptions-item label="天数">
-                {{ calcDays(currentPlan.startDate, currentPlan.endDate) }} 天
-              </el-descriptions-item>
-              <el-descriptions-item label="交通方式">
-                {{ currentPlan.transport || "—" }}
-              </el-descriptions-item>
-              <el-descriptions-item label="出行人数">
-                {{ currentPlan.members }} 人
-              </el-descriptions-item>
-              <el-descriptions-item label="预算 / 实际">
-                ￥{{ currentPlan.budget.toLocaleString() }} / ￥{{
-                  currentTotalCost.toLocaleString()
-                }}
-              </el-descriptions-item>
-              <el-descriptions-item label="备注" :span="2">
-                <WangEditor
-                  v-if="hasRemarkText"
-                  v-model="currentPlan.remark"
-                  :read-only="true"
-                  :has-bar="false"
-                  height="auto"
-                />
-                <span v-else class="text-placeholder">暂无</span>
-              </el-descriptions-item>
-            </el-descriptions>
-          </el-tab-pane>
-
-          <!-- 费用明细 -->
-          <el-tab-pane name="cost">
-            <template #label>
-              <span>
-                费用明细
-                <el-badge
-                  v-if="(currentPlan.costItems?.length ?? 0) > 0"
-                  :value="currentPlan.costItems!.length"
-                  type="primary"
-                  class="tab-badge"
-                />
-              </span>
-            </template>
-
-            <div class="cost-summary">
-              <div class="cost-stat">
-                <div class="cost-stat-label">总预算</div>
-                <div class="cost-stat-value" style="font-weight: 500">
-                  ￥{{ currentPlan.budget.toLocaleString() }}
-                </div>
-              </div>
-              <div class="cost-stat">
-                <div class="cost-stat-label">已花费</div>
-                <div class="cost-stat-value">￥{{ currentTotalCost.toLocaleString() }}</div>
-              </div>
-              <div class="cost-stat">
-                <div class="cost-stat-label">人均（{{ currentPlan.members }} 人）</div>
-                <div class="cost-stat-value">￥{{ currentPerCapita.toLocaleString() }}</div>
-              </div>
-              <div class="cost-stat">
-                <div class="cost-stat-label">预算使用率</div>
-                <el-progress
-                  :percentage="getCostPercent(currentPlan)"
-                  :status="
-                    getCostPercent(currentPlan) > 100
-                      ? 'exception'
-                      : getCostPercent(currentPlan) >= 90
-                        ? 'warning'
-                        : 'success'
-                  "
-                  :stroke-width="10"
-                />
-              </div>
-            </div>
-
-            <template v-if="currentCostByCategory.length">
-              <ECharts :options="currentCostChartOptions" height="280px" />
-
-              <div class="cost-detail-list">
-                <div v-for="g in currentCostGroups" :key="g.category" class="cost-group">
-                  <div class="cost-group-header">
-                    <el-tag
-                      size="small"
-                      :style="{ color: g.color, borderColor: g.color }"
-                      effect="plain"
-                    >
-                      {{ g.category }}
-                    </el-tag>
-                    <span class="cost-group-subtotal">
-                      小计 ￥{{ g.subtotal.toLocaleString() }}
-                    </span>
-                  </div>
-                  <el-table :data="g.items" size="small" border>
-                    <el-table-column label="名称" prop="name" />
-                    <el-table-column label="金额" prop="amount" width="140" align="right">
-                      <template #default="{ row }">￥{{ row.amount.toLocaleString() }}</template>
-                    </el-table-column>
-                    <el-table-column label="标签" width="180" align="center">
-                      <template #default="{ row }">
-                        <div class="cost-read-tags">
-                          <el-tag size="small" :type="getEstimateTypeMeta(row.estimateType).type">
-                            {{ getEstimateTypeMeta(row.estimateType).label }}
-                          </el-tag>
-                        </div>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
-              </div>
-            </template>
-            <el-empty v-else description="暂无费用明细，可在「编辑」中添加" :image-size="80" />
-          </el-tab-pane>
-
-          <!-- 出行准备 -->
-          <el-tab-pane name="prep">
-            <template #label>
-              <span>
-                出行准备
-                <el-badge
-                  v-if="currentPrepTotalCount > 0"
-                  :value="`${currentPrepDoneCount}/${currentPrepTotalCount}`"
-                  type="primary"
-                  class="tab-badge"
-                />
-              </span>
-            </template>
-
-            <div class="prep-summary">
-              <span class="prep-summary-text">
-                完成度 {{ currentPrepDoneCount }} / {{ currentPrepTotalCount }}
-              </span>
-              <el-progress
-                :percentage="
-                  currentPrepTotalCount
-                    ? Math.round((currentPrepDoneCount / currentPrepTotalCount) * 100)
-                    : 0
-                "
-                :stroke-width="10"
-                style="flex: 1"
-              />
-              <el-button size="small" @click="copyPendingPrep">复制未完成清单</el-button>
-            </div>
-
-            <template v-if="currentPrepGroups.length">
-              <el-collapse v-model="detailPrepCollapse">
-                <el-collapse-item
-                  v-for="g in currentPrepGroups"
-                  :key="g.category"
-                  :name="g.category"
-                >
-                  <template #title>
-                    <span class="prep-cat-title">
-                      {{ g.category }}
-                      <span class="prep-cat-count">
-                        {{ g.items.filter((p) => p.done).length }} / {{ g.items.length }}
-                      </span>
-                    </span>
-                  </template>
-                  <div class="prep-list">
-                    <el-checkbox
-                      v-for="item in g.items"
-                      :key="item.id"
-                      :model-value="item.done"
-                      :class="{ 'is-required': isRequiredPrep(item.name) }"
-                      @change="togglePrepInDetail(item)"
-                    >
-                      <span v-if="isRequiredPrep(item.name)" class="required-mark">*</span>
-                      {{ item.name }}
-                    </el-checkbox>
-                  </div>
-                </el-collapse-item>
-              </el-collapse>
-            </template>
-            <el-empty v-else description="暂无准备清单，可在「编辑」中添加" :image-size="80" />
-          </el-tab-pane>
-
-          <!-- 行程协调 -->
-          <el-tab-pane name="coordination">
-            <template #label>
-              <span>
-                行程协调
-                <el-badge
-                  v-if="(currentPlan.coordination?.length ?? 0) > 0"
-                  :value="currentPlan.coordination!.length"
-                  type="primary"
-                  class="tab-badge"
-                />
-              </span>
-            </template>
-
-            <el-table
-              v-if="(currentPlan.coordination?.length ?? 0) > 0"
-              :data="currentPlan.coordination ?? []"
-              size="small"
-              border
-            >
-              <el-table-column label="角色" width="90" align="center">
-                <template #default="{ row }">
-                  <b>{{ row.role || "共同" }}</b>
-                </template>
-              </el-table-column>
-              <el-table-column label="问题" prop="question" min-width="150" />
-              <el-table-column label="答案" prop="answer" min-width="200" />
-              <el-table-column label="状态" width="100" align="center">
-                <template #default="{ row }">
-                  <el-tag
-                    :type="getCoordinationStatusMeta(row.status).type"
-                    effect="plain"
-                    size="small"
-                  >
-                    {{ getCoordinationStatusMeta(row.status).label }}
-                  </el-tag>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-empty v-else description="暂无行程协调问答，可在「编辑」中添加" :image-size="80" />
-          </el-tab-pane>
-        </el-tabs>
-      </template>
-
-      <template #footer>
-        <el-button @click="viewVisible = false">关闭</el-button>
-      </template>
-    </el-dialog>
     <!-- 分享计划弹窗 -->
     <el-dialog v-model="shareDialogVisible" title="分享计划" width="820px" destroy-on-close>
       <el-collapse v-if="sharePlan">
@@ -1421,15 +1151,6 @@ const getCountdownTag = (
   return { text: "已结束", type: "info" };
 };
 
-/* ---------------- 查看 ---------------- */
-const viewVisible = ref(false);
-const currentPlan = ref<HolidayPlan | null>(null);
-
-const handleView = (plan: HolidayPlan) => {
-  currentPlan.value = plan;
-  viewVisible.value = true;
-};
-
 /* ---------------- 高亮 ---------------- */
 const highlightId = ref<number | null>(null);
 let highlightTimer: ReturnType<typeof setTimeout> | null = null;
@@ -1539,14 +1260,6 @@ const editRules: FormRules = {
   status: [{ required: true, message: "请选择状态", trigger: "change" }],
 };
 
-// 判断 currentPlan.remark 中是否包含文字, 去除 HTML 标签后判断是否有非空字符
-const hasRemarkText = computed(() => {
-  const r = currentPlan.value?.remark || "";
-  const text = r.replace(/<[^>]+>/g, "").trim();
-  return text.length > 0;
-});
-const normalizedCurrentRating = computed(() => normalizeRating(currentPlan.value?.rating));
-const hasCurrentRating = computed(() => normalizedCurrentRating.value > 0);
 const resetForm = (plan?: HolidayPlan) => {
   Object.assign(editForm, plan ? JSON.parse(JSON.stringify(plan)) : defaultForm());
   // 补齐可选字段默认值
@@ -1745,82 +1458,6 @@ const handleImportExcel = async () => {
   }
 };
 
-/* ---------------- 详情对话框 tabs ---------------- */
-const detailTab = ref<"basic" | "cost" | "prep" | "coordination">("basic");
-const detailPrepCollapse = ref<string[]>([...PREP_CATEGORIES]);
-watch(viewVisible, (v) => {
-  if (v) {
-    detailTab.value = "basic";
-    detailPrepCollapse.value = [...PREP_CATEGORIES];
-  }
-});
-
-/** 当前查看计划的费用按类目分组（饼图数据） */
-const currentCostByCategory = computed(() => {
-  const items = currentPlan.value?.costItems ?? [];
-  const map = new Map<CostCategory, number>();
-  for (const c of items) {
-    map.set(c.category, (map.get(c.category) ?? 0) + (Number(c.amount) || 0));
-  }
-  return COST_CATEGORIES.map(({ label, color }) => ({
-    name: label,
-    value: map.get(label) ?? 0,
-    itemStyle: { color },
-  })).filter((d) => d.value > 0);
-});
-
-/** 当前查看计划的费用饼图配置 */
-const currentCostChartOptions = computed(() => ({
-  tooltip: {
-    trigger: "item",
-    formatter: (params: any) =>
-      `${params.name}<br/>￥${(params.value as number).toLocaleString()}（${params.percent}%）`,
-  },
-  legend: { bottom: 0, left: "center" },
-  series: [
-    {
-      type: "pie",
-      radius: ["40%", "65%"],
-      center: ["50%", "45%"],
-      avoidLabelOverlap: true,
-      label: { show: true, formatter: "{b}\n￥{c}" },
-      data: currentCostByCategory.value,
-    },
-  ],
-}));
-
-const currentTotalCost = computed(() => (currentPlan.value ? getActualCost(currentPlan.value) : 0));
-
-const currentPerCapita = computed(() => {
-  if (!currentPlan.value) return 0;
-  const m = Math.max(1, currentPlan.value.members || 1);
-  return Math.round((currentTotalCost.value / m) * 100) / 100;
-});
-
-/** 详情：按类目分组的明细列表（用于折叠展示） */
-const currentCostGroups = computed(() => {
-  const items = currentPlan.value?.costItems ?? [];
-  return COST_CATEGORIES.map(({ label, color }) => {
-    const list = items.filter((c) => c.category === label);
-    const subtotal = list.reduce((s, c) => s + (Number(c.amount) || 0), 0);
-    return { category: label, color, items: list, subtotal };
-  }).filter((g) => g.items.length > 0);
-});
-
-/** 详情：按类目分组的准备项 */
-const currentPrepGroups = computed(() => {
-  const list = currentPlan.value?.preparation ?? [];
-  return PREP_CATEGORIES.map((cat) => ({
-    category: cat,
-    items: list.filter((p) => p.category === cat),
-  })).filter((g) => g.items.length > 0);
-});
-
-const currentPrepDoneCount = computed(
-  () => (currentPlan.value?.preparation ?? []).filter((p) => p.done).length
-);
-const currentPrepTotalCount = computed(() => (currentPlan.value?.preparation ?? []).length);
-
 const getCoordinationStatusMeta = (
   status: CoordinationStatus
 ): { label: string; type: "warning" | "success" } => {
@@ -1962,34 +1599,6 @@ const addCoordinationItem = () => {
 
 const removeCoordinationItem = (id: number) => {
   editForm.coordination = (editForm.coordination ?? []).filter((item) => item.id !== id);
-};
-
-/** 复制未勾选物品到剪贴板（适合发给同行人） */
-const copyPendingPrep = async () => {
-  const list = (currentPlan.value?.preparation ?? []).filter((p) => !p.done);
-  if (!list.length) {
-    ElMessage.success("已全部完成 🎉");
-    return;
-  }
-  const text = list.map((p) => `[ ] ${p.name}（${p.category}）`).join("\n");
-  try {
-    await navigator.clipboard.writeText(text);
-    ElMessage.success(`已复制 ${list.length} 项未完成清单`);
-  } catch {
-    ElMessageBox.alert(text, "复制失败，请手动复制", {
-      dangerouslyUseHTMLString: false,
-    });
-  }
-};
-
-/** 详情中切换勾选（直接改 currentPlan，触发 dirty） */
-const togglePrepInDetail = (item: PrepItem) => {
-  if (!currentPlan.value) return;
-  const list = currentPlan.value.preparation ?? [];
-  const target = list.find((p) => p.id === item.id);
-  if (!target) return;
-  target.done = !target.done;
-  dirty.value = true;
 };
 
 /* ---------------- 分享对话框 ---------------- */
@@ -2216,93 +1825,10 @@ const shareCostChartOptions = computed(() => ({
   color: var(--el-text-color-secondary);
 }
 
-/* ---------------- 详情：费用 ---------------- */
-.cost-summary {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 12px;
-
-  .cost-stat {
-    padding: 8px 12px;
-    background: var(--el-fill-color-light);
-    border-radius: 4px;
-  }
-
-  .cost-stat-label {
-    margin-bottom: 4px;
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
-  }
-
-  .cost-stat-value {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--el-text-color-primary);
-  }
-}
-
-.cost-detail-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.cost-group {
-  .cost-group-header {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-
-  .cost-group-subtotal {
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
-  }
-}
-
 .cost-read-tags {
   display: inline-flex;
   gap: 6px;
   align-items: center;
-}
-
-/* ---------------- 详情：准备 ---------------- */
-.prep-summary {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.prep-summary-text {
-  font-size: 13px;
-  color: var(--el-text-color-secondary);
-  white-space: nowrap;
-}
-
-.prep-cat-title {
-  font-weight: 600;
-}
-
-.prep-cat-count {
-  margin-left: 8px;
-  font-size: 12px;
-  font-weight: normal;
-  color: var(--el-text-color-secondary);
-}
-
-.prep-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-  padding: 4px 0;
-
-  .el-checkbox.is-required :deep(.el-checkbox__label) {
-    font-weight: 600;
-  }
 }
 
 /* ---------------- 分享弹窗 collapse 标题样式 ---------------- */
