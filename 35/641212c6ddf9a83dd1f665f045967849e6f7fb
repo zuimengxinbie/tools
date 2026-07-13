@@ -1,0 +1,19 @@
+mock/business/products.json
+  s_76e24c0b31fced::t_82e63fa5777325 37,57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "35641212c6ddf9a83dd1f665f045967849e6f7fb",
+  "prompts": {},
+  "sessions": {
+    "s_76e24c0b31fced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f59e1-8deb-7a91-82fb-b2c68ae31d06",
+        "model": "unknown"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
