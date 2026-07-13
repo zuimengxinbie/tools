@@ -1,7 +1,5 @@
 import { defineStore } from "pinia";
-import seedCategories from "../../mock/business/categories.json";
-import seedOrders from "../../mock/business/orders.json";
-import seedProducts from "../../mock/business/products.json";
+import BusinessAPI from "@/api/business";
 import type {
   BusinessOrder,
   CartItem,
@@ -9,25 +7,6 @@ import type {
   Product,
   ProductInput,
 } from "@/views/business/types";
-
-const STORAGE_KEY = "coffee-stall-business:v1";
-
-interface BusinessSnapshot {
-  products: Product[];
-  orders: BusinessOrder[];
-  categories: string[];
-}
-
-function cloneSeed<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T;
-}
-
-function createId(prefix: string): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return `${prefix}-${crypto.randomUUID()}`;
-  }
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
 
 export function toLocalDateKey(value: string | Date = new Date()): string {
   const date = typeof value === "string" ? new Date(value) : value;
@@ -37,196 +16,152 @@ export function toLocalDateKey(value: string | Date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
-function getInitialSnapshot(): BusinessSnapshot {
-  const fallback: BusinessSnapshot = {
-    products: cloneSeed(seedProducts) as Product[],
-    orders: cloneSeed(seedOrders) as BusinessOrder[],
-    categories: cloneSeed(seedCategories),
-  };
-
-  if (typeof window === "undefined") return fallback;
-
-  try {
-    const saved = window.localStorage.getItem(STORAGE_KEY);
-    if (!saved) return fallback;
-    const parsed = JSON.parse(saved) as Partial<BusinessSnapshot>;
-    if (!Array.isArray(parsed.products) || !Array.isArray(parsed.orders)) return fallback;
-    return {
-      products: parsed.products,
-      orders: parsed.orders,
-      categories: Array.isArray(parsed.categories) ? parsed.categories : fallback.categories,
-    };
-  } catch {
-    return fallback;
-  }
-}
-
 export const useBusinessStore = defineStore("business", () => {
-  const initial = getInitialSnapshot();
-  const products = ref<Product[]>(initial.products);
-  const orders = ref<BusinessOrder[]>(initial.orders);
-  const categories = ref<string[]>(initial.categories);
+  const products = ref<Product[]>([]);
+  const orders = ref<BusinessOrder[]>([]);
+  const historyOrders = ref<BusinessOrder[]>([]);
+  const categories = ref<string[]>([]);
+  const businessDate = ref(toLocalDateKey());
+  const loading = ref(false);
+  const historyLoading = ref(false);
+  const initialized = ref(false);
+  const historyRange = ref<[string, string]>();
+  let initializePromise: Promise<void> | null = null;
 
   const activeProducts = computed(() => products.value.filter((item) => item.status === 1));
   const activeOrders = computed(() =>
     orders.value.filter((item) => item.status === "pending" || item.status === "making")
   );
 
-  function persist(): void {
-    if (typeof window === "undefined") return;
-    const snapshot: BusinessSnapshot = {
-      products: products.value,
-      orders: orders.value,
-      categories: categories.value,
-    };
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+  function applyCatalog(result: { products: Product[]; categories: string[] }): void {
+    products.value = result.products;
+    categories.value = result.categories;
   }
 
-  watch([products, orders, categories], persist, { deep: true });
+  function updateHistoryOrder(order: BusinessOrder): void {
+    const index = historyOrders.value.findIndex((item) => item.id === order.id);
+    if (index >= 0) {
+      historyOrders.value[index] = order;
+      return;
+    }
+    const date = toLocalDateKey(order.createTime);
+    if (historyRange.value && date >= historyRange.value[0] && date <= historyRange.value[1]) {
+      historyOrders.value.unshift(order);
+    }
+  }
 
-  function nextOrderNo(date = new Date()): string {
-    const dateKey = toLocalDateKey(date);
-    const max = orders.value
-      .filter((item) => toLocalDateKey(item.createTime) === dateKey)
-      .reduce((current, item) => {
-        const value = Number(item.orderNo.replace(/\D/g, ""));
-        return Number.isFinite(value) ? Math.max(current, value) : current;
-      }, 0);
+  async function initialize(force = false): Promise<void> {
+    if (initialized.value && !force) return;
+    if (initializePromise) return initializePromise;
+
+    initializePromise = (async () => {
+      loading.value = true;
+      try {
+        const data = await BusinessAPI.getBootstrap();
+        products.value = data.products;
+        categories.value = data.categories;
+        orders.value = data.orders;
+        businessDate.value = data.date;
+        initialized.value = true;
+      } finally {
+        loading.value = false;
+        initializePromise = null;
+      }
+    })();
+    return initializePromise;
+  }
+
+  async function loadOrders(startDate: string, endDate: string): Promise<void> {
+    historyLoading.value = true;
+    try {
+      historyOrders.value = await BusinessAPI.getOrders({ startDate, endDate });
+      historyRange.value = [startDate, endDate];
+    } finally {
+      historyLoading.value = false;
+    }
+  }
+
+  function nextOrderNo(): string {
+    const max = orders.value.reduce((current, item) => {
+      const value = Number(item.orderNo.replace(/\D/g, ""));
+      return Number.isFinite(value) ? Math.max(current, value) : current;
+    }, 0);
     return `A${String(max + 1).padStart(3, "0")}`;
   }
 
-  function createOrder(cart: CartItem[], remark: string): BusinessOrder {
-    if (cart.length === 0) throw new Error("请先选择商品");
-
-    const normalized = cart.filter((item) => item.quantity > 0);
-    const checked = normalized.map((cartItem) => {
-      const product = products.value.find((item) => item.id === cartItem.productId);
-      if (!product || product.status !== 1) throw new Error("订单中包含已下架商品，请重新选择");
-      if (product.stock < cartItem.quantity) {
-        throw new Error(`${product.name} 库存不足，当前仅剩 ${product.stock} 份`);
-      }
-      return { product, quantity: cartItem.quantity };
-    });
-
-    const now = new Date();
-    const order: BusinessOrder = {
-      id: createId("order"),
-      orderNo: nextOrderNo(now),
-      status: "pending",
-      remark: remark.trim(),
-      createTime: now.toISOString(),
-      items: checked.map(({ product, quantity }) => ({
-        productId: product.id,
-        productName: product.name,
-        productPrice: product.price,
-        quantity,
-      })),
-      totalAmount: checked.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
-    };
-
-    checked.forEach(({ product, quantity }) => {
-      product.stock -= quantity;
-    });
-    orders.value.unshift(order);
-    return order;
+  async function createOrder(cart: CartItem[], remark: string): Promise<BusinessOrder> {
+    const result = await BusinessAPI.createOrder({ items: cart, remark });
+    products.value = result.products;
+    orders.value = result.orders;
+    businessDate.value = toLocalDateKey(result.order.createTime);
+    updateHistoryOrder(result.order);
+    return result.order;
   }
 
-  function changeOrderStatus(id: string, status: Exclude<OrderStatus, "voided">): void {
-    const order = orders.value.find((item) => item.id === id);
-    if (!order || order.status === "voided") return;
-    order.status = status;
-  }
-
-  function voidOrder(id: string): void {
-    const order = orders.value.find((item) => item.id === id);
+  async function changeOrderStatus(id: string, status: OrderStatus): Promise<void> {
+    const order =
+      orders.value.find((item) => item.id === id) ??
+      historyOrders.value.find((item) => item.id === id);
     if (!order) throw new Error("订单不存在");
-    if (order.status === "voided") throw new Error("订单已作废，不能重复回滚库存");
-    if (order.status === "completed") throw new Error("已完成订单不能在制作队列中作废");
-
-    order.items.forEach((orderItem) => {
-      const product = products.value.find((item) => item.id === orderItem.productId);
-      if (product) product.stock += orderItem.quantity;
-    });
-    order.status = "voided";
+    const date = toLocalDateKey(order.createTime);
+    const result = await BusinessAPI.updateOrderStatus(date, id, status);
+    products.value = result.products;
+    if (date === businessDate.value) orders.value = result.orders;
+    updateHistoryOrder(result.order);
   }
 
-  function restockProduct(id: string, quantity: number): void {
-    const product = products.value.find((item) => item.id === id);
-    if (!product) throw new Error("商品不存在");
-    if (!Number.isInteger(quantity) || quantity <= 0) throw new Error("入库数量必须是正整数");
-    product.stock += quantity;
+  async function voidOrder(id: string): Promise<void> {
+    await changeOrderStatus(id, "voided");
   }
 
-  function addProduct(input: ProductInput): void {
-    const name = input.name.trim();
-    if (!name) throw new Error("请输入商品名称");
-    if (products.value.some((item) => item.name === name)) throw new Error("商品名称已存在");
-    if (!categories.value.includes(input.category)) categories.value.push(input.category);
-    products.value.unshift({
-      id: createId("product"),
-      name,
-      category: input.category,
-      price: Number(input.price),
-      stock: Number(input.stock),
-      warningStock: Number(input.warningStock),
-      status: input.status ?? 1,
-      imageUrl: "",
-    });
+  async function restockProduct(id: string, quantity: number): Promise<void> {
+    const result = await BusinessAPI.restockProduct(id, quantity);
+    applyCatalog(result);
   }
 
-  function updateProduct(id: string, input: ProductInput): void {
-    const product = products.value.find((item) => item.id === id);
-    if (!product) throw new Error("商品不存在");
-    const duplicate = products.value.some(
-      (item) => item.id !== id && item.name === input.name.trim()
-    );
-    if (duplicate) throw new Error("商品名称已存在");
-    Object.assign(product, {
-      name: input.name.trim(),
-      category: input.category,
-      price: Number(input.price),
-      warningStock: Number(input.warningStock),
-    });
-    if (!categories.value.includes(input.category)) categories.value.push(input.category);
+  async function addProduct(input: ProductInput): Promise<void> {
+    const result = await BusinessAPI.addProduct(input);
+    applyCatalog(result);
   }
 
-  function toggleProduct(id: string): void {
-    const product = products.value.find((item) => item.id === id);
-    if (product) product.status = product.status === 1 ? 0 : 1;
+  async function updateProduct(id: string, input: ProductInput): Promise<void> {
+    const result = await BusinessAPI.updateProduct(id, input);
+    applyCatalog(result);
   }
 
-  function addCategory(name: string): void {
-    const value = name.trim();
-    if (!value) throw new Error("请输入分类名称");
-    if (categories.value.includes(value)) throw new Error("分类名称已存在");
-    categories.value.push(value);
+  async function toggleProduct(id: string): Promise<void> {
+    const result = await BusinessAPI.toggleProduct(id);
+    applyCatalog(result);
   }
 
-  function renameCategory(oldName: string, newName: string): void {
-    const value = newName.trim();
-    if (!value) throw new Error("分类名称不能为空");
-    if (oldName !== value && categories.value.includes(value)) throw new Error("分类名称已存在");
-    const index = categories.value.indexOf(oldName);
-    if (index < 0) return;
-    categories.value[index] = value;
-    products.value.forEach((item) => {
-      if (item.category === oldName) item.category = value;
-    });
+  async function addCategory(name: string): Promise<void> {
+    const result = await BusinessAPI.addCategory(name);
+    applyCatalog(result);
   }
 
-  function removeCategory(name: string): void {
-    if (products.value.some((item) => item.category === name)) {
-      throw new Error("该分类下仍有商品，不能删除");
-    }
-    categories.value = categories.value.filter((item) => item !== name);
+  async function renameCategory(oldName: string, newName: string): Promise<void> {
+    const result = await BusinessAPI.renameCategory(oldName, newName);
+    applyCatalog(result);
+  }
+
+  async function removeCategory(name: string): Promise<void> {
+    const result = await BusinessAPI.removeCategory(name);
+    applyCatalog(result);
   }
 
   return {
     products,
     orders,
+    historyOrders,
     categories,
+    businessDate,
+    loading,
+    historyLoading,
+    initialized,
     activeProducts,
     activeOrders,
+    initialize,
+    loadOrders,
     nextOrderNo,
     createOrder,
     changeOrderStatus,

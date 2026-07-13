@@ -1,5 +1,5 @@
 <template>
-  <div class="statistics-page">
+  <div v-loading="store.loading || store.historyLoading" class="statistics-page">
     <header class="page-header">
       <div>
         <p>DAILY BUSINESS REVIEW</p>
@@ -247,7 +247,7 @@ const statusMeta: Record<OrderStatus, { label: string; type: TagProps["type"] }>
 };
 
 const filteredOrders = computed(() =>
-  store.orders.filter((order) => {
+  store.historyOrders.filter((order) => {
     if (!dateRange.value?.length) return true;
     const key = toLocalDateKey(order.createTime);
     return key >= dateRange.value[0] && key <= dateRange.value[1];
@@ -329,6 +329,19 @@ function showOrderDetail(order: BusinessOrder): void {
   selectedOrder.value = order;
   detailVisible.value = true;
 }
+
+watch(
+  () => dateRange.value,
+  (range) => {
+    if (!range?.length) return;
+    store.loadOrders(range[0], range[1]).catch(() => undefined);
+  },
+  { immediate: true }
+);
+
+onMounted(() => {
+  store.initialize().catch(() => undefined);
+});
 </script>
 
 <style lang="scss" scoped>

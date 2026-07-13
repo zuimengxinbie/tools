@@ -1,5 +1,5 @@
 <template>
-  <div class="cashier-page">
+  <div v-loading="store.loading" class="cashier-page">
     <header class="cashier-page__header">
       <div>
         <p class="cashier-page__eyebrow">COFFEE STALL · POS</p>
@@ -191,11 +191,17 @@
                 v-if="order.status === 'pending'"
                 type="warning"
                 plain
-                @click="store.changeOrderStatus(order.id, 'making')"
+                :loading="processingOrderId === order.id"
+                @click="startOrder(order.id)"
               >
                 开始制作
               </el-button>
-              <el-button type="success" :icon="Check" @click="completeOrder(order.id)">
+              <el-button
+                type="success"
+                :icon="Check"
+                :loading="processingOrderId === order.id"
+                @click="completeOrder(order.id)"
+              >
                 出餐完成
               </el-button>
               <el-button type="danger" text @click="voidOrder(order.id, order.orderNo)">
@@ -230,7 +236,7 @@
       </el-form>
       <template #footer>
         <el-button @click="restockVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitRestock">确认入库</el-button>
+        <el-button type="primary" :loading="restocking" @click="submitRestock">确认入库</el-button>
       </template>
     </el-dialog>
   </div>
@@ -261,6 +267,8 @@ const quickRemarks = ["少糖", "去冰", "少冰", "热饮"];
 const selectedRemarks = ref<string[]>([]);
 const customRemark = ref("");
 const submitting = ref(false);
+const restocking = ref(false);
+const processingOrderId = ref("");
 const restockVisible = ref(false);
 const restockForm = reactive({ productId: "", quantity: 10 });
 
@@ -351,7 +359,7 @@ function toggleRemark(tag: string): void {
 async function submitOrder(): Promise<void> {
   submitting.value = true;
   try {
-    const order = store.createOrder(cart.value, orderRemark.value);
+    const order = await store.createOrder(cart.value, orderRemark.value);
     cart.value = [];
     selectedRemarks.value = [];
     customRemark.value = "";
@@ -366,9 +374,27 @@ async function submitOrder(): Promise<void> {
   }
 }
 
-function completeOrder(id: string): void {
-  store.changeOrderStatus(id, "completed");
-  ElMessage.success("已完成出餐");
+async function startOrder(id: string): Promise<void> {
+  processingOrderId.value = id;
+  try {
+    await store.changeOrderStatus(id, "making");
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "状态更新失败");
+  } finally {
+    processingOrderId.value = "";
+  }
+}
+
+async function completeOrder(id: string): Promise<void> {
+  processingOrderId.value = id;
+  try {
+    await store.changeOrderStatus(id, "completed");
+    ElMessage.success("已完成出餐");
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "状态更新失败");
+  } finally {
+    processingOrderId.value = "";
+  }
 }
 
 async function voidOrder(id: string, orderNo: string): Promise<void> {
@@ -378,10 +404,13 @@ async function voidOrder(id: string, orderNo: string): Promise<void> {
       confirmButtonText: "确认作废",
       cancelButtonText: "取消",
     });
-    store.voidOrder(id);
+    processingOrderId.value = id;
+    await store.voidOrder(id);
     ElMessage.success("订单已作废，库存已回滚");
   } catch (error) {
     if (error instanceof Error) ElMessage.error(error.message);
+  } finally {
+    processingOrderId.value = "";
   }
 }
 
@@ -391,15 +420,22 @@ function openQuickRestock(): void {
   restockVisible.value = true;
 }
 
-function submitRestock(): void {
+async function submitRestock(): Promise<void> {
+  restocking.value = true;
   try {
-    store.restockProduct(restockForm.productId, restockForm.quantity);
+    await store.restockProduct(restockForm.productId, restockForm.quantity);
     restockVisible.value = false;
     ElMessage.success("入库成功，收银台库存已同步");
   } catch (error) {
     ElMessage.error(error instanceof Error ? error.message : "入库失败");
+  } finally {
+    restocking.value = false;
   }
 }
+
+onMounted(() => {
+  store.initialize().catch(() => undefined);
+});
 </script>
 
 <style lang="scss" scoped>

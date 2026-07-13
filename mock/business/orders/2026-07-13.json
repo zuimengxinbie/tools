@@ -1,0 +1,24 @@
+[
+  {
+    "id": "order-2e5fc5f3-098e-4f65-931a-62d8106af1d9",
+    "orderNo": "A001",
+    "totalAmount": 36,
+    "status": "making",
+    "remark": "",
+    "createTime": "2026-07-13T06:06:01.626Z",
+    "items": [
+      {
+        "productId": "product-americano-iced",
+        "productName": "冰美式",
+        "productPrice": 12,
+        "quantity": 2
+      },
+      {
+        "productId": "product-americano-hot",
+        "productName": "热美式",
+        "productPrice": 12,
+        "quantity": 1
+      }
+    ]
+  }
+]

@@ -1,5 +1,5 @@
 <template>
-  <div class="inventory-page">
+  <div v-loading="store.loading" class="inventory-page">
     <header class="page-header">
       <div>
         <p>PRODUCT & INVENTORY</p>
@@ -191,7 +191,9 @@
       </el-form>
       <template #footer>
         <el-button @click="productDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="saveProduct">保存商品</el-button>
+        <el-button type="primary" :loading="operationLoading" @click="saveProduct">
+          保存商品
+        </el-button>
       </template>
     </el-dialog>
 
@@ -217,7 +219,9 @@
       </el-form>
       <template #footer>
         <el-button @click="restockDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="saveRestock">确认入库</el-button>
+        <el-button type="primary" :loading="operationLoading" @click="saveRestock">
+          确认入库
+        </el-button>
       </template>
     </el-dialog>
   </div>
@@ -250,6 +254,7 @@ const editingProductId = ref("");
 const restockDialogVisible = ref(false);
 const restockingProductId = ref("");
 const restockQuantity = ref(10);
+const operationLoading = ref(false);
 
 const createEmptyProduct = (): ProductInput => ({
   name: "",
@@ -311,21 +316,24 @@ function openProductDialog(product?: Product): void {
   productDialogVisible.value = true;
 }
 
-function saveProduct(): void {
+async function saveProduct(): Promise<void> {
   if (!productForm.name.trim() || !productForm.category) {
     ElMessage.warning("请填写商品名称和分类");
     return;
   }
+  operationLoading.value = true;
   try {
     if (editingProductId.value) {
-      store.updateProduct(editingProductId.value, productForm);
+      await store.updateProduct(editingProductId.value, productForm);
     } else {
-      store.addProduct(productForm);
+      await store.addProduct(productForm);
     }
     productDialogVisible.value = false;
     ElMessage.success(editingProductId.value ? "商品已更新" : "商品已新增");
   } catch (error) {
     ElMessage.error(error instanceof Error ? error.message : "保存失败");
+  } finally {
+    operationLoading.value = false;
   }
 }
 
@@ -335,17 +343,21 @@ function openRestockDialog(product: Product): void {
   restockDialogVisible.value = true;
 }
 
-function saveRestock(): void {
+async function saveRestock(): Promise<void> {
+  operationLoading.value = true;
   try {
-    store.restockProduct(restockingProductId.value, restockQuantity.value);
+    await store.restockProduct(restockingProductId.value, restockQuantity.value);
     restockDialogVisible.value = false;
     ElMessage.success("入库成功");
   } catch (error) {
     ElMessage.error(error instanceof Error ? error.message : "入库失败");
+  } finally {
+    operationLoading.value = false;
   }
 }
 
 async function toggleProduct(product: Product): Promise<void> {
+  const wasOnline = product.status === 1;
   if (product.status === 1) {
     try {
       await ElMessageBox.confirm(`下架后，“${product.name}”将不会出现在收银台。`, "确认下架", {
@@ -355,13 +367,17 @@ async function toggleProduct(product: Product): Promise<void> {
       return;
     }
   }
-  store.toggleProduct(product.id);
-  ElMessage.success(product.status === 1 ? "商品已上架" : "商品已下架");
+  try {
+    await store.toggleProduct(product.id);
+    ElMessage.success(wasOnline ? "商品已下架" : "商品已上架");
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "状态更新失败");
+  }
 }
 
-function addCategory(): void {
+async function addCategory(): Promise<void> {
   try {
-    store.addCategory(newCategory.value);
+    await store.addCategory(newCategory.value);
     newCategory.value = "";
     ElMessage.success("分类已添加");
   } catch (error) {
@@ -376,7 +392,7 @@ async function renameCategory(category: string): Promise<void> {
       inputPattern: /\S+/,
       inputErrorMessage: "分类名称不能为空",
     });
-    store.renameCategory(category, value);
+    await store.renameCategory(category, value);
     if (categoryFilter.value === category) categoryFilter.value = value;
     ElMessage.success("分类已重命名");
   } catch (error) {
@@ -387,13 +403,17 @@ async function renameCategory(category: string): Promise<void> {
 async function deleteCategory(category: string): Promise<void> {
   try {
     await ElMessageBox.confirm(`确认删除分类“${category}”？`, "删除分类", { type: "warning" });
-    store.removeCategory(category);
+    await store.removeCategory(category);
     if (categoryFilter.value === category) categoryFilter.value = "全部";
     ElMessage.success("分类已删除");
   } catch (error) {
     if (error instanceof Error) ElMessage.error(error.message);
   }
 }
+
+onMounted(() => {
+  store.initialize().catch(() => undefined);
+});
 </script>
 
 <style lang="scss" scoped>
