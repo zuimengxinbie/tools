@@ -14,7 +14,7 @@
     "name": "热美式",
     "category": "咖啡",
     "price": 12,
-    "stock": 23,
+    "stock": 21,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
@@ -34,7 +34,7 @@
     "name": "热拿铁",
     "category": "咖啡",
     "price": 16,
-    "stock": 18,
+    "stock": 17,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
@@ -74,7 +74,7 @@
     "name": "手打柠檬茶",
     "category": "茶饮",
     "price": 13,
-    "stock": 22,
+    "stock": 21,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""

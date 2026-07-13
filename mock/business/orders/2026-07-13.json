@@ -1,5 +1,33 @@
 [
   {
+    "id": "order-811342a5-88ad-446d-93c8-77acfef859c2",
+    "orderNo": "A003",
+    "totalAmount": 53,
+    "status": "completed",
+    "remark": "去冰",
+    "createTime": "2026-07-13T06:24:13.921Z",
+    "items": [
+      {
+        "productId": "product-americano-hot",
+        "productName": "热美式",
+        "productPrice": 12,
+        "quantity": 2
+      },
+      {
+        "productId": "product-latte-hot",
+        "productName": "热拿铁",
+        "productPrice": 16,
+        "quantity": 1
+      },
+      {
+        "productId": "product-lemon-tea",
+        "productName": "手打柠檬茶",
+        "productPrice": 13,
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "order-2563e4b6-4c7b-4265-bf5d-4844d653530e",
     "orderNo": "A002",
     "totalAmount": 12,
