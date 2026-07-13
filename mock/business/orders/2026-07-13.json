@@ -1,9 +1,25 @@
 [
   {
+    "id": "order-2563e4b6-4c7b-4265-bf5d-4844d653530e",
+    "orderNo": "A002",
+    "totalAmount": 12,
+    "status": "voided",
+    "remark": "少冰、少糖、晚一会喝",
+    "createTime": "2026-07-13T06:08:45.761Z",
+    "items": [
+      {
+        "productId": "product-americano-iced",
+        "productName": "冰美式",
+        "productPrice": 12,
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "order-2e5fc5f3-098e-4f65-931a-62d8106af1d9",
     "orderNo": "A001",
     "totalAmount": 36,
-    "status": "making",
+    "status": "completed",
     "remark": "",
     "createTime": "2026-07-13T06:06:01.626Z",
     "items": [
