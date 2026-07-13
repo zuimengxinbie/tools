@@ -22,7 +22,6 @@
                   <el-dropdown-item divided command="download-json">
                     下载为 JSON 文件
                   </el-dropdown-item>
-                  <el-dropdown-item command="copy-json">复制到剪贴板</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -1322,19 +1321,6 @@ const handleDownloadMock = () => {
   ElMessage.success("已导出 JSON 文件");
 };
 
-const handleCopyMock = async () => {
-  const text = buildMockSnippet();
-  try {
-    await navigator.clipboard.writeText(text);
-    ElMessage.success("已复制到剪贴板，可直接粘贴到 mock 文件中");
-  } catch {
-    ElMessageBox.alert(text, "复制失败，请手动复制以下内容", {
-      customClass: "mock-export-alert",
-      dangerouslyUseHTMLString: false,
-    });
-  }
-};
-
 const handleDownloadExcel = async () => {
   const buffer = await buildHolidayExportBuffer(planList.value);
   downloadArrayBufferFile(buffer, `holiday-plans-${Date.now()}.xlsx`, HOLIDAY_EXCEL_MIME);
@@ -1348,10 +1334,6 @@ const handleExportCommand = async (command: string) => {
   }
   if (command === "download-json") {
     handleDownloadMock();
-    return;
-  }
-  if (command === "copy-json") {
-    await handleCopyMock();
   }
 };
 

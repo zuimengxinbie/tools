@@ -3,22 +3,11 @@
     <el-card shadow="never">
       <template #header>
         <div class="card-header">
-          <span>
-            周末出游计划
-            <el-tag v-if="dirty" type="warning" size="small" class="dirty-tag">未保存</el-tag>
-          </span>
+          <span>周末出游计划</span>
           <div class="header-actions">
-            <el-tooltip content="放弃本地修改，重新从 mock 文件加载" placement="top">
+            <el-tooltip content="从 Mock 文件重新加载" placement="top">
               <el-button @click="handleReload">重新加载</el-button>
             </el-tooltip>
-            <el-button
-              type="success"
-              :loading="saving"
-              :disabled="!dirty"
-              @click="handleSaveToMock"
-            >
-              保存到 Mock 文件
-            </el-button>
             <el-dropdown @command="handleExportCommand">
               <el-button>
                 导出
@@ -29,15 +18,12 @@
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item command="download-excel">下载为 Excel 文件</el-dropdown-item>
-                  <el-dropdown-item command="download-template">下载导入模板</el-dropdown-item>
                   <el-dropdown-item divided command="download-json">
                     下载为 JSON 文件
                   </el-dropdown-item>
-                  <el-dropdown-item command="copy-json">复制到剪贴板</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <el-button @click="openImportDialog">导入 Excel</el-button>
             <el-button type="primary" @click="handleAdd">新增行程</el-button>
           </div>
         </div>
@@ -427,55 +413,9 @@
 
       <template #footer>
         <el-button @click="editVisible = false">取消</el-button>
-        <el-button type="primary" :loading="editLoading" @click="handleSubmit">确定</el-button>
-      </template>
-    </el-dialog>
-
-    <el-dialog v-model="importVisible" title="导入周末出行（Excel）" width="620px" destroy-on-close>
-      <el-upload
-        v-model:file-list="importFiles"
-        class="w-full"
-        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-        :drag="true"
-        :limit="1"
-        :auto-upload="false"
-        :on-exceed="handleImportFileExceed"
-      >
-        <div class="el-upload__text">将文件拖到此处，或点击上传</div>
-        <template #tip>
-          <div class="el-upload__tip">
-            仅支持 .xlsx / .xls；按「行程名称+出行日期」去重更新；任一错误将整批拒绝
-          </div>
-        </template>
-      </el-upload>
-
-      <el-alert
-        title="字段要求：title、destination、date、duration、status、preparation、review、rating、records"
-        type="info"
-        :closable="false"
-        style="margin-top: 12px"
-      />
-
-      <template #footer>
-        <el-button @click="importVisible = false">取消</el-button>
-        <el-button type="primary" :loading="importLoading" @click="handleImportExcel">
-          确定导入
+        <el-button type="primary" :loading="editLoading" @click="handleSubmit">
+          确定并保存
         </el-button>
-      </template>
-    </el-dialog>
-
-    <el-dialog v-model="importErrorVisible" title="导入失败" width="700px" destroy-on-close>
-      <el-alert
-        :title="`本次导入共 ${importErrorList.length} 条错误，已整批拒绝`"
-        type="error"
-        :closable="false"
-      />
-      <el-table :data="importErrorRows" style="width: 100%; margin-top: 12px" max-height="420">
-        <el-table-column type="index" label="#" width="60" align="center" />
-        <el-table-column prop="message" label="错误信息" min-width="560" />
-      </el-table>
-      <template #footer>
-        <el-button type="primary" @click="importErrorVisible = false">关闭</el-button>
       </template>
     </el-dialog>
   </div>
@@ -484,17 +424,13 @@
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
 import WangEditor from "@/components/WangEditor/index.vue";
-import type { FormInstance, FormRules, UploadUserFile } from "element-plus";
+import type { FormInstance, FormRules } from "element-plus";
 import TravelAPI, { type WeekendTrip, type TripRecord, type TripStatus } from "@/api/travel";
-import { useDirtyGuard } from "./composables/useDirtyGuard";
 import { genTripId, splitDestination } from "./composables/helpers";
 import {
   WEEKEND_EXCEL_MIME,
   buildWeekendExportBuffer,
-  buildWeekendTemplateBuffer,
   downloadArrayBufferFile,
-  mergeWeekendTrips,
-  parseWeekendExcelFile,
 } from "./composables/weekendExcel";
 
 defineOptions({ name: "WeekendTrip" });
@@ -505,15 +441,10 @@ type TripItem = WeekendTrip;
 const tripList = ref<TripItem[]>([]);
 const loading = ref(false);
 
-/** 未保存的本地修改标记，离开前可提示 */
-const dirty = ref(false);
-useDirtyGuard(dirty);
-
 const loadList = async () => {
   loading.value = true;
   try {
     tripList.value = (await TravelAPI.getWeekendList()) || [];
-    dirty.value = false;
   } finally {
     loading.value = false;
   }
@@ -761,66 +692,87 @@ const removeRecord = (index: number) => {
   editForm.records.splice(index, 1);
 };
 
+/** 保存完整列表，并仅在写入成功后提交到页面状态。 */
+const persistTripList = async (nextList: TripItem[]) => {
+  const snapshot = JSON.parse(JSON.stringify(nextList)) as TripItem[];
+  await TravelAPI.saveWeekendList(snapshot);
+  tripList.value = snapshot;
+};
+
 const handleSubmit = async () => {
-  if (!editFormRef.value) return;
-  await editFormRef.value.validate();
+  if (!editFormRef.value || editLoading.value) return;
 
   editLoading.value = true;
   try {
+    const isValid = await editFormRef.value.validate().catch(() => false);
+    if (!isValid) return;
+
     const payload: TripItem = JSON.parse(JSON.stringify(editForm));
     const idx = tripList.value.findIndex((t) => t.id === payload.id);
+    const nextList =
+      idx > -1
+        ? tripList.value.map((trip, index) => (index === idx ? payload : trip))
+        : [payload, ...tripList.value];
+
+    await persistTripList(nextList);
+
     if (idx > -1) {
-      tripList.value[idx] = payload;
-      ElMessage.success("修改成功（点击「保存到 Mock 文件」生效）");
+      ElMessage.success("修改并保存成功");
     } else {
-      tripList.value.unshift(payload);
-      ElMessage.success("新增成功（点击「保存到 Mock 文件」生效）");
+      ElMessage.success("新增并保存成功");
     }
-    dirty.value = true;
     editVisible.value = false;
     nextTick(() => {
       jumpToRow(payload.id);
       flashHighlight(payload.id);
     });
+  } catch {
+    // 请求层已统一展示错误；保留弹窗和表单内容供用户重试。
   } finally {
     editLoading.value = false;
   }
 };
 
 /* ---------------- 删除 ---------------- */
-const handleDelete = async (row: TripItem) => {
-  await ElMessageBox.confirm(`确认删除行程「${row.title}」？`, "提示", { type: "warning" });
-  tripList.value = tripList.value.filter((t) => t.id !== row.id);
-  dirty.value = true;
-  ElMessage.success("已删除（点击「保存到 Mock 文件」生效）");
+const handleDelete = (row: TripItem) => {
+  const nextList = tripList.value.filter((trip) => trip.id !== row.id);
+  let deleteSaving = false;
+
+  void ElMessageBox.confirm(
+    `确认删除行程「${row.title}」？删除后将立即写入 Mock 文件。`,
+    "删除行程",
+    {
+      type: "warning",
+      confirmButtonText: "删除并保存",
+      cancelButtonText: "取消",
+      beforeClose: async (action, instance, done) => {
+        if (deleteSaving) return;
+        if (action !== "confirm") {
+          done();
+          return;
+        }
+
+        deleteSaving = true;
+        instance.confirmButtonLoading = true;
+        try {
+          await persistTripList(nextList);
+          ElMessage.success("删除并保存成功");
+          done();
+        } catch {
+          // 请求层已统一展示错误；恢复按钮并保留确认框供用户重试。
+          deleteSaving = false;
+          instance.confirmButtonLoading = false;
+        }
+      },
+    }
+  ).catch(() => undefined);
 };
 
 onBeforeUnmount(() => {
   if (highlightTimer) clearTimeout(highlightTimer);
 });
 
-/* ---------------- 保存/导出 Mock 数据 ---------------- */
-const saving = ref(false);
-
-/** 直接写入 mock/data/weekend-trips.json */
-const handleSaveToMock = async () => {
-  saving.value = true;
-  try {
-    await TravelAPI.saveWeekendList(JSON.parse(JSON.stringify(tripList.value)));
-    dirty.value = false;
-    ElMessage.success("已保存到 mock/data/weekend-trips.json");
-  } finally {
-    saving.value = false;
-  }
-};
-
-/** 放弃本地修改，重新从 mock 文件加载 */
 const handleReload = async () => {
-  if (dirty.value) {
-    await ElMessageBox.confirm("有未保存的修改，确定要重新加载吗？", "提示", {
-      type: "warning",
-    });
-  }
   await loadList();
   ElMessage.success("已重新加载");
 };
@@ -838,28 +790,10 @@ const handleDownloadMock = () => {
   ElMessage.success("已导出 JSON 文件");
 };
 
-const handleCopyMock = async () => {
-  const text = buildMockSnippet();
-  try {
-    await navigator.clipboard.writeText(text);
-    ElMessage.success("已复制到剪贴板");
-  } catch {
-    ElMessageBox.alert(text, "复制失败，请手动复制以下内容", {
-      dangerouslyUseHTMLString: false,
-    });
-  }
-};
-
 const handleDownloadExcel = async () => {
   const buffer = await buildWeekendExportBuffer(tripList.value);
   downloadArrayBufferFile(buffer, `weekend-trips-${Date.now()}.xlsx`, WEEKEND_EXCEL_MIME);
   ElMessage.success("已导出 Excel 文件");
-};
-
-const handleDownloadExcelTemplate = async () => {
-  const buffer = await buildWeekendTemplateBuffer();
-  downloadArrayBufferFile(buffer, "weekend-trips-template.xlsx", WEEKEND_EXCEL_MIME);
-  ElMessage.success("已下载导入模板");
 };
 
 const handleExportCommand = async (command: string) => {
@@ -867,62 +801,8 @@ const handleExportCommand = async (command: string) => {
     await handleDownloadExcel();
     return;
   }
-  if (command === "download-template") {
-    await handleDownloadExcelTemplate();
-    return;
-  }
   if (command === "download-json") {
     handleDownloadMock();
-    return;
-  }
-  if (command === "copy-json") {
-    await handleCopyMock();
-  }
-};
-
-const importVisible = ref(false);
-const importLoading = ref(false);
-const importFiles = ref<UploadUserFile[]>([]);
-const importErrorVisible = ref(false);
-const importErrorList = ref<string[]>([]);
-
-const importErrorRows = computed(() => importErrorList.value.map((message) => ({ message })));
-
-const openImportDialog = () => {
-  importFiles.value = [];
-  importVisible.value = true;
-};
-
-const handleImportFileExceed = () => {
-  ElMessage.warning("只能上传一个文件");
-};
-
-const handleImportExcel = async () => {
-  const first = importFiles.value[0];
-  const file = first?.raw as File | undefined;
-  if (!file) {
-    ElMessage.warning("请先选择 Excel 文件");
-    return;
-  }
-
-  importLoading.value = true;
-  try {
-    const { rows, errors } = await parseWeekendExcelFile(file);
-    if (errors.length > 0) {
-      importErrorList.value = errors;
-      importErrorVisible.value = true;
-      ElMessage.error("导入失败，存在错误数据");
-      return;
-    }
-
-    const { merged, createdCount, updatedCount } = mergeWeekendTrips(tripList.value, rows);
-    tripList.value = merged;
-    dirty.value = true;
-    importVisible.value = false;
-    importFiles.value = [];
-    ElMessage.success(`导入成功：新增 ${createdCount} 条，更新 ${updatedCount} 条`);
-  } finally {
-    importLoading.value = false;
   }
 };
 </script>
@@ -938,10 +818,6 @@ const handleImportExcel = async () => {
   display: flex;
   gap: 8px;
   align-items: center;
-}
-
-.dirty-tag {
-  margin-left: 8px;
 }
 
 .text-placeholder {
