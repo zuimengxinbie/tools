@@ -1,0 +1,24 @@
+[
+  {
+    "id": "order-4b627b01-7c2a-4572-8cbe-4f4752f0f4f2",
+    "orderNo": "A001",
+    "totalAmount": 31,
+    "status": "completed",
+    "remark": "少冰、热饮、打包",
+    "createTime": "2026-07-14T01:28:31.394Z",
+    "items": [
+      {
+        "productId": "product-orange-americano",
+        "productName": "橙香美式",
+        "productPrice": 18,
+        "quantity": 1
+      },
+      {
+        "productId": "product-lemon-tea",
+        "productName": "手打柠檬茶",
+        "productPrice": 13,
+        "quantity": 1
+      }
+    ]
+  }
+]

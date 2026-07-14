@@ -14,7 +14,7 @@
     "name": "热美式",
     "category": "咖啡",
     "price": 12,
-    "stock": 20,
+    "stock": 19,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
@@ -34,7 +34,7 @@
     "name": "热拿铁",
     "category": "咖啡",
     "price": 16,
-    "stock": 15,
+    "stock": 14,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
@@ -54,7 +54,7 @@
     "name": "橙香美式",
     "category": "特调",
     "price": 18,
-    "stock": 10,
+    "stock": 8,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
@@ -74,7 +74,7 @@
     "name": "手打柠檬茶",
     "category": "茶饮",
     "price": 13,
-    "stock": 21,
+    "stock": 20,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
@@ -84,7 +84,7 @@
     "name": "黄油可颂",
     "category": "小食",
     "price": 9,
-    "stock": 0,
+    "stock": 10,
     "status": 1,
     "warningStock": 3,
     "imageUrl": ""

@@ -1,0 +1,36 @@
+[
+  {
+    "id": "movement-acb8a879-5401-4538-bd8f-947c23a69377",
+    "productId": "product-orange-americano",
+    "productName": "橙香美式",
+    "type": "sale",
+    "stockDelta": -1,
+    "reservedDelta": 0,
+    "beforeStock": 9,
+    "afterStock": 8,
+    "beforeReserved": 0,
+    "afterReserved": 0,
+    "referenceId": "order-4b627b01-7c2a-4572-8cbe-4f4752f0f4f2",
+    "referenceNo": "A001",
+    "reason": "普通订单销售出库",
+    "remark": "",
+    "createTime": "2026-07-14T01:28:31.394Z"
+  },
+  {
+    "id": "movement-39361e54-d387-4704-aca8-17053e3fa379",
+    "productId": "product-lemon-tea",
+    "productName": "手打柠檬茶",
+    "type": "sale",
+    "stockDelta": -1,
+    "reservedDelta": 0,
+    "beforeStock": 21,
+    "afterStock": 20,
+    "beforeReserved": 0,
+    "afterReserved": 0,
+    "referenceId": "order-4b627b01-7c2a-4572-8cbe-4f4752f0f4f2",
+    "referenceNo": "A001",
+    "reason": "普通订单销售出库",
+    "remark": "",
+    "createTime": "2026-07-14T01:28:31.394Z"
+  }
+]
