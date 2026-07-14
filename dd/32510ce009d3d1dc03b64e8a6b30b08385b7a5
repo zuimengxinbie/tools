@@ -1,0 +1,30 @@
+安装入口.cmd
+  s_77c9276709060e::t_a35bf4b87f2710 1-18
+卸载入口.cmd
+  s_77c9276709060e::t_a35bf4b87f2710 1-18
+scripts/entry-launcher.ps1
+  s_77c9276709060e::t_e8b3022db2f92e 1-8,11-38,44-130,134-173,175,179-257,261-319
+  s_77c9276709060e::t_5e504281b4322d 9-10,39-43,131-133,174,176-178,258-260
+ENTRY.html
+  s_77c9276709060e::t_139763d5663247 1-10,19-407,411-421,428-434,438-440,450-459,464-530,535-560
+  s_77c9276709060e::t_dda4b462c51e87 11-18,408-410,422-427,435-437,441-449,460-463,531-534
+  s_77c9276709060e::t_b09399708bec82 561-563
+mock/business/stock-movements/2026-07-13.json
+  s_77c9276709060e::t_7a8635f160de45 2-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "dd32510ce009d3d1dc03b64e8a6b30b08385b7a5",
+  "prompts": {},
+  "sessions": {
+    "s_77c9276709060e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f5a8c-75c5-7eb3-a2fb-d347b751ddac",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
