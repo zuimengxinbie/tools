@@ -351,7 +351,7 @@
         }
       }
 
-      @media (width <= 760px) {
+      @media (width <=760px) {
         .hero {
           grid-template-columns: 1fr;
           padding: 34px 28px;
@@ -372,7 +372,7 @@
         }
       }
 
-      @media (width <= 460px) {
+      @media (width <=460px) {
         .page-shell {
           padding: 0;
         }
@@ -404,6 +404,7 @@
       }
     </style>
   </head>
+
   <body>
     <main class="page-shell">
       <section class="entry-card" aria-labelledby="page-title">
@@ -437,8 +438,8 @@
             </div>
 
             <div class="address-box">
-              <span title="http://127.0.0.1:3000/#/business/cashier">127.0.0.1:3000 · 收银台</span>
-              <a href="http://127.0.0.1:3000/#/business/cashier" target="_blank" rel="noreferrer">
+              <span title="http://127.0.0.1:8000/#/business/cashier">127.0.0.1:8000 · 收银台</span>
+              <a href="http://127.0.0.1:8000/#/business/cashier" target="_blank" rel="noreferrer">
                 直接访问
               </a>
             </div>
@@ -479,8 +480,8 @@
 
     <script>
       (() => {
-        const HEALTH_URL = "http://127.0.0.1:3000/favicon.ico";
-        const APP_URL = "http://127.0.0.1:3000/#/business/cashier";
+        const HEALTH_URL = "http://127.0.0.1:8000/favicon.ico";
+        const APP_URL = "http://127.0.0.1:8000/#/business/cashier";
         const statusTitle = document.querySelector("#status-title");
         const statusPill = document.querySelector("#status-pill");
         const statusLabel = document.querySelector("#status-label");

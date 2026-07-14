@@ -15,7 +15,7 @@ $ErrorActionPreference = "Stop"
 
 $ProjectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
 $HostAddress = "127.0.0.1"
-$Port = 3000
+$Port = 8000
 $AppUrl = "http://${HostAddress}:${Port}/#/business/cashier"
 $HealthUrl = "http://${HostAddress}:${Port}/favicon.ico"
 $LocalRoot = Join-Path $env:LOCALAPPDATA "cq-tools"

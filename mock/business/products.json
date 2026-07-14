@@ -4,7 +4,7 @@
     "name": "冰美式",
     "category": "咖啡",
     "price": 12,
-    "stock": 36,
+    "stock": 35,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
@@ -84,7 +84,7 @@
     "name": "黄油可颂",
     "category": "小食",
     "price": 9,
-    "stock": 10,
+    "stock": 9,
     "status": 1,
     "warningStock": 3,
     "imageUrl": ""

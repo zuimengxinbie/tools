@@ -1,5 +1,27 @@
 [
   {
+    "id": "order-17bbfe23-6180-4834-98b2-2390221c3115",
+    "orderNo": "A002",
+    "totalAmount": 21,
+    "status": "completed",
+    "remark": "少冰",
+    "createTime": "2026-07-14T01:30:29.956Z",
+    "items": [
+      {
+        "productId": "product-americano-iced",
+        "productName": "冰美式",
+        "productPrice": 12,
+        "quantity": 1
+      },
+      {
+        "productId": "product-croissant",
+        "productName": "黄油可颂",
+        "productPrice": 9,
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "order-4b627b01-7c2a-4572-8cbe-4f4752f0f4f2",
     "orderNo": "A001",
     "totalAmount": 31,
