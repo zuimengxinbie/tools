@@ -1,0 +1,28 @@
+.env.development
+  h_29e61e46c3a48d 2
+scripts/entry-launcher.ps1
+  h_29e61e46c3a48d 18
+ENTRY.html
+  s_9786b34f6cca58::t_57596ac241d392 354,375,407,441-442,483-484
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "a3a5cff3f7f49c52b17e96bb9323239e6c4dde4e",
+  "prompts": {},
+  "humans": {
+    "h_29e61e46c3a48d": {
+      "author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  },
+  "sessions": {
+    "s_9786b34f6cca58": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f5ff3-5071-7b73-8b10-6bd77f479874",
+        "model": "unknown"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
