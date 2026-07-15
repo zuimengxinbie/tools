@@ -1,0 +1,12 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "06ab05873b3aee27bae533211f5442a717f86aaa",
+  "prompts": {},
+  "humans": {
+    "h_29e61e46c3a48d": {
+      "author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
