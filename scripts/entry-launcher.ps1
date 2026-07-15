@@ -16,7 +16,7 @@ $ErrorActionPreference = "Stop"
 $ProjectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
 $HostAddress = "127.0.0.1"
 $Port = 8000
-$AppUrl = "http://${HostAddress}:${Port}/#/business/cashier"
+$AppUrl = "http://${HostAddress}:${Port}/#/dashboard"
 $HealthUrl = "http://${HostAddress}:${Port}/favicon.ico"
 $LocalRoot = Join-Path $env:LOCALAPPDATA "cq-tools"
 $RuntimeDir = Join-Path $LocalRoot "runtime"
@@ -174,7 +174,7 @@ function Start-App {
         "--strictPort"
     )
     if (-not $Quiet) {
-        $arguments += @("--open", "/#/business/cashier")
+        $arguments += @("--open", "/#/dashboard")
     }
 
     Write-LauncherLog "Starting project from $ProjectRoot"
