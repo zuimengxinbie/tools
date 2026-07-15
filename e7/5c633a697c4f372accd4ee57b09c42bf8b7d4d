@@ -1,0 +1,51 @@
+src/api/affairs/index.ts
+  s_83025bc6164cb0::t_f11d526ca2f45a 60-61,64
+src/views/affairs/todolist/index.vue
+  s_83025bc6164cb0::t_16b27942cffb38 159
+  s_83025bc6164cb0::t_12db753d51c8a7 776
+  s_83025bc6164cb0::t_89ff7958d0400b 8-17,20
+  s_83025bc6164cb0::t_b2535c0c1e99ff 598,608,689,706,711,759,778-781
+  s_83025bc6164cb0::t_6b51fab662e0ea 311-387,391,395-398,400,408-412,418-419,422-424
+  s_83025bc6164cb0::t_fa24ee165f38bd 450-451,453-454,682-687
+  s_83025bc6164cb0::t_8e1264ea9a49c6 452
+  s_83025bc6164cb0::t_1344bc2d5d2f1a 425
+src/views/affairs/todolist/components/TodoEditDialog.vue
+  s_83025bc6164cb0::t_ee02fdc23cd582 218
+  s_83025bc6164cb0::t_8e1264ea9a49c6 108,379
+  s_83025bc6164cb0::t_74497db6ab9137 300
+  s_83025bc6164cb0::t_73fc5b4b834589 102,107,109-196,198-200,216-217,237-247,250,267,276-293,295-297,302,305-306,312-313,333,337-354,356,362-370,373,375-378,380
+  s_83025bc6164cb0::t_fbeca4471a0dc8 415-451,465,468-469
+mock/data/todolist.json
+  s_83025bc6164cb0::t_f11d526ca2f45a 89-97,123-141,160-161,167-168,181,185,195,202
+  s_83025bc6164cb0::t_997b0dd70bdf4c 110-114
+  s_83025bc6164cb0::t_a0128afc556742 86-88
+  s_83025bc6164cb0::t_c5f7b228d65e58 98-100,107-109
+  s_83025bc6164cb0::t_937cb781a0fc1b 115-117,120-122
+  s_83025bc6164cb0::t_c4788a9ff478ae 194
+  s_83025bc6164cb0::t_3b5635bdf004e0 201
+src/views/affairs/todolist/components/TodoDetail.vue
+  s_83025bc6164cb0::t_8a252784205684 75-80,82,85-104,107-109,137,151-155,200-209,213-217,239-243,246-249,252,256-258,262-266
+  s_83025bc6164cb0::t_16b27942cffb38 11
+  s_83025bc6164cb0::t_31381aad3ac840 267
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "e75c633a697c4f372accd4ee57b09c42bf8b7d4d",
+  "prompts": {},
+  "humans": {
+    "h_29e61e46c3a48d": {
+      "author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  },
+  "sessions": {
+    "s_83025bc6164cb0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f644f-a3ec-7e02-a7a1-ffd243e95480",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
