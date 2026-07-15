@@ -187,7 +187,7 @@
 
     <!-- 分享计划弹窗 -->
     <el-dialog v-model="shareDialogVisible" title="分享计划" width="820px" destroy-on-close>
-      <el-collapse v-if="sharePlan">
+      <el-collapse v-if="sharePlan" v-model="shareExpandedSections">
         <el-collapse-item name="basic">
           <template #title>
             <span class="share-collapse-title">基础信息</span>
@@ -1483,8 +1483,10 @@ const removeCoordinationItem = (id: number) => {
 /* ---------------- 分享对话框 ---------------- */
 const shareDialogVisible = ref(false);
 const sharePlan = ref<HolidayPlan | null>(null);
+const shareExpandedSections = ref(["basic", "cost", "prep", "coordination"]);
 const handleShare = (plan: HolidayPlan) => {
   sharePlan.value = plan;
+  shareExpandedSections.value = ["basic", "cost", "prep", "coordination"];
   shareDialogVisible.value = true;
 };
 const hasShareText = computed(() => {
