@@ -1,5 +1,49 @@
 [
   {
+    "id": "order-fd2cf385-9c54-4e32-9d85-8cfa746508c7",
+    "orderNo": "A004",
+    "totalAmount": 32,
+    "status": "completed",
+    "remark": "少冰、去冰",
+    "createTime": "2026-07-14T10:12:39.614Z",
+    "items": [
+      {
+        "productId": "product-latte-iced",
+        "productName": "冰拿铁",
+        "productPrice": 16,
+        "quantity": 1
+      },
+      {
+        "productId": "product-latte-hot",
+        "productName": "热拿铁",
+        "productPrice": 16,
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "order-983a9bb4-a4a6-4759-8419-e554c716a378",
+    "orderNo": "A003",
+    "totalAmount": 34,
+    "status": "completed",
+    "remark": "",
+    "createTime": "2026-07-14T10:11:49.879Z",
+    "items": [
+      {
+        "productId": "product-latte-hot",
+        "productName": "热拿铁",
+        "productPrice": 16,
+        "quantity": 1
+      },
+      {
+        "productId": "product-orange-americano",
+        "productName": "橙香美式",
+        "productPrice": 18,
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "order-17bbfe23-6180-4834-98b2-2390221c3115",
     "orderNo": "A002",
     "totalAmount": 21,

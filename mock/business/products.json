@@ -24,7 +24,7 @@
     "name": "冰拿铁",
     "category": "咖啡",
     "price": 16,
-    "stock": 20,
+    "stock": 19,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
@@ -34,7 +34,7 @@
     "name": "热拿铁",
     "category": "咖啡",
     "price": 16,
-    "stock": 14,
+    "stock": 12,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
@@ -54,7 +54,7 @@
     "name": "橙香美式",
     "category": "特调",
     "price": 18,
-    "stock": 8,
+    "stock": 7,
     "status": 1,
     "warningStock": 5,
     "imageUrl": ""
