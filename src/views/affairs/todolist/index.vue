@@ -5,20 +5,21 @@
         <div class="card-header">
           <span>
             待办清单
-            <el-tag v-if="dirty" type="warning" size="small" class="dirty-tag">未保存</el-tag>
+            <el-tag
+              :type="autoSaveMeta.type"
+              size="small"
+              effect="plain"
+              class="save-status-tag"
+              :class="{ 'is-retryable': autoSaveStatus === 'error' }"
+              @click="handleSaveStatusClick"
+            >
+              {{ autoSaveMeta.text }}
+            </el-tag>
           </span>
           <div class="header-actions">
-            <el-tooltip content="放弃本地修改，重新从 mock 文件加载" placement="top">
+            <el-tooltip content="重新从数据文件加载" placement="top">
               <el-button @click="handleReload">重新加载</el-button>
             </el-tooltip>
-            <el-button
-              type="success"
-              :loading="saving"
-              :disabled="!dirty"
-              @click="handleSaveToMock"
-            >
-              保存到 Mock 文件
-            </el-button>
             <el-button type="primary" @click="handleAdd">新增待办</el-button>
           </div>
         </div>
@@ -155,7 +156,7 @@
         </el-table-column>
         <el-table-column label="分类" width="90" align="center">
           <template #default="{ row }: { row: TodoItem }">
-            <el-tag :type="categoryMap[row.category]?.tagType || ''" size="small">
+            <el-tag :type="categoryMap[row.category]?.tagType || undefined" size="small">
               {{ categoryMap[row.category]?.label }}
             </el-tag>
           </template>
@@ -307,16 +308,96 @@ defineOptions({ name: "Todolist" });
 /* ---------------- 数据加载 ---------------- */
 const todoList = ref<TodoItem[]>([]);
 const loading = ref(false);
-const dirty = ref(false);
-const saving = ref(false);
+type AutoSaveStatus = "saved" | "pending" | "saving" | "error";
+type AutoSaveTagType = "success" | "warning" | "info" | "danger";
+
+const AUTO_SAVE_DELAY = 400;
+const autoSaveStatus = ref<AutoSaveStatus>("saved");
+const autoSaveMeta = computed<{ text: string; type: AutoSaveTagType }>(() => {
+  switch (autoSaveStatus.value) {
+    case "pending":
+      return { text: "等待自动保存", type: "warning" };
+    case "saving":
+      return { text: "保存中…", type: "info" };
+    case "error":
+      return { text: "保存失败，点击重试", type: "danger" };
+    default:
+      return { text: "已自动保存", type: "success" };
+  }
+});
+
+let hydrating = true;
+let changeVersion = 0;
+let savedVersion = 0;
+let saveTimer: ReturnType<typeof setTimeout> | undefined;
+let saveWorker: Promise<void> | null = null;
+
+const clearSaveTimer = () => {
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+    saveTimer = undefined;
+  }
+};
+
+const runSaveQueue = async () => {
+  while (savedVersion < changeVersion) {
+    const version = changeVersion;
+    const snapshot: TodoItem[] = JSON.parse(JSON.stringify(todoList.value));
+    autoSaveStatus.value = "saving";
+
+    try {
+      await AffairsAPI.saveTodos(snapshot);
+      savedVersion = version;
+      autoSaveStatus.value = savedVersion < changeVersion ? "pending" : "saved";
+    } catch {
+      autoSaveStatus.value = "error";
+      ElMessage.error("自动保存失败，请点击保存状态重试");
+      break;
+    }
+  }
+};
+
+const flushAutoSave = () => {
+  clearSaveTimer();
+  if (!saveWorker && savedVersion < changeVersion) {
+    saveWorker = runSaveQueue().finally(() => {
+      saveWorker = null;
+    });
+  }
+  return saveWorker ?? Promise.resolve();
+};
+
+const scheduleAutoSave = () => {
+  clearSaveTimer();
+  saveTimer = setTimeout(() => {
+    saveTimer = undefined;
+    void flushAutoSave();
+  }, AUTO_SAVE_DELAY);
+};
+
+watch(
+  todoList,
+  () => {
+    if (hydrating) return;
+    changeVersion += 1;
+    autoSaveStatus.value = "pending";
+    scheduleAutoSave();
+  },
+  { deep: true, flush: "post" }
+);
 
 const loadList = async () => {
   loading.value = true;
+  hydrating = true;
   try {
     const list = (await AffairsAPI.getTodos()) || [];
     todoList.value = list;
-    dirty.value = false;
+    await nextTick();
+    changeVersion = 0;
+    savedVersion = 0;
+    autoSaveStatus.value = "saved";
   } finally {
+    hydrating = false;
     loading.value = false;
   }
 };
@@ -324,23 +405,23 @@ const loadList = async () => {
 onMounted(loadList);
 
 const handleReload = async () => {
-  if (dirty.value) {
-    await ElMessageBox.confirm("有未保存的修改，确定要重新加载吗？", "提示", { type: "warning" });
+  await flushAutoSave();
+  if (autoSaveStatus.value === "error") {
+    await ElMessageBox.confirm("自动保存失败，重新加载会丢失本地修改，确定继续吗？", "提示", {
+      type: "warning",
+    });
   }
   await loadList();
   ElMessage.success("已重新加载");
 };
 
-const handleSaveToMock = async () => {
-  saving.value = true;
-  try {
-    await AffairsAPI.saveTodos(JSON.parse(JSON.stringify(todoList.value)));
-    dirty.value = false;
-    ElMessage.success("已保存到 mock/data/todolist.json");
-  } finally {
-    saving.value = false;
-  }
+const handleSaveStatusClick = () => {
+  if (autoSaveStatus.value === "error") void flushAutoSave();
 };
+
+onBeforeUnmount(() => {
+  if (savedVersion < changeVersion) void flushAutoSave();
+});
 
 /* ---------------- 筛选 / 分页 / 排序 ---------------- */
 const categoryTab = ref<TodoCategory | "all">("all");
@@ -365,11 +446,12 @@ const categoryCount = computed(() => {
 });
 
 /* ---------------- 消费统计 ---------------- */
-// 兼容读取：新 expenses[] + 旧 checklist[].cost
 const getRowCost = (row: TodoItem) => {
-  const expensesCost = (row.expenses ?? []).reduce((sum, e) => sum + (e.amount ?? 0), 0);
-  const legacyCost = (row.checklist ?? []).reduce((sum, c) => sum + (c.cost ?? 0), 0);
-  return expensesCost + legacyCost;
+  return (row.checklist ?? []).reduce(
+    (total, item) =>
+      total + (item.expenses ?? []).reduce((sum, expense) => sum + (expense.amount ?? 0), 0),
+    0
+  );
 };
 
 const totalCostStats = computed(() => {
@@ -512,9 +594,8 @@ const handleBatchDone = async () => {
       ? { ...t, status: "done", progress: 100, finishedAt: nowStr(), updatedAt: nowStr() }
       : t
   );
-  dirty.value = true;
   clearSelection();
-  ElMessage.success("已批量完成（点击「保存到 Mock 文件」生效）");
+  ElMessage.success("已批量完成");
 };
 
 const handleBatchDelete = async () => {
@@ -523,9 +604,8 @@ const handleBatchDelete = async () => {
   });
   const ids = new Set(selectedRows.value.map((r) => r.id));
   todoList.value = todoList.value.filter((t) => !ids.has(t.id));
-  dirty.value = true;
   clearSelection();
-  ElMessage.success("已批量删除（点击「保存到 Mock 文件」生效）");
+  ElMessage.success("已批量删除");
 };
 
 /* ---------------- 详情抽屉 ---------------- */
@@ -546,7 +626,6 @@ const handleDetailUpdate = (updated: TodoItem) => {
     updated.updatedAt = nowStr();
     todoList.value[idx] = updated;
     currentTodo.value = JSON.parse(JSON.stringify(updated));
-    dirty.value = true;
   }
 };
 
@@ -570,7 +649,6 @@ function defaultTodo(): TodoItem {
     starred: false,
     description: "",
     checklist: [],
-    expenses: [],
     createdAt: "",
     updatedAt: "",
     finishedAt: "",
@@ -601,10 +679,14 @@ const handleClone = (row: TodoItem) => {
   copy.finishedAt = "";
   copy.createdAt = nowStr();
   copy.updatedAt = nowStr();
-  copy.checklist = (copy.checklist || []).map((c) => ({ ...c, done: false }));
+  copy.checklist = (copy.checklist || []).map((item) => ({
+    ...item,
+    done: false,
+    finishedAt: "",
+    expenses: [],
+  }));
   todoList.value.unshift(copy);
-  dirty.value = true;
-  ElMessage.success("已复制（点击「保存到 Mock 文件」生效）");
+  ElMessage.success("已复制");
 };
 
 const handleSubmit = (payload: TodoItem) => {
@@ -621,14 +703,13 @@ const handleSubmit = (payload: TodoItem) => {
     payload.createdAt = nowStr();
     payload.updatedAt = nowStr();
     todoList.value.unshift(payload);
-    ElMessage.success("新增成功（点击「保存到 Mock 文件」生效）");
+    ElMessage.success("新增成功");
   } else {
     payload.updatedAt = nowStr();
     const idx = todoList.value.findIndex((r) => r.id === payload.id);
     if (idx > -1) todoList.value[idx] = payload;
-    ElMessage.success("修改成功（点击「保存到 Mock 文件」生效）");
+    ElMessage.success("修改成功");
   }
-  dirty.value = true;
   editVisible.value = false;
 };
 
@@ -637,7 +718,6 @@ const toggleStar = (row: TodoItem) => {
   const idx = todoList.value.findIndex((r) => r.id === row.id);
   if (idx > -1) {
     todoList.value[idx] = { ...todoList.value[idx], starred: !todoList.value[idx].starred };
-    dirty.value = true;
   }
 };
 
@@ -651,7 +731,6 @@ const handleMarkDone = (row: TodoItem) => {
       finishedAt: nowStr(),
       updatedAt: nowStr(),
     };
-    dirty.value = true;
     ElMessage.success("已标记完成");
   }
 };
@@ -670,7 +749,6 @@ const handleReopen = (row: TodoItem) => {
       finishedAt: "",
       updatedAt: nowStr(),
     };
-    dirty.value = true;
     ElMessage.success("已重新开启");
   }
 };
@@ -678,8 +756,7 @@ const handleReopen = (row: TodoItem) => {
 const handleDelete = async (row: TodoItem) => {
   await ElMessageBox.confirm(`确认删除待办「${row.title}」？`, "提示", { type: "warning" });
   todoList.value = todoList.value.filter((r) => r.id !== row.id);
-  dirty.value = true;
-  ElMessage.success("已删除（点击「保存到 Mock 文件」生效）");
+  ElMessage.success("已删除");
 };
 </script>
 
@@ -696,8 +773,12 @@ const handleDelete = async (row: TodoItem) => {
   align-items: center;
 }
 
-.dirty-tag {
+.save-status-tag {
   margin-left: 8px;
+
+  &.is-retryable {
+    cursor: pointer;
+  }
 }
 
 .category-tabs {

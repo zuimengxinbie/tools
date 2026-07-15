@@ -1,5 +1,145 @@
 [
   {
+    "id": 20,
+    "title": "8月消费总计",
+    "category": "life",
+    "priority": "high",
+    "status": "todo",
+    "dueDate": "2026-08-04",
+    "remindAt": "",
+    "tags": ["送礼", "生活开支", "猫粮"],
+    "progress": 0,
+    "repeat": "none",
+    "starred": true,
+    "description": "<p><br></p>",
+    "checklist": [
+      {
+        "id": 1,
+        "title": "停车费",
+        "done": false,
+        "finishedAt": "2026-07-25",
+        "expenses": [
+          {
+            "id": 1,
+            "amount": 200,
+            "remark": "停车费",
+            "date": "2026-07-25"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "办公费",
+        "done": false,
+        "finishedAt": "2026-08-04",
+        "expenses": [
+          {
+            "id": 1,
+            "amount": 135,
+            "remark": "codex",
+            "date": "2026-07-15"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "猫粮",
+        "done": false,
+        "finishedAt": "2026-08-04",
+        "expenses": [
+          {
+            "id": 1,
+            "amount": 125,
+            "remark": "猫粮3袋",
+            "date": "2026-08-04"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "衣物购买",
+        "done": false,
+        "finishedAt": "2026-08-04",
+        "expenses": [
+          {
+            "id": 1,
+            "amount": 300,
+            "remark": "鞋子",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 2,
+            "amount": 500,
+            "remark": "衣服",
+            "date": "2026-08-04"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "礼品",
+        "done": false,
+        "finishedAt": "2026-08-04",
+        "expenses": [
+          {
+            "id": 1,
+            "amount": 800,
+            "remark": "两瓶汾酒",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 2,
+            "amount": 210,
+            "remark": "文房四宝",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 3,
+            "amount": 400,
+            "remark": "化妆品",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 4,
+            "amount": 1180,
+            "remark": "烟两条",
+            "date": "2026-08-04"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "车票",
+        "done": false,
+        "finishedAt": "2026-08-04",
+        "expenses": [
+          {
+            "id": 1,
+            "amount": 500,
+            "remark": "返程车票",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 2,
+            "amount": 1000,
+            "remark": "来时车票",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 3,
+            "amount": 1000,
+            "remark": "租车费用",
+            "date": "2026-08-04"
+          }
+        ]
+      }
+    ],
+    "createdAt": "2026-07-15 14:12",
+    "updatedAt": "2026-07-15 15:32",
+    "finishedAt": "",
+    "budget": 5000
+  },
+  {
     "id": 19,
     "title": "降低生活开销",
     "category": "life",
@@ -17,16 +157,17 @@
         "id": 1,
         "title": "寻找停车方便位置",
         "done": false,
-        "finishedAt": "2026-12-31"
+        "finishedAt": "2026-12-31",
+        "expenses": []
       },
       {
         "id": 2,
         "title": "换房",
         "done": false,
-        "finishedAt": "2026-12-31"
+        "finishedAt": "2026-12-31",
+        "expenses": []
       }
     ],
-    "expenses": [],
     "createdAt": "2026-06-01 15:35",
     "updatedAt": "2026-06-01 15:35",
     "finishedAt": "",
@@ -37,11 +178,11 @@
     "title": "电信套餐更换",
     "category": "finance",
     "priority": "urgent",
-    "status": "doing",
+    "status": "done",
     "dueDate": "2026-07-01",
     "remindAt": "",
     "tags": [],
-    "progress": 33,
+    "progress": 100,
     "repeat": "none",
     "starred": true,
     "description": "",
@@ -50,25 +191,27 @@
         "id": 1,
         "title": "更换电信套餐",
         "done": true,
-        "finishedAt": "2026-06-30"
+        "finishedAt": "2026-06-30",
+        "expenses": []
       },
       {
         "id": 2,
         "title": "查阅是否更换套餐",
         "done": false,
-        "finishedAt": "2026-07-01"
+        "finishedAt": "2026-07-01",
+        "expenses": []
       },
       {
         "id": 3,
         "title": "追加副卡，共享主卡流量",
         "done": false,
-        "finishedAt": "2026-07-01"
+        "finishedAt": "2026-07-01",
+        "expenses": []
       }
     ],
-    "expenses": [],
     "createdAt": "2026-06-01 10:55",
-    "updatedAt": "2026-06-01 15:32",
-    "finishedAt": "",
+    "updatedAt": "2026-07-15 14:15",
+    "finishedAt": "2026-07-15 14:15",
     "budget": 0
   },
   {
@@ -76,11 +219,11 @@
     "title": "下次出行准备",
     "category": "life",
     "priority": "medium",
-    "status": "todo",
+    "status": "done",
     "dueDate": "2026-06-05",
     "remindAt": "",
     "tags": ["旅行"],
-    "progress": 0,
+    "progress": 100,
     "repeat": "none",
     "starred": true,
     "description": "<ul><li>事故处理</li></ul>",
@@ -89,43 +232,48 @@
         "id": 1,
         "title": "清洗毯子",
         "done": false,
-        "finishedAt": "2026-06-05"
+        "finishedAt": "2026-06-05",
+        "expenses": []
       },
       {
         "id": 2,
         "title": "清洗露营垫",
         "done": false,
-        "finishedAt": "2026-06-05"
+        "finishedAt": "2026-06-05",
+        "expenses": []
       },
       {
         "id": 3,
         "title": "准备露营袋子",
         "done": false,
-        "finishedAt": "2026-06-05"
+        "finishedAt": "2026-06-05",
+        "expenses": []
       },
       {
         "id": 4,
         "title": "事故处理打印A4纸",
         "done": false,
-        "finishedAt": "2026-06-05"
+        "finishedAt": "2026-06-05",
+        "expenses": []
       },
       {
         "id": 5,
         "title": "使用不到的拿回家",
         "done": false,
-        "finishedAt": "2026-06-05"
+        "finishedAt": "2026-06-05",
+        "expenses": []
       },
       {
         "id": 6,
         "title": "拿上垃圾袋",
         "done": false,
-        "finishedAt": "2026-06-05"
+        "finishedAt": "2026-06-05",
+        "expenses": []
       }
     ],
-    "expenses": [],
     "createdAt": "2026-06-01 10:34",
-    "updatedAt": "2026-06-01 15:57",
-    "finishedAt": "",
+    "updatedAt": "2026-07-15 14:15",
+    "finishedAt": "2026-07-15 14:15",
     "budget": 0
   }
 ]

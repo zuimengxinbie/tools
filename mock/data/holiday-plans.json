@@ -593,6 +593,12 @@
         "name": "礼品（男方+女方）",
         "category": "其他",
         "done": true
+      },
+      {
+        "id": 19,
+        "name": "驾驶证",
+        "category": "证件",
+        "done": true
       }
     ],
     "coordination": [

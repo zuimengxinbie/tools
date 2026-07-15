@@ -8,7 +8,7 @@
         </el-icon>
       </el-descriptions-item>
       <el-descriptions-item label="分类">
-        <el-tag :type="categoryMap[todo.category]?.tagType || ''" size="small">
+        <el-tag :type="categoryMap[todo.category]?.tagType || undefined" size="small">
           {{ categoryMap[todo.category]?.label }}
         </el-tag>
       </el-descriptions-item>
@@ -72,40 +72,42 @@
       </el-descriptions-item>
     </el-descriptions>
 
-    <div class="section-title">
-      子任务
-      <span v-if="todo.checklist?.length" class="section-count">
-        ({{ doneCount }}/{{ todo.checklist.length }})
+    <div class="section-title section-title-summary">
+      <span>
+        子任务
+        <span v-if="todo.checklist?.length" class="section-count">
+          ({{ doneCount }}/{{ todo.checklist.length }})
+        </span>
       </span>
+      <span class="section-total-cost">总消费：¥{{ totalCost.toFixed(2) }}</span>
     </div>
     <div v-if="todo.checklist?.length" class="checklist">
-      <div v-for="item in todo.checklist" :key="item.id" class="checklist-item">
-        <el-checkbox v-model="item.done" @change="emitUpdate" />
-        <span :class="{ 'done-text': item.done }" style="flex: 1">{{ item.title }}</span>
-        <span v-if="item.finishedAt" class="checklist-finished-at">
-          （完成：{{ item.finishedAt }}）
-        </span>
-      </div>
-    </div>
-    <div v-else class="text-placeholder">暂无子任务</div>
-
-    <div class="section-title">消费记录</div>
-    <div v-if="hasExpenses" class="expenses-list">
-      <div v-for="item in todo.expenses" :key="item.id" class="expense-item">
-        <span class="expense-amount">¥{{ item.amount.toFixed(2) }}</span>
-        <span class="expense-remark">{{ item.remark || "无备注" }}</span>
-        <span class="expense-date">{{ item.date }}</span>
-      </div>
-      <!-- 兼容旧数据：显示 checklist 中的 cost -->
-      <template v-for="item in legacyChecklistCosts" :key="'legacy-' + item.id">
-        <div class="expense-item expense-legacy">
-          <span class="expense-amount">¥{{ item.cost!.toFixed(2) }}</span>
-          <span class="expense-remark">{{ item.costRemark || item.title }}</span>
-          <span class="expense-date">{{ item.finishedAt || "—" }}</span>
+      <div v-for="item in todo.checklist" :key="item.id" class="checklist-group">
+        <div class="checklist-item">
+          <el-checkbox v-model="item.done" @change="emitUpdate" />
+          <span :class="{ 'done-text': item.done }" style="flex: 1">{{ item.title }}</span>
+          <span v-if="item.finishedAt" class="checklist-finished-at">
+            （完成：{{ item.finishedAt }}）
+          </span>
         </div>
-      </template>
+        <div class="subtask-expense-summary">
+          <span>消费 {{ item.expenses?.length ?? 0 }} 笔</span>
+          <strong>小计：¥{{ getChecklistCost(item).toFixed(2) }}</strong>
+        </div>
+        <div v-if="item.expenses?.length" class="subtask-expenses">
+          <div v-for="expense in item.expenses" :key="expense.id" class="expense-item">
+            <span class="expense-amount">¥{{ expense.amount.toFixed(2) }}</span>
+            <span class="expense-remark">{{ expense.remark || "无备注" }}</span>
+            <span class="expense-date">{{ expense.date || "—" }}</span>
+          </div>
+        </div>
+        <div v-else class="subtask-expense-empty">暂无消费记录</div>
+      </div>
     </div>
-    <div v-else class="text-placeholder">暂无消费记录</div>
+    <div v-else class="text-placeholder">
+      暂无子任务
+      <span class="section-count">（暂无消费记录）</span>
+    </div>
 
     <div class="section-title">时间线</div>
     <el-timeline>
@@ -132,7 +134,7 @@
 <script setup lang="ts">
 import { StarFilled } from "@element-plus/icons-vue";
 import WangEditor from "@/components/WangEditor/index.vue";
-import type { TodoItem } from "@/api/affairs";
+import type { ChecklistItem, TodoItem } from "@/api/affairs";
 import { categoryMap, priorityMap, statusMap, repeatMap, isOverdue, isSoon } from "../constants";
 
 interface Props {
@@ -146,19 +148,11 @@ const emit = defineEmits<{
 
 const doneCount = computed(() => props.todo.checklist?.filter((c) => c.done).length ?? 0);
 
-// 新 expenses 数组 + 旧 checklist[].cost 兼容
-const expensesCost = computed(() =>
-  (props.todo.expenses ?? []).reduce((sum, e) => sum + (e.amount ?? 0), 0)
-);
-const legacyChecklistCosts = computed(() =>
-  (props.todo.checklist ?? []).filter((c) => c.cost && c.cost > 0)
-);
-const legacyCost = computed(() =>
-  legacyChecklistCosts.value.reduce((sum, c) => sum + (c.cost ?? 0), 0)
-);
-const totalCost = computed(() => expensesCost.value + legacyCost.value);
-const hasExpenses = computed(
-  () => (props.todo.expenses?.length ?? 0) > 0 || legacyChecklistCosts.value.length > 0
+const getChecklistCost = (item: ChecklistItem) =>
+  (item.expenses ?? []).reduce((sum, expense) => sum + (expense.amount ?? 0), 0);
+
+const totalCost = computed(() =>
+  (props.todo.checklist ?? []).reduce((sum, item) => sum + getChecklistCost(item), 0)
 );
 
 const costPercent = computed(() =>
@@ -203,11 +197,24 @@ const emitUpdate = () => {
   color: var(--el-text-color-secondary);
 }
 
+.section-title-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-total-cost {
+  color: var(--el-color-warning);
+}
+
 .checklist {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px 12px;
+  gap: 8px;
+}
+
+.checklist-group {
+  padding: 10px 12px;
   background: var(--el-fill-color-light);
   border-radius: 4px;
 }
@@ -229,36 +236,39 @@ const emitUpdate = () => {
   color: var(--el-text-color-secondary);
 }
 
-.checklist-cost {
-  margin-left: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--el-color-warning);
-}
-
-.checklist-cost-remark {
-  margin-left: 4px;
+.subtask-expense-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0 4px 24px;
   font-size: 12px;
   color: var(--el-text-color-secondary);
+
+  strong {
+    color: var(--el-color-warning);
+  }
 }
 
-.expenses-list {
+.subtask-expenses {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 8px 12px;
-  background: var(--el-fill-color-light);
+  padding: 8px 10px;
+  margin-left: 24px;
+  background: var(--el-fill-color-lighter);
   border-radius: 4px;
+}
+
+.subtask-expense-empty {
+  padding-left: 24px;
+  font-size: 12px;
+  color: var(--el-text-color-placeholder);
 }
 
 .expense-item {
   display: flex;
   gap: 12px;
   align-items: center;
-}
-
-.expense-legacy {
-  opacity: 0.7;
 }
 
 .expense-amount {
