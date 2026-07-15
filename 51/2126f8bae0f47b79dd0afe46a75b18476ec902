@@ -1,0 +1,24 @@
+src/views/travel/holiday.vue
+  s_f60a2bedb6695b::t_36c1521f9bf058 190,1486,1489
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "512126f8bae0f47b79dd0afe46a75b18476ec902",
+  "prompts": {},
+  "humans": {
+    "h_29e61e46c3a48d": {
+      "author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  },
+  "sessions": {
+    "s_f60a2bedb6695b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f6383-fc6e-7a63-b8ce-eaded4d5ed8c",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
