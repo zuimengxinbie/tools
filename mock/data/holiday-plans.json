@@ -8,10 +8,10 @@
     "budget": 500,
     "members": 2,
     "transport": "自驾",
-    "remark": "<p><br></p>",
-    "status": "planning",
-    "actualCost": 650,
-    "rating": 0,
+    "remark": "<table style=\"width: 625px; table-layout: fixed; height: 0px; text-align: left; background-color: rgb(255, 255, 255);\"><colgroup contenteditable=\"false\"><col width=\"156\"><col width=\"156\"><col width=\"156\"><col width=\"157\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">Day</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">行程</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">备注</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">day 1</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">牙齿 &nbsp;→ 美味砂锅面 &nbsp;→ 酒店</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">吃砂锅面、看江景</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">避暑，喷防嗮</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">day 2</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">酒店 &nbsp;→ 回家</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">回家、看江景</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">无</td></tr></tbody></table><h1>酒店： 汉庭酒店(上海崇明新河镇店)</h1>",
+    "status": "completed",
+    "actualCost": 577.12,
+    "rating": 3,
     "review": "",
     "costItems": [
       {
@@ -24,8 +24,8 @@
       {
         "id": 2,
         "category": "住宿",
-        "name": "酒店",
-        "amount": 300,
+        "name": "汉庭双床酒店",
+        "amount": 227.12,
         "estimateType": "estimated"
       }
     ],
@@ -79,6 +79,13 @@
         "id": 2,
         "question": "晚上住宿位置",
         "answer": "待确定",
+        "status": "pending",
+        "role": "共同"
+      },
+      {
+        "id": 3,
+        "question": "酒店无早餐",
+        "answer": "附近有早餐店",
         "status": "pending",
         "role": "共同"
       }
@@ -437,7 +444,7 @@
     "budget": 6000,
     "members": 2,
     "transport": "高铁 + 自驾",
-    "remark": "<h1>行程</h1><blockquote style=\"text-align: start;\">男：<span style=\"color: rgb(66, 144, 247);\">♂</span> 女：<span style=\"color: rgb(225, 60, 57); background-color: rgb(248, 248, 248); font-size: 16px; font-family: &quot;Open Sans&quot;, &quot;Clear Sans&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, &quot;Segoe UI Emoji&quot;, sans-serif;\">♀</span></blockquote><table style=\"width: 606px; table-layout: fixed; height: 0px; text-align: left;\"><colgroup contenteditable=\"false\"><col width=\"151\"><col width=\"151\"><col width=\"151\"><col width=\"153\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">Day</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">行程</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">备注</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day before....</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">提前订票预定酒店<br>预定礼品</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">高铁票时间安排合理</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 1</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">苏州 → 太原 → 安邑村♀ → 忻州♂</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">太原南站租车<br>取礼品<br>送女方回家<br>男方忻州市过夜</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">预定酒店<br><br>取礼品</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 2</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">忻州♂ → 安邑村 &nbsp;→ 石盘村♂</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">男方上午见女方父母<br><br>下午男方返家</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">筹备家中接待<br><br>男方提前给女方购票，协调接人流程<br><br>女方礼品提前装进车</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 3</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">安邑村♀ → 石盘村 → 太原</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">女方上午来男方，下午一同回太原</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">上午：高铁站接人后，一起拿礼品回家<br><br>下午：返程</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day 4</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">太原 &nbsp;→ 苏州</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">返程</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">—</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"><strong>day after....</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\"></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">正常上班</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid; border-color: rgb(204, 204, 204);\">—</td></tr></tbody></table><p style=\"text-align: start;\"><br></p>",
+    "remark": "<h1>行程</h1><blockquote style=\"text-align: start;\">男：<span style=\"color: rgb(66, 144, 247);\">♂</span> 女：<span style=\"color: rgb(225, 60, 57); background-color: rgb(248, 248, 248); font-size: 16px; font-family: &quot;Open Sans&quot;, &quot;Clear Sans&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, &quot;Segoe UI Emoji&quot;, sans-serif;\">♀</span></blockquote><h3 style=\"text-align: start;\">提前准备</h3><ul><li style=\"text-align: start;\">预订高铁票、酒店和租车</li><li style=\"text-align: start;\">提前购买并领取礼品</li><li style=\"text-align: start;\">出发前核对车票及整体行程</li></ul><h3 style=\"text-align: start;\">行程安排</h3><p><br></p><table style=\"width: 627.66px; table-layout: fixed; text-align: left;\"><colgroup contenteditable=\"false\"><col width=\"60\"><col width=\"156\"><col width=\"342.66\"><col width=\"69\"></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\" width=\"auto\">日期</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">路线</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">主要安排</th><th colspan=\"1\" rowspan=\"1\" width=\"auto\">住宿</th></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">08.03</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">苏州 ♀ → 安邑村 ♀</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">女方提前回家</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">—</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">08.06</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">苏州 ♂ → 太原 ♂</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">男方抵达太原南站后租车、领取礼品</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">太原一晚</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>08.07</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">太原 ♂ → 安邑村 ♀♂ → 石盘村 ♂</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">上午：男方到女方家拜访父母<br><br>下午：男方返回石盘村；女方提前将礼品和行李装车，并核对次日车票</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">—</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\"><strong>08.08</strong></td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">安邑村 ♀ → 石盘村 ♀♂ → 太原 ♀♂</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">上午：到高铁站接女方，一同携礼品回男方家<br><br>下午：两人前往太原并还车</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">太原一晚</td></tr><tr><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">08.09</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">太原 ♀♂ → 苏州 ♀♂</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">一同返回苏州</td><td colspan=\"1\" rowspan=\"1\" width=\"auto\" style=\"border-style: solid;\">—</td></tr></tbody></table><p style=\"text-align: start;\">返程后正常上班。</p>",
     "status": "planning",
     "actualCost": 8380,
     "rating": 0,
@@ -603,38 +610,17 @@
     ],
     "coordination": [
       {
-        "id": 5,
-        "question": "移除奶粉礼品",
-        "answer": "小孩已长大，不需要",
-        "status": "resolved",
-        "role": "女方"
-      },
-      {
-        "id": 6,
-        "question": "女方母亲周六日工作忙",
-        "answer": "周四周五先去女方家，周六日去男方",
-        "status": "pending",
-        "role": "女方"
-      },
-      {
-        "id": 7,
-        "question": "男方请不到那么多天假",
-        "answer": "女方提前回家住几天，提前购票",
-        "status": "pending",
-        "role": "男方"
-      },
-      {
-        "id": 8,
-        "question": "男方母亲是否可以从北京返回",
-        "answer": "临近期协调，尽力而为",
-        "status": "pending",
-        "role": "男方"
-      },
-      {
         "id": 9,
         "question": "带束鲜花",
         "answer": "No problem",
         "status": "pending",
+        "role": "共同"
+      },
+      {
+        "id": 10,
+        "question": "误饮酒",
+        "answer": "有行程安排",
+        "status": "resolved",
         "role": "共同"
       }
     ]

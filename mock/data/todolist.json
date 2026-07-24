@@ -4,11 +4,11 @@
     "title": "8月消费总计",
     "category": "life",
     "priority": "high",
-    "status": "todo",
+    "status": "doing",
     "dueDate": "2026-08-04",
     "remindAt": "",
     "tags": ["送礼", "生活开支", "猫粮"],
-    "progress": 0,
+    "progress": 57,
     "repeat": "none",
     "starred": true,
     "description": "<p><br></p>",
@@ -16,7 +16,7 @@
       {
         "id": 1,
         "title": "停车费",
-        "done": false,
+        "done": true,
         "finishedAt": "2026-07-25",
         "expenses": [
           {
@@ -30,7 +30,7 @@
       {
         "id": 2,
         "title": "办公费",
-        "done": false,
+        "done": true,
         "finishedAt": "2026-08-04",
         "expenses": [
           {
@@ -44,7 +44,7 @@
       {
         "id": 3,
         "title": "猫粮",
-        "done": false,
+        "done": true,
         "finishedAt": "2026-08-04",
         "expenses": [
           {
@@ -88,12 +88,6 @@
             "date": "2026-08-04"
           },
           {
-            "id": 2,
-            "amount": 210,
-            "remark": "文房四宝",
-            "date": "2026-08-04"
-          },
-          {
             "id": 3,
             "amount": 400,
             "remark": "韩束化妆品",
@@ -112,21 +106,39 @@
             "date": "2026-08-04"
           },
           {
-            "id": 6,
-            "amount": 225,
-            "remark": "车厘子",
-            "date": "2026-08-04"
-          },
-          {
-            "id": 7,
-            "amount": 110,
-            "remark": "坚果",
-            "date": "2026-08-04"
-          },
-          {
             "id": 8,
+            "amount": 260,
+            "remark": "盆栽",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 9,
+            "amount": 50,
+            "remark": "芙蓉王两包+打火机",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 10,
             "amount": 200,
-            "remark": "盆栽 或者 牛奶",
+            "remark": "牛奶",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 11,
+            "amount": 215,
+            "remark": "茶叶",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 12,
+            "amount": 100,
+            "remark": "水果",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 13,
+            "amount": 356,
+            "remark": "爷爷的酒",
             "date": "2026-08-04"
           }
         ]
@@ -134,32 +146,58 @@
       {
         "id": 6,
         "title": "车票",
-        "done": false,
+        "done": true,
         "finishedAt": "2026-08-04",
         "expenses": [
           {
             "id": 1,
-            "amount": 500,
-            "remark": "返程车票",
+            "amount": 307.5,
+            "remark": "返程车票 z172 + k1807",
             "date": "2026-08-04"
           },
           {
             "id": 2,
-            "amount": 1000,
-            "remark": "来时车票",
+            "amount": 57,
+            "remark": "小杜来石盘",
             "date": "2026-08-04"
           },
           {
             "id": 3,
             "amount": 1000,
-            "remark": "租车费用",
+            "remark": "租车费用473 + 油费过路费500",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 4,
+            "amount": 1220,
+            "remark": "返苏车票",
+            "date": "2026-08-04"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "酒店",
+        "done": false,
+        "finishedAt": "2026-08-04",
+        "expenses": [
+          {
+            "id": 1,
+            "amount": 200,
+            "remark": "8.6号一晚一人",
+            "date": "2026-08-04"
+          },
+          {
+            "id": 2,
+            "amount": 250,
+            "remark": "8.8号一晚两人",
             "date": "2026-08-04"
           }
         ]
       }
     ],
     "createdAt": "2026-07-15 14:12",
-    "updatedAt": "2026-07-15 15:57",
+    "updatedAt": "2026-07-24 14:16",
     "finishedAt": "",
     "budget": 5000
   },
