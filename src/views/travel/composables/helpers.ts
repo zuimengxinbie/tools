@@ -122,8 +122,16 @@ export const COST_CATEGORIES: { label: CostCategory; color: string }[] = [
   { label: "其他", color: "#909399" },
 ];
 
-export const getCostColor = (cat: CostCategory): string =>
-  COST_CATEGORIES.find((c) => c.label === cat)?.color ?? "#909399";
+const CUSTOM_COST_COLORS = ["#5c6bc0", "#26a69a", "#ab47bc", "#ef6c00", "#8d6e63", "#78909c"];
+
+/** 自定义类目使用由名称稳定计算的颜色，保证列表与图表配色一致 */
+export const getCostColor = (cat: CostCategory): string => {
+  const presetColor = COST_CATEGORIES.find((item) => item.label === cat)?.color;
+  if (presetColor) return presetColor;
+
+  const hash = Array.from(cat).reduce((sum, char) => sum + (char.codePointAt(0) ?? 0), 0);
+  return CUSTOM_COST_COLORS[hash % CUSTOM_COST_COLORS.length];
+};
 
 /* ---------------- 出行准备 ---------------- */
 

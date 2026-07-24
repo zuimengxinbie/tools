@@ -23,7 +23,8 @@ export interface WeekendTrip {
 
 export type HolidayStatus = "planning" | "confirmed" | "completed";
 
-export type CostCategory = "交通" | "住宿" | "餐饮" | "门票" | "购物" | "其他";
+/** 费用类目：内置类目提供自动补全，同时允许最多 6 个字的自定义类目 */
+export type CostCategory = "交通" | "住宿" | "餐饮" | "门票" | "购物" | "其他" | (string & {});
 
 export type CostEstimateType = "estimated" | "confirmed";
 

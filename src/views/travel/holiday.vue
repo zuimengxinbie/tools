@@ -262,38 +262,61 @@
             <span>预估总额（预算）：￥{{ sharePlan.budget?.toLocaleString?.() ?? 0 }}</span>
             <span style="margin-left: 24px">
               实际总额：￥
-              <b>{{ getActualCost(sharePlan) }}</b>
+              <b>{{ getActualCost(sharePlan).toLocaleString() }}</b>
             </span>
           </div>
-          <el-table :data="sharePlan.costItems ?? []" size="small" border empty-text="暂无费用明细">
-            <el-table-column label="类目" width="100">
-              <template #default="{ row }">
+          <div
+            v-if="shareCostGroups.length"
+            class="share-cost-detail"
+            role="table"
+            aria-label="费用明细"
+          >
+            <div class="share-cost-list-header" role="row">
+              <span role="columnheader">名称</span>
+              <span role="columnheader">金额</span>
+              <span role="columnheader">标签</span>
+            </div>
+            <section
+              v-for="group in shareCostGroups"
+              :key="group.category"
+              class="share-cost-group"
+              role="rowgroup"
+            >
+              <div class="share-cost-group-header">
                 <el-tag
                   size="small"
-                  :style="{
-                    color: getCostColor(row.category),
-                    borderColor: getCostColor(row.category),
-                  }"
+                  :style="{ color: group.color, borderColor: group.color }"
                   effect="plain"
                 >
-                  {{ row.category }}
+                  {{ group.category }}
                 </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="名称" prop="name" />
-            <el-table-column label="金额" width="140" align="right">
-              <template #default="{ row }">￥{{ row.amount.toLocaleString() }}</template>
-            </el-table-column>
-            <el-table-column label="标签" width="180" align="center">
-              <template #default="{ row }">
-                <div class="cost-read-tags">
-                  <el-tag size="small" :type="getEstimateTypeMeta(row.estimateType).type">
-                    {{ getEstimateTypeMeta(row.estimateType).label }}
+                <span class="share-cost-group-count">{{ group.items.length }} 项</span>
+                <span class="share-cost-group-total">
+                  小计
+                  <b>￥{{ group.total.toLocaleString() }}</b>
+                </span>
+              </div>
+              <div
+                v-for="item in group.items"
+                :key="item.id"
+                class="share-cost-item-row"
+                role="row"
+              >
+                <span class="share-cost-item-name" role="cell" :title="item.name">
+                  {{ item.name }}
+                </span>
+                <span class="share-cost-item-amount" role="cell">
+                  ￥{{ (Number(item.amount) || 0).toLocaleString() }}
+                </span>
+                <div class="cost-read-tags" role="cell">
+                  <el-tag size="small" :type="getEstimateTypeMeta(item.estimateType).type">
+                    {{ getEstimateTypeMeta(item.estimateType).label }}
                   </el-tag>
                 </div>
-              </template>
-            </el-table-column>
-          </el-table>
+              </div>
+            </section>
+          </div>
+          <el-empty v-else description="暂无费用明细" :image-size="64" />
         </el-collapse-item>
         <el-collapse-item name="prep">
           <template #title>
@@ -525,12 +548,22 @@
           </div>
 
           <div class="cost-input-row">
-            <el-select v-model="costInput.category" style="width: 120px">
+            <el-select
+              v-model="costInput.category"
+              filterable
+              allow-create
+              default-first-option
+              :reserve-keyword="false"
+              placeholder="选择或输入类目"
+              no-data-text="输入后回车新增，最多 6 个字"
+              style="width: 140px"
+              @change="handleCostCategoryChange"
+            >
               <el-option
-                v-for="c in COST_CATEGORIES"
-                :key="c.label"
-                :label="c.label"
-                :value="c.label"
+                v-for="category in costCategoryOptions"
+                :key="category.label"
+                :label="category.label"
+                :value="category.label"
               />
             </el-select>
             <el-input
@@ -1345,6 +1378,48 @@ const getCoordinationStatusMeta = (
 };
 
 /* ---------------- 编辑：费用明细 ---------------- */
+const MAX_COST_CATEGORY_LENGTH = 6;
+
+const getOrderedCostCategories = (items: CostItem[]): CostCategory[] => {
+  const categories = COST_CATEGORIES.map(({ label }) => label);
+  const seen = new Set<string>(categories);
+
+  for (const item of items) {
+    const category = item.category?.trim();
+    if (category && !seen.has(category)) {
+      categories.push(category);
+      seen.add(category);
+    }
+  }
+  return categories;
+};
+
+const costCategoryOptions = computed(() => {
+  const items = planList.value.flatMap((plan) => plan.costItems ?? []);
+  items.push(...(editForm.costItems ?? []));
+  return getOrderedCostCategories(items).map((label) => ({
+    label,
+    color: getCostColor(label),
+  }));
+});
+
+const normalizeCostCategory = (value: string): CostCategory | null => {
+  const category = value.trim();
+  if (!category) {
+    ElMessage.warning("请输入费用类目");
+    return null;
+  }
+  if (Array.from(category).length > MAX_COST_CATEGORY_LENGTH) {
+    ElMessage.warning(`费用类目最多支持 ${MAX_COST_CATEGORY_LENGTH} 个字`);
+    return null;
+  }
+  return category;
+};
+
+const handleCostCategoryChange = (value: string) => {
+  costInput.category = normalizeCostCategory(value) ?? "其他";
+};
+
 const costInput = reactive<{ category: CostCategory; name: string; amount: number }>({
   category: "交通",
   name: "",
@@ -1361,6 +1436,9 @@ const editPerCapita = computed(() => {
 });
 
 const addCostItem = () => {
+  const category = normalizeCostCategory(costInput.category);
+  if (!category) return;
+
   if (!costInput.name.trim()) {
     ElMessage.warning("请输入费用名称");
     return;
@@ -1373,7 +1451,7 @@ const addCostItem = () => {
   const nextId = (list.reduce((m, c) => Math.max(m, c.id), 0) || 0) + 1;
   list.push({
     id: nextId,
-    category: costInput.category,
+    category,
     name: costInput.name.trim(),
     amount: Number(costInput.amount) || 0,
     ...defaultCostItemTags(),
@@ -1499,18 +1577,28 @@ const hasShareRating = computed(() => normalizedShareRating.value > 0);
 const canEditRating = computed(() => editForm.status === "completed");
 const normalizedEditRating = computed(() => normalizeRating(editForm.rating));
 
-const shareCostByCategory = computed(() => {
+const shareCostGroups = computed(() => {
   const items = sharePlan.value?.costItems ?? [];
-  const map = new Map<string, number>();
-  for (const c of items) {
-    map.set(c.category, (map.get(c.category) ?? 0) + (Number(c.amount) || 0));
-  }
-  return COST_CATEGORIES.map(({ label, color }) => ({
-    name: label,
-    value: map.get(label) ?? 0,
-    itemStyle: { color },
-  })).filter((d) => d.value > 0);
+  return getOrderedCostCategories(items)
+    .map((category) => ({
+      category,
+      color: getCostColor(category),
+      items: items.filter((item) => item.category === category),
+    }))
+    .filter((group) => group.items.length > 0)
+    .map((group) => ({
+      ...group,
+      total: group.items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0),
+    }));
 });
+
+const shareCostByCategory = computed(() =>
+  shareCostGroups.value.map(({ category, color, total }) => ({
+    name: category,
+    value: total,
+    itemStyle: { color },
+  }))
+);
 const shareCostChartOptions = computed(() => ({
   tooltip: {
     trigger: "item",
@@ -1706,6 +1794,7 @@ const shareCostChartOptions = computed(() => ({
   display: inline-flex;
   gap: 6px;
   align-items: center;
+  justify-content: center;
 }
 
 /* ---------------- 分享弹窗 collapse 标题样式 ---------------- */
@@ -1714,6 +1803,94 @@ const shareCostChartOptions = computed(() => ({
   font-weight: bold;
   color: #333;
   letter-spacing: 1px;
+}
+
+/* ---------------- 分享弹窗：费用分组 ---------------- */
+.share-cost-detail {
+  // max-height: 420px;
+  overflow-y: auto;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 4px;
+}
+
+.share-cost-list-header,
+.share-cost-item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px 180px;
+  align-items: center;
+}
+
+.share-cost-list-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: 36px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--el-text-color-secondary);
+  background: var(--el-bg-color);
+  border-bottom: 1px solid var(--el-border-color-lighter);
+
+  span {
+    padding: 8px 12px;
+
+    &:nth-child(2) {
+      text-align: right;
+    }
+
+    &:nth-child(3) {
+      text-align: center;
+    }
+  }
+}
+
+.share-cost-group + .share-cost-group {
+  border-top: 1px solid var(--el-border-color);
+}
+
+.share-cost-group-header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 38px;
+  padding: 6px 12px;
+  background: var(--el-fill-color-light);
+}
+
+.share-cost-group-count {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+
+.share-cost-group-total {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--el-text-color-regular);
+}
+
+.share-cost-item-row {
+  min-height: 40px;
+  font-size: 13px;
+  color: var(--el-text-color-regular);
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--el-border-color-lighter);
+  }
+
+  > * {
+    min-width: 0;
+    padding: 8px 12px;
+  }
+}
+
+.share-cost-item-name {
+  overflow-wrap: anywhere;
+}
+
+.share-cost-item-amount {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
 }
 
 /* ---------------- 编辑：费用 / 准备 ---------------- */
