@@ -568,7 +568,8 @@
             </el-select>
             <el-input
               v-model="costInput.name"
-              placeholder="费用名称，如「大理→丽江高铁」"
+              :maxlength="MAX_COST_NAME_LENGTH"
+              placeholder="输入费用名称"
               @keyup.enter="addCostItem"
             />
             <el-input-number
@@ -588,6 +589,7 @@
             border
             class="mt-2"
             empty-text="暂无费用，添加一项试试"
+            :row-class-name="costTableRowClassName"
           >
             <el-table-column label="类目" width="100">
               <template #default="{ row }">
@@ -603,7 +605,44 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="名称" prop="name" />
+            <el-table-column label="名称" min-width="220">
+              <template #default="{ row }">
+                <div v-if="editingCostItemId === row.id" class="cost-name-editor">
+                  <el-input
+                    ref="costNameInputRef"
+                    v-model="costNameDraft"
+                    :maxlength="MAX_COST_NAME_LENGTH"
+                    @keyup.enter.stop.prevent="commitCostNameEdit"
+                    @keyup.esc.stop.prevent="cancelCostNameEdit"
+                    @blur="commitCostNameEdit"
+                  />
+                  <div v-if="costNameEditError" class="cost-name-error">
+                    {{ costNameEditError }}
+                  </div>
+                </div>
+                <div
+                  v-else
+                  class="cost-name-cell"
+                  role="button"
+                  tabindex="0"
+                  :title="row.name"
+                  @click="startCostNameEdit(row)"
+                  @keydown.enter.stop.prevent="startCostNameEdit(row)"
+                >
+                  <span class="cost-name-text">{{ row.name }}</span>
+                  <span
+                    v-if="editedCostItemIds.has(row.id)"
+                    class="cost-name-status"
+                    :class="{ 'is-error': costNameSaveFailed }"
+                  >
+                    {{ costNameSaveFailed ? "保存失败" : "已修改" }}
+                  </span>
+                  <el-icon class="cost-name-edit-icon" aria-hidden="true">
+                    <EditPen />
+                  </el-icon>
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column label="金额" width="140" align="right">
               <template #default="{ row }">￥{{ row.amount.toLocaleString() }}</template>
             </el-table-column>
@@ -866,7 +905,7 @@
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
 import WangEditor from "@/components/WangEditor/index.vue";
-import type { FormInstance, FormRules } from "element-plus";
+import type { FormInstance, FormRules, InputInstance } from "element-plus";
 import TravelAPI, {
   type HolidayPlan,
   type HolidayStatus,
@@ -1135,7 +1174,12 @@ const editLoading = ref(false);
 const isEdit = ref(false);
 const editTab = ref<"basic" | "cost" | "prep" | "coordination">("basic");
 watch(editVisible, (v) => {
-  if (v) editTab.value = "basic";
+  if (v) {
+    editTab.value = "basic";
+    resetCostNameEditingState();
+  } else {
+    cancelCostNameEdit();
+  }
 });
 
 /** 目的地标签数组（与字符串字段双向同步，· 作为持久化分隔符） */
@@ -1258,8 +1302,13 @@ const persistPlanList = async (nextList: HolidayPlan[]) => {
 
 const handleSubmit = async () => {
   if (!editFormRef.value || editLoading.value) return;
+  if (editingCostItemId.value !== null && !commitCostNameEdit()) {
+    editTab.value = "cost";
+    return;
+  }
 
   editLoading.value = true;
+  costNameSaveFailed.value = false;
   try {
     const isValid = await editFormRef.value.validate().catch(() => false);
     if (!isValid) return;
@@ -1296,6 +1345,7 @@ const handleSubmit = async () => {
     nextTick(() => flashHighlight(payload.id));
   } catch {
     // 请求层已统一展示错误；保留弹窗和表单内容供用户重试。
+    costNameSaveFailed.value = editedCostItemIds.size > 0;
   } finally {
     editLoading.value = false;
   }
@@ -1379,6 +1429,90 @@ const getCoordinationStatusMeta = (
 
 /* ---------------- 编辑：费用明细 ---------------- */
 const MAX_COST_CATEGORY_LENGTH = 6;
+const MAX_COST_NAME_LENGTH = 50;
+const editingCostItemId = ref<number | null>(null);
+const costNameDraft = ref("");
+const costNameEditError = ref("");
+const costNameInputRef = ref<InputInstance>();
+const editedCostItemIds = reactive(new Set<number>());
+const originalCostNames = new Map<number, string>();
+const costNameSaveFailed = ref(false);
+
+const resetCostNameEditingState = () => {
+  editingCostItemId.value = null;
+  costNameDraft.value = "";
+  costNameEditError.value = "";
+  costNameSaveFailed.value = false;
+  editedCostItemIds.clear();
+  originalCostNames.clear();
+  for (const item of editForm.costItems ?? []) {
+    originalCostNames.set(item.id, item.name);
+  }
+};
+
+const validateCostName = (value: string): string | null => {
+  const name = value.trim();
+  if (!name) return "请输入费用名称";
+  if (Array.from(name).length > MAX_COST_NAME_LENGTH) {
+    return `费用名称最多支持 ${MAX_COST_NAME_LENGTH} 个字`;
+  }
+  return null;
+};
+
+const startCostNameEdit = (row: CostItem) => {
+  if (editingCostItemId.value === row.id) return;
+  if (editingCostItemId.value !== null && !commitCostNameEdit()) return;
+
+  editingCostItemId.value = row.id;
+  costNameDraft.value = row.name;
+  costNameEditError.value = "";
+  nextTick(() => {
+    costNameInputRef.value?.focus();
+    costNameInputRef.value?.select();
+  });
+};
+
+const commitCostNameEdit = (): boolean => {
+  const id = editingCostItemId.value;
+  if (id === null) return true;
+
+  const error = validateCostName(costNameDraft.value);
+  if (error) {
+    costNameEditError.value = error;
+    return false;
+  }
+
+  const row = editForm.costItems?.find((item) => item.id === id);
+  if (!row) {
+    cancelCostNameEdit();
+    return true;
+  }
+
+  row.name = costNameDraft.value.trim();
+  if (originalCostNames.get(id) === row.name) {
+    editedCostItemIds.delete(id);
+  } else if (originalCostNames.has(id)) {
+    editedCostItemIds.add(id);
+  }
+  costNameSaveFailed.value = false;
+  editingCostItemId.value = null;
+  costNameDraft.value = "";
+  costNameEditError.value = "";
+  return true;
+};
+
+const cancelCostNameEdit = () => {
+  editingCostItemId.value = null;
+  costNameDraft.value = "";
+  costNameEditError.value = "";
+};
+
+const costTableRowClassName = ({ row }: { row: CostItem }): string => {
+  if (costNameSaveFailed.value && editedCostItemIds.has(row.id)) {
+    return "cost-name-save-error-row";
+  }
+  return "";
+};
 
 const getOrderedCostCategories = (items: CostItem[]): CostCategory[] => {
   const categories = COST_CATEGORIES.map(({ label }) => label);
@@ -1439,8 +1573,9 @@ const addCostItem = () => {
   const category = normalizeCostCategory(costInput.category);
   if (!category) return;
 
-  if (!costInput.name.trim()) {
-    ElMessage.warning("请输入费用名称");
+  const nameError = validateCostName(costInput.name);
+  if (nameError) {
+    ElMessage.warning(nameError);
     return;
   }
   if (!(costInput.amount > 0)) {
@@ -1465,6 +1600,9 @@ const setEstimateType = (row: CostItem, estimateType: CostEstimateType) => {
 };
 
 const removeCostItem = (id: number) => {
+  if (editingCostItemId.value === id) cancelCostNameEdit();
+  editedCostItemIds.delete(id);
+  originalCostNames.delete(id);
   editForm.costItems = (editForm.costItems ?? []).filter((c) => c.id !== id);
 };
 
@@ -1924,6 +2062,70 @@ const shareCostChartOptions = computed(() => ({
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
+}
+
+.cost-name-cell {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  min-height: 32px;
+  padding: 0 8px;
+  margin: -4px -8px;
+  cursor: text;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: var(--el-fill-color-light);
+
+    .cost-name-edit-icon {
+      opacity: 1;
+    }
+  }
+}
+
+.cost-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cost-name-edit-icon {
+  flex: none;
+  color: var(--el-text-color-secondary);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.cost-name-status {
+  flex: none;
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--el-color-primary);
+  white-space: nowrap;
+
+  &.is-error {
+    color: var(--el-color-danger);
+  }
+}
+
+.cost-name-editor {
+  padding: 2px 0;
+}
+
+.cost-name-error {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--el-color-danger);
+}
+
+:deep(.cost-name-save-error-row > td.el-table__cell) {
+  background: var(--el-color-danger-light-9);
 }
 
 .rating-field {
