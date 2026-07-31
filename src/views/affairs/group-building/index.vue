@@ -3,25 +3,14 @@
     <el-card shadow="never">
       <template #header>
         <div class="card-header">
-          <span>
-            团建规划
-            <el-tag v-if="dirty" type="warning" size="small" class="dirty-tag">未保存</el-tag>
-          </span>
+          <span>团建规划</span>
           <div class="header-actions">
-            <el-tooltip content="放弃本地修改，重新从 mock 文件加载" placement="top">
+            <el-tooltip content="重新从 mock 文件加载" placement="top">
               <el-button @click="handleReload">重新加载</el-button>
             </el-tooltip>
             <el-button @click="handleDownloadTemplate">下载模板</el-button>
             <el-button @click="openImportDialog">导入 Excel</el-button>
             <el-button @click="handleExportExcel">导出 Excel</el-button>
-            <el-button
-              type="success"
-              :loading="saving"
-              :disabled="!dirty"
-              @click="handleSaveToMock"
-            >
-              保存到 Mock 文件
-            </el-button>
             <el-button type="primary" @click="handleAdd">新增报名</el-button>
           </div>
         </div>
@@ -643,14 +632,11 @@ defineOptions({ name: "GroupBuilding" });
 /* ---------------- 数据加载 ---------------- */
 const list = ref<GroupBuildingSignup[]>([]);
 const loading = ref(false);
-const dirty = ref(false);
-const saving = ref(false);
 
 const loadList = async () => {
   loading.value = true;
   try {
     list.value = (await AffairsAPI.getGroupBuildings()) || [];
-    dirty.value = false;
   } finally {
     loading.value = false;
   }
@@ -659,22 +645,13 @@ const loadList = async () => {
 onMounted(loadList);
 
 const handleReload = async () => {
-  if (dirty.value) {
-    await ElMessageBox.confirm("有未保存的修改，确定要重新加载吗？", "提示", { type: "warning" });
-  }
   await loadList();
   ElMessage.success("已重新加载");
 };
 
-const handleSaveToMock = async () => {
-  saving.value = true;
-  try {
-    await AffairsAPI.saveGroupBuildings(JSON.parse(JSON.stringify(list.value)));
-    dirty.value = false;
-    ElMessage.success("已保存到 mock/data/group-building.json");
-  } finally {
-    saving.value = false;
-  }
+const persistList = async (nextList: GroupBuildingSignup[]) => {
+  await AffairsAPI.saveGroupBuildings(JSON.parse(JSON.stringify(nextList)));
+  list.value = nextList;
 };
 
 /* ---------------- 筛选 ---------------- */
@@ -784,10 +761,10 @@ const handleBatchDelete = async () => {
     type: "warning",
   });
   const ids = new Set(selectedRows.value.map((r) => r.id));
-  list.value = list.value.filter((r) => !ids.has(r.id));
-  dirty.value = true;
+  const nextList = list.value.filter((r) => !ids.has(r.id));
+  await persistList(nextList);
   clearSelection();
-  ElMessage.success("已批量删除（点击「保存到 Mock 文件」生效）");
+  ElMessage.success("已批量删除");
 };
 
 /* ---------------- 详情 ---------------- */
@@ -886,15 +863,14 @@ const handleSubmit = async () => {
       payload.id = nextId();
       payload.createdAt = nowStr();
       payload.updatedAt = nowStr();
-      list.value.unshift(payload);
-      ElMessage.success("新增成功（点击「保存到 Mock 文件」生效）");
+      await persistList([payload, ...list.value]);
+      ElMessage.success("新增成功");
     } else {
       payload.updatedAt = nowStr();
-      const idx = list.value.findIndex((r) => r.id === payload.id);
-      if (idx > -1) list.value[idx] = payload;
-      ElMessage.success("修改成功（点击「保存到 Mock 文件」生效）");
+      const nextList = list.value.map((row) => (row.id === payload.id ? payload : row));
+      await persistList(nextList);
+      ElMessage.success("修改成功");
     }
-    dirty.value = true;
     editVisible.value = false;
   } finally {
     editLoading.value = false;
@@ -905,9 +881,9 @@ const handleDelete = async (row: GroupBuildingSignup) => {
   await ElMessageBox.confirm(`确认删除「${row.reporterName}」的报名记录？`, "提示", {
     type: "warning",
   });
-  list.value = list.value.filter((r) => r.id !== row.id);
-  dirty.value = true;
-  ElMessage.success("已删除（点击「保存到 Mock 文件」生效）");
+  const nextList = list.value.filter((r) => r.id !== row.id);
+  await persistList(nextList);
+  ElMessage.success("已删除");
 };
 
 /* ---------------- 导入 / 导出 ---------------- */
@@ -963,8 +939,7 @@ const handleImportExcel = async () => {
       rows,
       nowStr()
     );
-    list.value = merged;
-    dirty.value = true;
+    await persistList(merged);
     importVisible.value = false;
     importFiles.value = [];
     ElMessage.success(`导入成功：新增 ${createdCount} 条，更新 ${updatedCount} 条`);
@@ -986,10 +961,6 @@ const handleImportExcel = async () => {
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-}
-
-.dirty-tag {
-  margin-left: 8px;
 }
 
 .filter-bar {

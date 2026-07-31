@@ -643,8 +643,35 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="金额" width="140" align="right">
-              <template #default="{ row }">￥{{ row.amount.toLocaleString() }}</template>
+            <el-table-column label="金额" width="180" align="right">
+              <template #default="{ row }">
+                <el-input-number
+                  v-if="editingCostAmountItemId === row.id"
+                  ref="costAmountInputRef"
+                  v-model="costAmountDraft"
+                  :min="0.01"
+                  :precision="2"
+                  :controls="false"
+                  class="cost-amount-editor"
+                  @keyup.enter.stop.prevent="commitCostAmountEdit"
+                  @keyup.esc.stop.prevent="cancelCostAmountEdit"
+                  @blur="commitCostAmountEdit"
+                />
+                <div
+                  v-else
+                  class="cost-amount-cell"
+                  role="button"
+                  tabindex="0"
+                  :title="`￥${row.amount.toLocaleString()}`"
+                  @click="startCostAmountEdit(row)"
+                  @keydown.enter.stop.prevent="startCostAmountEdit(row)"
+                >
+                  <span>￥{{ row.amount.toLocaleString() }}</span>
+                  <el-icon class="cost-amount-edit-icon" aria-hidden="true">
+                    <EditPen />
+                  </el-icon>
+                </div>
+              </template>
             </el-table-column>
             <el-table-column label="标签" width="150" align="center">
               <template #default="{ row }">
@@ -905,7 +932,7 @@
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
 import WangEditor from "@/components/WangEditor/index.vue";
-import type { FormInstance, FormRules, InputInstance } from "element-plus";
+import type { FormInstance, FormRules, InputInstance, InputNumberInstance } from "element-plus";
 import TravelAPI, {
   type HolidayPlan,
   type HolidayStatus,
@@ -1179,6 +1206,7 @@ watch(editVisible, (v) => {
     resetCostNameEditingState();
   } else {
     cancelCostNameEdit();
+    cancelCostAmountEdit();
   }
 });
 
@@ -1303,6 +1331,10 @@ const persistPlanList = async (nextList: HolidayPlan[]) => {
 const handleSubmit = async () => {
   if (!editFormRef.value || editLoading.value) return;
   if (editingCostItemId.value !== null && !commitCostNameEdit()) {
+    editTab.value = "cost";
+    return;
+  }
+  if (editingCostAmountItemId.value !== null && !commitCostAmountEdit()) {
     editTab.value = "cost";
     return;
   }
@@ -1434,19 +1466,38 @@ const editingCostItemId = ref<number | null>(null);
 const costNameDraft = ref("");
 const costNameEditError = ref("");
 const costNameInputRef = ref<InputInstance>();
+const editingCostAmountItemId = ref<number | null>(null);
+const costAmountDraft = ref<number>();
+const costAmountInputRef = ref<InputNumberInstance>();
 const editedCostItemIds = reactive(new Set<number>());
 const originalCostNames = new Map<number, string>();
+const originalCostAmounts = new Map<number, number>();
 const costNameSaveFailed = ref(false);
 
 const resetCostNameEditingState = () => {
   editingCostItemId.value = null;
   costNameDraft.value = "";
   costNameEditError.value = "";
+  editingCostAmountItemId.value = null;
+  costAmountDraft.value = undefined;
   costNameSaveFailed.value = false;
   editedCostItemIds.clear();
   originalCostNames.clear();
+  originalCostAmounts.clear();
   for (const item of editForm.costItems ?? []) {
     originalCostNames.set(item.id, item.name);
+    originalCostAmounts.set(item.id, item.amount);
+  }
+};
+
+const updateCostItemEditedState = (row: CostItem) => {
+  const nameChanged = originalCostNames.has(row.id) && originalCostNames.get(row.id) !== row.name;
+  const amountChanged =
+    originalCostAmounts.has(row.id) && originalCostAmounts.get(row.id) !== row.amount;
+  if (nameChanged || amountChanged) {
+    editedCostItemIds.add(row.id);
+  } else {
+    editedCostItemIds.delete(row.id);
   }
 };
 
@@ -1461,6 +1512,7 @@ const validateCostName = (value: string): string | null => {
 
 const startCostNameEdit = (row: CostItem) => {
   if (editingCostItemId.value === row.id) return;
+  if (editingCostAmountItemId.value !== null && !commitCostAmountEdit()) return;
   if (editingCostItemId.value !== null && !commitCostNameEdit()) return;
 
   editingCostItemId.value = row.id;
@@ -1489,11 +1541,7 @@ const commitCostNameEdit = (): boolean => {
   }
 
   row.name = costNameDraft.value.trim();
-  if (originalCostNames.get(id) === row.name) {
-    editedCostItemIds.delete(id);
-  } else if (originalCostNames.has(id)) {
-    editedCostItemIds.add(id);
-  }
+  updateCostItemEditedState(row);
   costNameSaveFailed.value = false;
   editingCostItemId.value = null;
   costNameDraft.value = "";
@@ -1505,6 +1553,47 @@ const cancelCostNameEdit = () => {
   editingCostItemId.value = null;
   costNameDraft.value = "";
   costNameEditError.value = "";
+};
+
+const startCostAmountEdit = (row: CostItem) => {
+  if (editingCostAmountItemId.value === row.id) return;
+  if (editingCostItemId.value !== null && !commitCostNameEdit()) return;
+  if (editingCostAmountItemId.value !== null && !commitCostAmountEdit()) return;
+
+  editingCostAmountItemId.value = row.id;
+  costAmountDraft.value = row.amount;
+  nextTick(() => {
+    costAmountInputRef.value?.focus();
+  });
+};
+
+const commitCostAmountEdit = (): boolean => {
+  const id = editingCostAmountItemId.value;
+  if (id === null) return true;
+
+  const amount = Number(costAmountDraft.value);
+  if (!Number.isFinite(amount) || amount <= 0) {
+    ElMessage.warning("金额需大于 0");
+    return false;
+  }
+
+  const row = editForm.costItems?.find((item) => item.id === id);
+  if (!row) {
+    cancelCostAmountEdit();
+    return true;
+  }
+
+  row.amount = Math.round(amount * 100) / 100;
+  updateCostItemEditedState(row);
+  costNameSaveFailed.value = false;
+  editingCostAmountItemId.value = null;
+  costAmountDraft.value = undefined;
+  return true;
+};
+
+const cancelCostAmountEdit = () => {
+  editingCostAmountItemId.value = null;
+  costAmountDraft.value = undefined;
 };
 
 const costTableRowClassName = ({ row }: { row: CostItem }): string => {
@@ -2085,6 +2174,40 @@ const shareCostChartOptions = computed(() => ({
       opacity: 1;
     }
   }
+}
+
+.cost-amount-cell {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 32px;
+  padding: 0 8px;
+  margin: -4px -8px;
+  cursor: text;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: var(--el-fill-color-light);
+
+    .cost-amount-edit-icon {
+      opacity: 1;
+    }
+  }
+}
+
+.cost-amount-edit-icon {
+  flex: none;
+  color: var(--el-text-color-secondary);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.cost-amount-editor {
+  width: 100%;
 }
 
 .cost-name-text {
