@@ -122,15 +122,58 @@ export const COST_CATEGORIES: { label: CostCategory; color: string }[] = [
   { label: "其他", color: "#909399" },
 ];
 
-const CUSTOM_COST_COLORS = ["#5c6bc0", "#26a69a", "#ab47bc", "#ef6c00", "#8d6e63", "#78909c"];
+const CUSTOM_COST_COLORS = [
+  "#00a6a6",
+  "#d81b60",
+  "#3949ab",
+  "#6d4c41",
+  "#c0ca33",
+  "#00838f",
+  "#ff7043",
+  "#7e57c2",
+  "#2e7d32",
+  "#c2185b",
+  "#0277bd",
+  "#ad1457",
+  "#558b2f",
+  "#ef5350",
+  "#5d4037",
+  "#00897b",
+  "#f9a825",
+  "#455a64",
+];
 
-/** 自定义类目使用由名称稳定计算的颜色，保证列表与图表配色一致 */
-export const getCostColor = (cat: CostCategory): string => {
-  const presetColor = COST_CATEGORIES.find((item) => item.label === cat)?.color;
-  if (presetColor) return presetColor;
+const createGeneratedCostColor = (index: number): string => {
+  const hue = Math.round((index * 137.508) % 360);
+  const saturation = 58 + (Math.floor(index / 360) % 3) * 8;
+  const lightness = 38 + (Math.floor(index / 1080) % 3) * 10;
+  return `hsl(${hue} ${saturation}% ${lightness}%)`;
+};
 
-  const hash = Array.from(cat).reduce((sum, char) => sum + (char.codePointAt(0) ?? 0), 0);
-  return CUSTOM_COST_COLORS[hash % CUSTOM_COST_COLORS.length];
+/** 按类目顺序分配颜色；同一集合中的每个类目都使用不同颜色。 */
+export const createCostColorMap = (
+  categories: readonly CostCategory[]
+): Map<CostCategory, string> => {
+  const result = new Map<CostCategory, string>(
+    COST_CATEGORIES.map(({ label, color }) => [label, color] as const)
+  );
+  const usedColors = new Set(result.values());
+  let paletteIndex = 0;
+  let generatedIndex = 0;
+
+  for (const category of categories) {
+    if (result.has(category)) continue;
+
+    let color: string;
+    do {
+      color = CUSTOM_COST_COLORS[paletteIndex++] ?? createGeneratedCostColor(generatedIndex++);
+    } while (usedColors.has(color));
+
+    result.set(category, color);
+    usedColors.add(color);
+  }
+
+  return result;
 };
 
 /* ---------------- 出行准备 ---------------- */

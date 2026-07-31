@@ -596,8 +596,8 @@
                 <el-tag
                   size="small"
                   :style="{
-                    color: getCostColor(row.category),
-                    borderColor: getCostColor(row.category),
+                    color: getCostCategoryColor(row.category),
+                    borderColor: getCostCategoryColor(row.category),
                   }"
                   effect="plain"
                 >
@@ -951,7 +951,7 @@ import {
   FESTIVAL_PRESETS,
   getFestivalEmoji,
   COST_CATEGORIES,
-  getCostColor,
+  createCostColorMap,
   PREP_CATEGORIES,
   REQUIRED_PREP_NAMES,
   isRequiredPrep,
@@ -1604,27 +1604,40 @@ const costTableRowClassName = ({ row }: { row: CostItem }): string => {
 };
 
 const getOrderedCostCategories = (items: CostItem[]): CostCategory[] => {
-  const categories = COST_CATEGORIES.map(({ label }) => label);
-  const seen = new Set<string>(categories);
+  const presetCategories = COST_CATEGORIES.map(({ label }) => label);
+  const presetCategorySet = new Set<string>(presetCategories);
+  const customCategories = new Set<CostCategory>();
 
   for (const item of items) {
     const category = item.category?.trim();
-    if (category && !seen.has(category)) {
-      categories.push(category);
-      seen.add(category);
+    if (category && !presetCategorySet.has(category)) {
+      customCategories.add(category);
     }
   }
-  return categories;
+
+  return [
+    ...presetCategories,
+    ...[...customCategories].sort((a, b) => a.localeCompare(b, "zh-CN")),
+  ];
 };
 
-const costCategoryOptions = computed(() => {
+const orderedCostCategories = computed(() => {
   const items = planList.value.flatMap((plan) => plan.costItems ?? []);
   items.push(...(editForm.costItems ?? []));
-  return getOrderedCostCategories(items).map((label) => ({
-    label,
-    color: getCostColor(label),
-  }));
+  return getOrderedCostCategories(items);
 });
+
+const costCategoryColorMap = computed(() => createCostColorMap(orderedCostCategories.value));
+
+const getCostCategoryColor = (category: CostCategory): string =>
+  costCategoryColorMap.value.get(category) ?? "#909399";
+
+const costCategoryOptions = computed(() =>
+  orderedCostCategories.value.map((label) => ({
+    label,
+    color: getCostCategoryColor(label),
+  }))
+);
 
 const normalizeCostCategory = (value: string): CostCategory | null => {
   const category = value.trim();
@@ -1809,7 +1822,7 @@ const shareCostGroups = computed(() => {
   return getOrderedCostCategories(items)
     .map((category) => ({
       category,
-      color: getCostColor(category),
+      color: getCostCategoryColor(category),
       items: items.filter((item) => item.category === category),
     }))
     .filter((group) => group.items.length > 0)
