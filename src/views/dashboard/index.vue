@@ -44,40 +44,14 @@
         <div class="cat-observatory__orbit cat-observatory__orbit--inner" />
         <div class="cat-status">
           <span />
-          BLACK CAT · ONLINE
+          OBSERVER CAT · ONLINE
         </div>
-        <svg class="cat-illustration" viewBox="0 0 420 330" role="presentation">
-          <defs>
-            <linearGradient id="glassFloor" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="currentColor" stop-opacity="0.28" />
-              <stop offset="1" stop-color="currentColor" stop-opacity="0.02" />
-            </linearGradient>
-          </defs>
-          <ellipse cx="217" cy="281" rx="135" ry="25" fill="url(#glassFloor)" />
-          <g class="cat-tail"><path d="M278 229c58-27 88-7 75 27-9 24-40 24-47 7" /></g>
-          <g class="cat-body">
-            <ellipse cx="225" cy="225" rx="62" ry="76" />
-            <path d="M179 109 191 50l39 39zm94 0-8-60-39 40z" />
-            <circle cx="226" cy="125" r="57" />
-            <ellipse cx="191" cy="274" rx="31" ry="14" />
-            <ellipse cx="258" cy="274" rx="31" ry="14" />
-          </g>
-          <g class="cat-face">
-            <g class="cat-blink">
-              <ellipse cx="205" cy="122" rx="6" ry="10" />
-              <ellipse cx="249" cy="122" rx="6" ry="10" />
-            </g>
-            <path class="cat-nose" d="m221 142 6 4 6-4" />
-            <path class="cat-whisker" d="M194 145h-48m50 9-46 13m108-22h48m-50 9 46 13" />
-          </g>
-          <path class="cat-chest" d="M226 177c-18 18-22 49-18 87m18-87c18 18 22 49 18 87" />
-          <g class="sparkles">
-            <path d="M109 111v26m-13-13h26" />
-            <path d="M329 91v18m-9-9h18" />
-            <circle cx="104" cy="187" r="3" />
-            <circle cx="336" cy="173" r="4" />
-          </g>
-        </svg>
+        <div class="cat-observatory__stage">
+          <span class="cat-signal cat-signal--one" />
+          <span class="cat-signal cat-signal--two" />
+          <span class="cat-signal cat-signal--three" />
+          <img class="cat-illustration" :src="catObservatoryImage" alt="" draggable="false" />
+        </div>
         <div class="cat-observatory__caption">
           <span>{{ timeMode }}</span>
           <i />
@@ -317,6 +291,7 @@ import {
 } from "@element-plus/icons-vue";
 import { useUserStore } from "@/stores/user";
 import { useRecentMenus } from "@/composables";
+import catObservatoryImage from "@/assets/images/dashboard/cat-observatory.webp";
 import { useDashboardOverview } from "./composables/useDashboardOverview";
 
 defineOptions({ name: "Dashboard", inheritAttrs: false });
@@ -445,8 +420,6 @@ async function handleClearRecentMenus() {
   --dash-blue: #5789ff;
   --dash-cyan: #55cde2;
   --dash-danger: #e8687b;
-  --cat-body: #17213d;
-  --cat-face: #a9f6ff;
 
   position: relative;
   min-height: 100%;
@@ -469,8 +442,6 @@ async function handleClearRecentMenus() {
   --dash-blue: #75a0ff;
   --dash-cyan: #68d5e8;
   --dash-danger: #ff8595;
-  --cat-body: #090d18;
-  --cat-face: #b8fbff;
 
   background:
     radial-gradient(circle at 86% 4%, rgb(74 123 211 / 20%), transparent 34%),
@@ -686,12 +657,34 @@ button {
   box-shadow:
     inset 0 0 70px rgb(116 163 230 / 10%),
     0 24px 80px rgb(72 111 171 / 10%);
+  animation: observatory-orbit 24s linear infinite;
+}
+.cat-observatory__orbit--outer::before,
+.cat-observatory__orbit--outer::after {
+  position: absolute;
+  content: "";
+  border-radius: 50%;
+}
+.cat-observatory__orbit--outer::before {
+  inset: 12%;
+  border: 1px dashed rgb(95 154 234 / 22%);
+}
+.cat-observatory__orbit--outer::after {
+  top: 9%;
+  left: 18%;
+  width: 8px;
+  height: 8px;
+  background: var(--dash-cyan);
+  box-shadow:
+    0 0 0 6px rgb(85 205 226 / 10%),
+    0 0 22px rgb(85 205 226 / 55%);
 }
 .cat-observatory__orbit--inner {
   width: min(27vw, 330px);
   height: min(27vw, 330px);
   border-color: rgb(255 255 255 / 58%);
   box-shadow: inset 18px 12px 48px rgb(255 255 255 / 18%);
+  transform: rotate(-14deg) scaleY(0.76);
 }
 .cat-status {
   position: absolute;
@@ -716,60 +709,62 @@ button {
   border-radius: 50%;
   box-shadow: 0 0 10px #63d9bd;
 }
-.cat-illustration {
+.cat-observatory__stage {
+  position: relative;
   z-index: 1;
   width: min(35vw, 420px);
-  overflow: visible;
-  color: var(--dash-blue);
-  filter: drop-shadow(0 24px 28px rgb(17 30 57 / 22%));
+  isolation: isolate;
   animation: cat-breathe 5s ease-in-out infinite;
 }
-.cat-body {
-  fill: var(--cat-body);
+.cat-observatory__stage::after {
+  position: absolute;
+  right: 8%;
+  bottom: 2%;
+  left: 9%;
+  z-index: -1;
+  height: 15%;
+  content: "";
+  background: rgb(37 74 135 / 24%);
+  border-radius: 50%;
+  filter: blur(18px);
+  transform: scaleY(0.42);
 }
-.cat-tail {
-  fill: none;
-  stroke: var(--cat-body);
-  stroke-width: 24px;
-  stroke-linecap: round;
-  transform-origin: 278px 229px;
-  animation: cat-tail 4s ease-in-out infinite;
+.cat-illustration {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 20px 24px rgb(17 30 57 / 22%)) drop-shadow(0 0 18px rgb(90 151 255 / 10%));
 }
-.cat-face {
-  fill: var(--cat-face);
+.cat-signal {
+  position: absolute;
+  z-index: 2;
+  width: 5px;
+  height: 5px;
+  pointer-events: none;
+  background: var(--dash-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 14px var(--dash-cyan);
+  animation: cat-signal 2.8s ease-in-out infinite;
 }
-.cat-blink {
-  transform-origin: 227px 122px;
-  animation: cat-blink 6s linear infinite;
+.cat-signal--one {
+  top: 16%;
+  left: 12%;
 }
-.cat-nose,
-.cat-whisker,
-.cat-chest {
-  fill: none;
-  stroke: var(--cat-face);
-  stroke-linecap: round;
+.cat-signal--two {
+  top: 27%;
+  right: 8%;
+  animation-delay: -900ms;
 }
-.cat-nose {
-  stroke-width: 3px;
-}
-.cat-whisker {
-  opacity: 0.55;
-  stroke-width: 2px;
-}
-.cat-chest {
-  opacity: 0.15;
-  stroke-width: 3px;
-}
-.sparkles {
-  fill: none;
-  stroke: var(--dash-cyan);
-  stroke-width: 2px;
-  stroke-linecap: round;
-  animation: sparkles 3s ease-in-out infinite;
-}
-.sparkles circle {
-  fill: var(--dash-cyan);
-  stroke: none;
+.cat-signal--three {
+  right: 18%;
+  bottom: 18%;
+  width: 3px;
+  height: 3px;
+  animation-delay: -1.8s;
 }
 .cat-observatory__caption {
   position: absolute;
@@ -1262,29 +1257,20 @@ button {
     transform: translateY(-4px) scale(1.008);
   }
 }
-@keyframes cat-tail {
+@keyframes cat-signal {
   0%,
   100% {
-    transform: rotate(0deg);
+    opacity: 0.25;
+    transform: scale(0.72);
   }
   50% {
-    transform: rotate(7deg);
+    opacity: 1;
+    transform: scale(1.35);
   }
 }
-@keyframes cat-blink {
-  0%,
-  45%,
-  49%,
-  100% {
-    transform: scaleY(1);
-  }
-  47% {
-    transform: scaleY(0.08);
-  }
-}
-@keyframes sparkles {
-  50% {
-    opacity: 0.45;
+@keyframes observatory-orbit {
+  to {
+    transform: rotate(360deg);
   }
 }
 @keyframes skeleton-flow {
@@ -1305,7 +1291,7 @@ button {
     width: 270px;
     height: 270px;
   }
-  .cat-illustration {
+  .cat-observatory__stage {
     width: 340px;
   }
   .recent-grid {
@@ -1332,7 +1318,7 @@ button {
     width: 220px;
     height: 220px;
   }
-  .cat-illustration {
+  .cat-observatory__stage {
     width: 280px;
   }
   .cat-status {
@@ -1408,7 +1394,7 @@ button {
     width: 205px;
     height: 205px;
   }
-  .cat-illustration {
+  .cat-observatory__stage {
     width: 260px;
   }
   .cat-status {
@@ -1449,10 +1435,9 @@ button {
   .overview-card,
   .recent-section,
   .recent-item,
-  .cat-illustration,
-  .cat-tail,
-  .cat-blink,
-  .sparkles,
+  .cat-observatory__stage,
+  .cat-observatory__orbit--outer,
+  .cat-signal,
   .eyebrow i,
   .loading-lines i {
     animation: none !important;

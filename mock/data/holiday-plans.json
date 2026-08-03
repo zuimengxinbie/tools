@@ -662,6 +662,12 @@
         "name": "睡衣",
         "category": "衣物",
         "done": true
+      },
+      {
+        "id": 21,
+        "name": "定位条",
+        "category": "其他",
+        "done": true
       }
     ],
     "coordination": [
