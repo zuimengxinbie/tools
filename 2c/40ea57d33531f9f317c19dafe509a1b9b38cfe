@@ -1,0 +1,36 @@
+src/views/backup/index.vue
+  s_6a1e94ec771cf2::t_660aada2a29763 131-134,160
+  s_6a1e94ec771cf2::t_b32cde6b8b07a2 1-130,135-159,161-610,613,617-618,623,628,633-634
+  s_6a1e94ec771cf2::t_eb0b39cfa3be98 611-612
+  s_6a1e94ec771cf2::t_6cedc2e7365c87 614-616
+  s_6a1e94ec771cf2::t_d433e3ca779222 619-622
+  s_6a1e94ec771cf2::t_d932ab3771b69f 624-627
+  s_6a1e94ec771cf2::t_0abf98b33fd3dc 629-632
+  s_6a1e94ec771cf2::t_05152690ef599e 635
+src/views/backup/utils.ts
+  s_6a1e94ec771cf2::t_10f3242c5fb679 1-139
+mock/backup.mock.ts
+  s_6a1e94ec771cf2::t_5f950c5cd7f1f5 1-216
+AGENTS.md
+  s_6a1e94ec771cf2::t_3fd77e8101d494 1-46
+src/api/backup/index.ts
+  s_6a1e94ec771cf2::t_10f3242c5fb679 1-34
+mock/menu.mock.ts
+  s_6a1e94ec771cf2::t_e09378ca607107 133-160
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "2c40ea57d33531f9f317c19dafe509a1b9b38cfe",
+  "prompts": {},
+  "sessions": {
+    "s_6a1e94ec771cf2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fca6b-e081-7ac3-a1ff-57975c8bd83e",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
