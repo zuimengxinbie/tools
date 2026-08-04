@@ -4,11 +4,11 @@
     "title": "8月消费总计",
     "category": "life",
     "priority": "high",
-    "status": "doing",
+    "status": "done",
     "dueDate": "2026-08-04",
     "remindAt": "",
     "tags": ["送礼", "生活开支", "猫粮"],
-    "progress": 57,
+    "progress": 100,
     "repeat": "none",
     "starred": true,
     "description": "<p><br></p>",
@@ -58,7 +58,7 @@
       {
         "id": 4,
         "title": "衣物购买",
-        "done": false,
+        "done": true,
         "finishedAt": "2026-08-04",
         "expenses": [
           {
@@ -78,7 +78,7 @@
       {
         "id": 5,
         "title": "礼品",
-        "done": false,
+        "done": true,
         "finishedAt": "2026-08-04",
         "expenses": [
           {
@@ -178,7 +178,7 @@
       {
         "id": 7,
         "title": "酒店",
-        "done": false,
+        "done": true,
         "finishedAt": "2026-08-04",
         "expenses": [
           {
@@ -197,8 +197,8 @@
       }
     ],
     "createdAt": "2026-07-15 14:12",
-    "updatedAt": "2026-07-24 14:16",
-    "finishedAt": "",
+    "updatedAt": "2026-08-04 10:38",
+    "finishedAt": "2026-08-04 10:38",
     "budget": 5000
   },
   {

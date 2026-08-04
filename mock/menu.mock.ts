@@ -8,6 +8,34 @@ export default defineMock([
       code: "00000",
       data: [
         {
+          path: "/calendar",
+          component: "Layout",
+          name: "/calendar",
+          redirect: "/calendar/unified",
+          meta: {
+            title: "\u65e5\u7a0b\u4e2d\u5fc3",
+            icon: "el-icon-Calendar",
+            hidden: false,
+            alwaysShow: true,
+            params: null,
+          },
+          children: [
+            {
+              path: "unified",
+              component: "calendar/index",
+              name: "UnifiedCalendar",
+              meta: {
+                title: "\u7edf\u4e00\u65e5\u5386",
+                icon: "el-icon-Calendar",
+                hidden: false,
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
+          ],
+        },
+        {
           path: "/business",
           component: "Layout",
           name: "/business",
@@ -102,6 +130,19 @@ export default defineMock([
             params: null,
           },
           children: [
+            {
+              path: "requirements",
+              component: "affairs/requirements/index",
+              name: "Requirements",
+              meta: {
+                title: "\u4e2a\u4eba\u9700\u6c42",
+                icon: "el-icon-List",
+                hidden: false,
+                keepAlive: true,
+                alwaysShow: false,
+                params: null,
+              },
+            },
             {
               path: "todolist",
               component: "affairs/todolist/index",

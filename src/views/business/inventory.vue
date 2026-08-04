@@ -285,13 +285,26 @@ import {
   Warning,
 } from "@element-plus/icons-vue";
 import { useBusinessStore } from "@/stores/business";
+import { useRoute } from "vue-router";
 import ReservationManager from "./components/ReservationManager.vue";
 import StockAdjustmentDialog from "./components/StockAdjustmentDialog.vue";
 import StockMovementTable from "./components/StockMovementTable.vue";
 import type { Product, ProductInput } from "./types";
 
 const store = useBusinessStore();
-const activeTab = ref("products");
+const route = useRoute();
+const inventoryTabs = new Set(["products", "reservations", "movements", "categories"]);
+const routeTab = typeof route.query.tab === "string" ? route.query.tab : "";
+const activeTab = ref(inventoryTabs.has(routeTab) ? routeTab : "products");
+
+watch(
+  () => route.query.tab,
+  (value) => {
+    if (typeof value === "string" && inventoryTabs.has(value)) {
+      activeTab.value = value;
+    }
+  }
+);
 const keyword = ref("");
 const categoryFilter = ref("全部");
 const newCategory = ref("");

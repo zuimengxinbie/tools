@@ -4,7 +4,7 @@
     "title": "待处理事务项",
     "type": "other",
     "priority": "medium",
-    "status": "pending",
+    "status": "done",
     "description": "",
     "assignee": "陈琦",
     "collaborators": ["陈琦"],

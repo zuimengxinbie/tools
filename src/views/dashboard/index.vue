@@ -33,7 +33,7 @@
           <button
             type="button"
             class="action-button action-button--ghost"
-            @click="go('/affairs/todolist')"
+            @click="go('/calendar/unified')"
           >
             查看今日事务
           </button>
