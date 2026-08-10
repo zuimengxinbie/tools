@@ -1843,7 +1843,7 @@ const shareCostChartOptions = computed(() => ({
   tooltip: {
     trigger: "item",
     formatter: (params: any) =>
-      `${params.name}<br/>￥${(params.value as number).toLocaleString()}（${params.percent}%）`,
+      `${params.name}<br/>￥${Number(params.value).toFixed(2)}（${params.percent}%）`,
   },
   legend: { bottom: 0, left: "center" },
   series: [
@@ -1852,7 +1852,10 @@ const shareCostChartOptions = computed(() => ({
       radius: ["40%", "65%"],
       center: ["50%", "45%"],
       avoidLabelOverlap: true,
-      label: { show: true, formatter: "{b}\n￥{c}" },
+      label: {
+        show: true,
+        formatter: (params: any) => `${params.name}\n￥${Number(params.value).toFixed(2)}`,
+      },
       data: shareCostByCategory.value,
     },
   ],

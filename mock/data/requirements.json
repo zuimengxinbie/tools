@@ -1,5 +1,55 @@
 [
   {
+    "id": 6,
+    "title": "任务梳理",
+    "type": "task",
+    "priority": "high",
+    "status": "done",
+    "description": "",
+    "assignee": "陈琦",
+    "collaborators": ["陈琦"],
+    "dueDate": "2026-08-05",
+    "createdAt": "2026-08-04 15:05",
+    "subTasks": [
+      {
+        "id": 1,
+        "title": "叶玲同步任务上线",
+        "done": true,
+        "assignee": "陈琦",
+        "dueDate": "2026-08-05"
+      },
+      {
+        "id": 2,
+        "title": "宇哥照看",
+        "done": false,
+        "assignee": "陈琦",
+        "dueDate": "2026-08-05"
+      },
+      {
+        "id": 3,
+        "title": "任务提测，出版本号，协调国际",
+        "done": true,
+        "assignee": "陈琦",
+        "dueDate": "2026-08-05"
+      },
+      {
+        "id": 4,
+        "title": "周报预写",
+        "done": true,
+        "assignee": "陈琦",
+        "dueDate": "2026-08-05"
+      },
+      {
+        "id": 5,
+        "title": "陈冠宇需求排期",
+        "done": true,
+        "assignee": "陈琦",
+        "dueDate": "2026-08-05"
+      }
+    ],
+    "comments": []
+  },
+  {
     "id": 5,
     "title": "待处理事务项",
     "type": "other",
