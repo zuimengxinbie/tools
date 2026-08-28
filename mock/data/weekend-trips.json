@@ -1,5 +1,17 @@
 [
   {
+    "id": 10,
+    "title": "厨神争霸",
+    "destination": "太湖",
+    "date": "2026-08-22",
+    "duration": "2天",
+    "status": "completed",
+    "preparation": ["热水壶", "车钥匙", "大疆", "两手机", "鱼，肉，备料"],
+    "review": "小料：\n小葱、大葱、姜、蒜，小米辣\n\n鱼：\n黄辣丁、豆腐、\n\n肉：\n排骨，土豆",
+    "records": [],
+    "rating": 3
+  },
+  {
     "id": 9,
     "title": "美食计划",
     "destination": "太湖奇石·风之园",

@@ -224,9 +224,13 @@
       }
 
       .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         min-height: 48px;
         padding: 0 18px;
         font-weight: 800;
+        text-decoration: none;
         cursor: pointer;
         border: 0;
         border-radius: 13px;
@@ -445,15 +449,23 @@
             </div>
 
             <div class="actions">
-              <button class="button button-primary" type="button" data-action="start">
+              <a
+                class="button button-primary"
+                href="cqtools://start?source=entry"
+                data-action="start"
+              >
                 启动并打开系统
-              </button>
-              <button class="button button-secondary" type="button" data-action="open">
+              </a>
+              <a
+                class="button button-secondary"
+                href="cqtools://open?source=entry"
+                data-action="open"
+              >
                 打开系统
-              </button>
-              <button class="button button-danger" type="button" data-action="stop">
+              </a>
+              <a class="button button-danger" href="cqtools://stop?source=entry" data-action="stop">
                 停止服务
-              </button>
+              </a>
             </div>
 
             <p id="feedback" class="feedback" aria-live="polite">正在确认本地服务状态……</p>
@@ -534,22 +546,22 @@
           image.src = `${HEALTH_URL}?entry_check=${Date.now()}`;
         }
 
-        function invoke(action) {
+        function invoke(event, action) {
           if (
             action === "stop" &&
             !window.confirm("确认停止本地服务？正在使用的页面将暂时无法访问。")
           ) {
+            event.preventDefault();
             return;
           }
           pendingAction = action;
           pendingUntil = Date.now() + (action === "stop" ? 12000 : 35000);
           renderStatus("pending");
-          window.location.href = `cqtools://${action}?source=entry&time=${Date.now()}`;
           window.setTimeout(checkStatus, 1200);
         }
 
         document.querySelectorAll("[data-action]").forEach((button) => {
-          button.addEventListener("click", () => invoke(button.dataset.action));
+          button.addEventListener("click", (event) => invoke(event, button.dataset.action));
         });
 
         document.querySelector(`a[href="${APP_URL}"]`).addEventListener("click", () => {
