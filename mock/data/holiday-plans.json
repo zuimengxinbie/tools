@@ -3,50 +3,50 @@
     "id": 11,
     "festival": "日照看海",
     "destination": "日照",
-    "startDate": "2026-09-11",
-    "endDate": "2026-09-13",
-    "budget": 2000,
+    "startDate": "2026-09-04",
+    "endDate": "2026-09-06",
+    "budget": 2500,
     "members": 2,
-    "transport": "高铁 + 自驾",
-    "remark": "",
+    "transport": "自驾到张家港站 + 高铁",
+    "remark": "<h2>车票</h2><ul><li>去程：9/4（周五）张家港→日照西，D2160，09:57→13:52，¥203。</li><li>返程：9/6（周日）日照西→张家港，D2123，11:29→14:52，¥205。</li></ul><h2>行程</h2><ul><li>9/4：7:00 碰面，再一起到张家港站；抵达后入住，下午万平口看海。</li><li>9/5：日出、灯塔、东夷小镇/海洋公园。</li><li>9/6：早餐后返程；张家港取车后分头回家。</li></ul><h2>酒店</h2><ul><li>凯里亚德酒店（日照万平口景区日照站店）</li><li>入住：9/4（周五）14:00后；离店：9/6（周日）12:00前。</li><li>已在线支付 ¥496；订单号：1128150621800991。</li><li>9/3 18:00前可免费取消，之后不可取消或修改。</li></ul><h2>其他体验</h2><ul><li>海鲜加工体验</li><li>电动车租聘</li></ul>",
     "status": "planning",
-    "actualCost": 2070,
+    "actualCost": 2272,
     "rating": 0,
     "review": "",
     "costItems": [
       {
         "id": 1,
         "category": "交通",
-        "name": "高铁",
-        "amount": 800,
-        "estimateType": "estimated"
+        "name": "张家港⇄日照西高铁（D2160/D2123，2人往返估算）",
+        "amount": 816,
+        "estimateType": "confirmed"
       },
       {
         "id": 2,
         "category": "交通",
-        "name": "打车",
-        "amount": 150,
+        "name": "园区/科技城⇄常熟站接驳、停车及油费",
+        "amount": 180,
         "estimateType": "estimated"
       },
       {
         "id": 3,
         "category": "交通",
-        "name": "油费+过路费",
-        "amount": 100,
+        "name": "日照市内打车/公交",
+        "amount": 180,
         "estimateType": "estimated"
       },
       {
         "id": 4,
         "category": "住宿",
-        "name": "住宿两晚",
-        "amount": 520,
-        "estimateType": "estimated"
+        "name": "凯里亚德酒店（日照万平口景区日照站店）（2晚）",
+        "amount": 496,
+        "estimateType": "confirmed"
       },
       {
         "id": 5,
         "category": "餐饮",
-        "name": "5餐",
-        "amount": 500,
+        "name": "约6餐",
+        "amount": 600,
         "estimateType": "estimated"
       }
     ],
@@ -68,9 +68,69 @@
         "name": "充电宝",
         "category": "电子",
         "done": false
+      },
+      {
+        "id": 8,
+        "name": "防晒用品、拖鞋/泳衣、轻便外套",
+        "category": "衣物",
+        "done": false
+      },
+      {
+        "id": 9,
+        "name": "充电线",
+        "category": "电子",
+        "done": false
+      },
+      {
+        "id": 10,
+        "name": "保温杯两个",
+        "category": "其他",
+        "done": false
+      },
+      {
+        "id": 11,
+        "name": "酒店订单：凯里亚德酒店（日照万平口景区日照站店）",
+        "category": "预订",
+        "done": true
       }
     ],
-    "coordination": []
+    "coordination": [
+      {
+        "id": 1,
+        "question": "接她后是否一辆车前往张家港站？",
+        "answer": "已确定：园区→科技城接她→张家港站，车辆停站内",
+        "status": "resolved",
+        "role": "共同"
+      },
+      {
+        "id": 2,
+        "question": "去程车票：9/4 D2160 张家港→日照西",
+        "answer": "已购，09:57→13:52，¥203（截图为本人票）",
+        "status": "resolved",
+        "role": "共同"
+      },
+      {
+        "id": 3,
+        "question": "返程车票：9/6 D2123 日照西→张家港",
+        "answer": "已购，11:29→14:52，¥205（截图为本人票）",
+        "status": "resolved",
+        "role": "共同"
+      },
+      {
+        "id": 4,
+        "question": "住宿：凯里亚德酒店（日照万平口景区日照站店）",
+        "answer": "已预订，9/4入住至9/6退房，¥496；订单1128150621800991；9/3 18:00前可免费取消",
+        "status": "resolved",
+        "role": "共同"
+      },
+      {
+        "id": 5,
+        "question": "若海边风雨较大，周六是否改为海洋公园/东夷小镇？",
+        "answer": "保留室内备选，出发前看天气决定",
+        "status": "pending",
+        "role": "共同"
+      }
+    ]
   },
   {
     "id": 10,
