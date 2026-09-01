@@ -1,0 +1,25 @@
+mock/data/holiday-plans.json
+  s_9590478edbb1e2::t_0e4f47b17cec92 8,27-28,34-35,48-49,71-79,82-85,87-88,97-99,103-106,110-113,117-120,124-133
+  s_9590478edbb1e2::t_6b3bda9614ef87 13,22,41-43,89-94,121-123
+  s_9590478edbb1e2::t_16b37982309f48 102
+  s_9590478edbb1e2::t_986d53a7a1efca 6-7,10,20-21,100-101,107-109,114-116
+  s_9590478edbb1e2::t_385355672c778b 11
+  s_9590478edbb1e2::t_c41dfb19012906 80-81
+  s_9590478edbb1e2::t_d5c48898665cdf 86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "f7d7a5e773df23239930620cef04259707e7517d",
+  "prompts": {},
+  "sessions": {
+    "s_9590478edbb1e2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a04636-14ac-7f01-8f61-d76f234a1594",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
