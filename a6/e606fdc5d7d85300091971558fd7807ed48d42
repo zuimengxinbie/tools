@@ -1,0 +1,43 @@
+mock/data/holiday-plans.json
+  s_ecdf094c3d023a::t_f4857077337dfd 65,69,103,105-107,138-139,147-148
+  s_47a5e8ae9eb83c::t_8cb2c72558f186 8,11-64
+  s_47a5e8ae9eb83c::t_74a0ec47164750 5-6,9-10,68,71-75,77-81,83-102,108,110-115,117-122,124-129,131-136,140-142,145-146
+  s_47a5e8ae9eb83c::t_f24e5f219569d5 143
+  s_47a5e8ae9eb83c::t_eb0ed091eca34c 109,116,123,130,137,144
+  s_47a5e8ae9eb83c::t_f9ff7bf324cb97 2-4
+  s_47a5e8ae9eb83c::t_4d75b4bc836a4a 7
+  s_47a5e8ae9eb83c::t_3162f05465aca8 76
+  s_47a5e8ae9eb83c::t_9fef0e5bab269c 82
+  s_ecdf094c3d023a::t_1344091f0dcbe5 104
+  s_ecdf094c3d023a::t_9bce29c461c1eb 149
+  s_47a5e8ae9eb83c::t_6cfc05d2d7248f 66-67,70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "a6e606fdc5d7d85300091971558fd7807ed48d42",
+  "prompts": {},
+  "humans": {
+    "h_29e61e46c3a48d": {
+      "author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  },
+  "sessions": {
+    "s_47a5e8ae9eb83c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08a06-f2e1-7f80-81f6-21a241039be5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    },
+    "s_ecdf094c3d023a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a07f8d-cf90-7d70-9dbd-109357d681f8",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
