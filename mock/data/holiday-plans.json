@@ -1,5 +1,153 @@
 [
   {
+    "id": 12,
+    "festival": "国庆节",
+    "destination": "榆社·太原",
+    "startDate": "2026-09-30",
+    "endDate": "2026-10-07",
+    "budget": 3500,
+    "members": 2,
+    "transport": "动卧/普速卧铺 + 高铁",
+    "remark": "<h2>行程</h2><ul><li><strong>9/30 回家：</strong>K282 苏州 21:42 → 郑州，换 D3352 → 榆社西 10/1 12:17；备选 D92 + D316。9/16 购票。</li><li><strong>10/1 去太原：</strong>D3356 榆社西 19:04 → 太原南 19:38（2 人），入住南站附近双床房。</li><li><strong>10/2 体检：</strong>07:30 到尚宁高新部，结束后乘 D2776 太原南 14:35 → 榆社西 15:24（2 人）。</li><li><strong>10/7 返苏：</strong>D316 榆社西 10:01 → 太原南，换 G1954 → 苏州北 20:49；备选 D316 + D1670。9/23 购票。</li></ul><h2>提醒</h2><ul><li>10/2 可能因法定假期停诊，先致电 0351-7773888 确认；地址：中心北街 3 号晨雨大厦 5 层。</li><li>车次、票价和余票以 12306 放票结果为准，优先购买联程票并开启候补。</li></ul>",
+    "status": "planning",
+    "actualCost": 3372,
+    "rating": 0,
+    "review": "",
+    "costItems": [
+      {
+        "id": 1,
+        "category": "体检",
+        "name": "妈妈体检套餐",
+        "amount": 1399,
+        "estimateType": "estimated"
+      },
+      {
+        "id": 2,
+        "category": "交通",
+        "name": "9/30 苏州→榆社西（1 人）",
+        "amount": 364,
+        "estimateType": "estimated"
+      },
+      {
+        "id": 3,
+        "category": "交通",
+        "name": "榆社西⇄太原南（2 人往返）",
+        "amount": 176,
+        "estimateType": "estimated"
+      },
+      {
+        "id": 4,
+        "category": "交通",
+        "name": "10/7 榆社西→苏州北（1 人）",
+        "amount": 763,
+        "estimateType": "estimated"
+      },
+      {
+        "id": 5,
+        "category": "住宿",
+        "name": "10/1 太原南站双床房（1 晚）",
+        "amount": 350,
+        "estimateType": "estimated"
+      },
+      {
+        "id": 6,
+        "category": "交通",
+        "name": "太原市内交通",
+        "amount": 120,
+        "estimateType": "estimated"
+      },
+      {
+        "id": 7,
+        "category": "餐饮",
+        "name": "途中餐饮",
+        "amount": 200,
+        "estimateType": "estimated"
+      }
+    ],
+    "preparation": [
+      {
+        "id": 1,
+        "name": "身份证",
+        "category": "证件",
+        "done": false
+      },
+      {
+        "id": 2,
+        "name": "手机",
+        "category": "电子",
+        "done": false
+      },
+      {
+        "id": 3,
+        "name": "充电宝",
+        "category": "电子",
+        "done": false
+      },
+      {
+        "id": 4,
+        "name": "充电线",
+        "category": "电子",
+        "done": false
+      },
+      {
+        "id": 5,
+        "name": "回家前喂猫",
+        "category": "其他",
+        "done": false
+      },
+      {
+        "id": 6,
+        "name": "妈妈身份证、既往病历及用药清单",
+        "category": "证件",
+        "done": false
+      }
+    ],
+    "coordination": [
+      {
+        "id": 1,
+        "question": "确认 10 月 2 日尚宁高新部是否营业并预约体检",
+        "answer": "尽快致电 0351-7773888；若停诊，询问开放分部或改约 10/8。",
+        "status": "pending",
+        "role": "共同"
+      },
+      {
+        "id": 2,
+        "question": "购买 9 月 30 日苏州到榆社西车票（1 人）",
+        "answer": "9/16 购票：首选 K282 + D3352，备选 D92 + D316；开启候补。",
+        "status": "pending",
+        "role": "本人"
+      },
+      {
+        "id": 3,
+        "question": "购买 10 月 1 日榆社西到太原南车票（2 人）",
+        "answer": "9/17 购票：首选 D3356 19:04–19:38，备选 G3132。",
+        "status": "pending",
+        "role": "共同"
+      },
+      {
+        "id": 4,
+        "question": "预订 10 月 1 日太原南站附近双床房（1 晚）",
+        "answer": "南站附近双床房，选择可免费取消房型。",
+        "status": "pending",
+        "role": "本人"
+      },
+      {
+        "id": 5,
+        "question": "购买 10 月 2 日太原南到榆社西车票（2 人）",
+        "answer": "9/18 购票：首选 D2776 14:35–15:24，备选 D2788。",
+        "status": "pending",
+        "role": "共同"
+      },
+      {
+        "id": 6,
+        "question": "购买 10 月 7 日榆社西到苏州返程票（1 人）",
+        "answer": "9/23 购票：首选 D316 + G1954，备选 D316 + D1670；开启候补。",
+        "status": "pending",
+        "role": "本人"
+      }
+    ]
+  },
+  {
     "id": 11,
     "festival": "日照看海",
     "destination": "日照",
