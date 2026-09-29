@@ -1,0 +1,46 @@
+mock/ai.mock.ts
+  s_24d0c0dbef5b51::t_185b1445747b4c 1-63
+src/views/ai/assistant/index.vue
+  s_24d0c0dbef5b51::t_b412941ad3640a 9,46,50,97,118-123
+  s_24d0c0dbef5b51::t_ea28ae6be53474 446,484,528,534-535,564-566,572,581,604,614,633
+  s_24d0c0dbef5b51::t_6ffdc90efb6a84 1-8,10-45,47-49,51-96,98-117,124-445,447-483,485-527,529-533,536-563,567-571,573-580,582-603,605-613,615-632,634-644
+mock/data/ai-prompts.json
+  s_24d0c0dbef5b51::t_b412941ad3640a 6,14,22,30,38,46
+  s_24d0c0dbef5b51::t_185b1445747b4c 1-5,7-13,15-21,23-29,31-37,39-45,47-50
+src/api/ai/index.ts
+  s_914b3b0f28531f::t_9d3951f97dff5f 2,5,11-12,14,17-18,29-30,45-46
+  s_24d0c0dbef5b51::t_b412941ad3640a 21-28,39
+  s_24d0c0dbef5b51::t_185b1445747b4c 1,3-4,6-10,13,15-16,19-20,31-38,40-44,47-59
+mock/menu.mock.ts
+  s_24d0c0dbef5b51::t_8fa1ced171491d 174-201,1371-1401,1750-1759,2023-2051,2055-2056
+  s_24d0c0dbef5b51::t_32f17e476319ac 2052-2054
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "913f8d26070daf08471f43659ffbc89b1f6afc5d",
+  "prompts": {},
+  "humans": {
+    "h_29e61e46c3a48d": {
+      "author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  },
+  "sessions": {
+    "s_24d0c0dbef5b51": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ebc7-8a36-7a11-858d-7f2d17bfcd95",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    },
+    "s_914b3b0f28531f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08527-3e44-7f32-b1d1-4bd588e70a2d",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "qi5.chen <qi5.chen@ly.com>"
+    }
+  }
+}
